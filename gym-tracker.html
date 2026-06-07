@@ -199,6 +199,31 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .checklist-item:last-child{border-bottom:none}
 .checklist-item svg{width:12px;height:12px;stroke:var(--accent);fill:none;stroke-width:2.5;flex-shrink:0;margin-top:2px}
 .checklist-item span{font-size:12px;color:var(--text-muted);line-height:1.6}
+
+/* EFFORT SELECTOR */
+.effort-row{display:flex;align-items:center;gap:6px;margin-top:10px}
+.effort-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;flex-shrink:0}
+.effort-btn{flex:1;padding:5px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);font-size:11px;font-family:'DM Mono',monospace;color:var(--text-dim);cursor:pointer;text-align:center;transition:all 0.15s}
+.effort-btn.sel-easy{background:rgba(74,201,138,0.15);border-color:var(--success);color:var(--success)}
+.effort-btn.sel-medium{background:rgba(240,168,74,0.15);border-color:var(--warn);color:var(--warn)}
+.effort-btn.sel-hard{background:rgba(240,97,74,0.15);border-color:var(--danger);color:var(--danger)}
+
+/* NEXT EXERCISE HIGHLIGHT */
+.ex-card.ex-next{border-color:rgba(200,240,74,0.5);box-shadow:0 0 0 1px rgba(200,240,74,0.08)}
+
+/* PROGRESSION HINT */
+.prog-hint{font-size:10px;font-family:'DM Mono',monospace;padding:3px 7px;border-radius:99px;margin-top:3px;display:inline-flex;align-items:center;gap:4px}
+.prog-hint.inc{background:rgba(74,201,138,0.12);color:var(--success);border:1px solid rgba(74,201,138,0.25)}
+.prog-hint.rep{background:rgba(200,240,74,0.10);color:var(--accent);border:1px solid rgba(200,240,74,0.2)}
+
+/* WEEKLY STATS */
+.week-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.week-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center}
+.week-stat-val{font-size:20px;font-weight:600;color:var(--text);font-family:'DM Mono',monospace}
+.week-stat-lbl{font-size:10px;color:var(--text-dim);margin-top:2px;text-transform:uppercase;letter-spacing:0.04em}
+
+/* SESSION TIMER */
+.session-timer{font-size:11px;font-family:'DM Mono',monospace;color:var(--text-muted);padding:3px 8px;background:var(--surface2);border-radius:99px;border:1px solid var(--border);white-space:nowrap;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -344,7 +369,13 @@ const DAYS = [
     cardio:null
   },
   {
-    short:'Fri', label:'Lower', type:'lower', focus:'Glutes · Hamstrings · Core · Conditioning',
+    short:'Fri', label:'Rest', type:'rest', focus:'Active recovery',
+    restIcon:'🌿', restTitle:'Recovery day',
+    restBody:'Take today to recover. Your muscles grow during rest, not during the workout. Stay active but keep it easy.',
+    restOpts:['30–45 min walk','Light bike ride','Stretching or mobility work','Easy yoga','Full rest if very sore or tired']
+  },
+  {
+    short:'Sat', label:'Lower', type:'lower', focus:'Glutes · Hamstrings · Core · Conditioning',
     warmup:['5–10 min bike or elliptical','Hip hinges × 10','Glute bridges × 10 bodyweight','Lateral leg swings × 8 each','Light warm-up sets on first lift'],
     exercises:[
       {name:'Goblet squat or hack squat machine', muscles:'Quads, glutes, core', sets:3, target:'8–12 reps', rest:'90 sec',
@@ -375,12 +406,6 @@ const DAYS = [
     cardio:{name:'Incline treadmill walk', desc:'15–25 min · incline 4–8% · speed 2.5–3.2 mph'}
   },
   {
-    short:'Sat', label:'Light', type:'rest', focus:'Optional light activity',
-    restIcon:'☀️', restTitle:'Optional light day',
-    restBody:'This should not feel like a workout. Choose something enjoyable and easy. This day supports fat loss and recovery without interfering with your lifting.',
-    restOpts:['30–60 min walk','Light cycling','Stretching or mobility','Recreational activity','Full rest']
-  },
-  {
     short:'Sun', label:'Rest', type:'rest', focus:'Full rest',
     restIcon:'🌙', restTitle:'Full rest day',
     restBody:'Take the day fully off. Rest is when your body actually adapts and grows. Especially early on, recovery is part of the plan — not a sign of laziness.',
@@ -399,6 +424,21 @@ function load(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
 
 let history = load('gymHistory_v3',[]);
+let progData = load('gymProg_v1',{});
+
+// ─── SESSION TIMER ─────────────────────────────────────────────────────────────
+let timerStart = null;
+let timerInterval = null;
+function startTimer(){
+  if(timerStart) return;
+  timerStart = Date.now();
+  timerInterval = setInterval(()=>{
+    const el = document.getElementById('session-timer');
+    if(!el) return;
+    const s = Math.floor((Date.now()-timerStart)/1000);
+    el.textContent = Math.floor(s/60)+':'+(s%60<10?'0':'')+(s%60);
+  }, 1000);
+}
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 function todayIdx(){const d=new Date().getDay();return d===0?6:d-1;}
@@ -406,7 +446,14 @@ function initSession(i){
   if(session[i]) return;
   const day=DAYS[i];
   if(day.type==='rest') return;
-  session[i]=day.exercises.map(ex=>({sets:Array.from({length:ex.sets},()=>({w:'',r:'',done:false}))}));
+  session[i]=day.exercises.map(ex=>({effort:'',sets:Array.from({length:ex.sets},()=>({w:'',r:'',done:false}))}));
+}
+function parseTargetTop(target){
+  const m=target.match(/(\d+)[–\-](\d+)/);
+  if(m) return parseInt(m[2]);
+  const m2=target.match(/(\d+)\s*reps?/i);
+  if(m2) return parseInt(m2[1]);
+  return null;
 }
 function calcProg(i){
   if(!session[i]) return {done:0,total:0};
@@ -465,6 +512,12 @@ function renderWorkout(){
   const pct=total>0?Math.round(done/total*100):0;
   const allDone=done===total&&total>0;
 
+  // Find first incomplete exercise index for "next up" highlight
+  let nextExIdx=-1;
+  if(!allDone && session[activeDay]){
+    nextExIdx=session[activeDay].findIndex(ex=>ex.sets.some(s=>!s.done));
+  }
+
   let html='';
 
   // Header
@@ -476,10 +529,11 @@ function renderWorkout(){
     <span class="type-badge badge-${day.type}">${day.type.toUpperCase()}</span>
   </div>`;
 
-  // Progress
+  // Progress + timer
   html+=`<div class="progress-wrap">
     <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
     <div class="progress-label">${done}/${total}</div>
+    <span class="session-timer" id="session-timer">${timerStart?Math.floor((Date.now()-timerStart)/60000)+':'+(Math.floor((Date.now()-timerStart)/1000)%60<10?'0':'')+Math.floor((Date.now()-timerStart)/1000)%60:'0:00'}</span>
   </div>`;
 
   // Warmup
@@ -500,15 +554,28 @@ function renderWorkout(){
     const exData=session[activeDay][ei];
     const exDone=exData.sets.filter(s=>s.done).length;
     const isComplete=exDone===ex.sets;
+    const isNext=!isComplete&&ei===nextExIdx;
     const isOpen=openEx[`${activeDay}-${ei}`]!==false;
     const mistakeKey=`m-${activeDay}-${ei}`;
 
-    html+=`<div class="ex-card${isComplete?' ex-complete':''}">
+    // Progression hint from previous session
+    const prevEx=(progData[activeDay]||[])[ei];
+    let progHint='';
+    if(prevEx&&prevEx.weight!=null){
+      if(prevEx.hitTop){
+        progHint=`<span class="prog-hint inc">↑ Try ${prevEx.weight+5}lb today</span>`;
+      } else {
+        progHint=`<span class="prog-hint rep">↔ Repeat ${prevEx.weight}lb — build reps first</span>`;
+      }
+    }
+
+    html+=`<div class="ex-card${isComplete?' ex-complete':''}${isNext?' ex-next':''}">
       <div class="ex-header" onclick="toggleEx(${activeDay},${ei})">
         <div class="ex-circle${isComplete?' done':''}">${checkSVG()}</div>
         <div class="ex-info">
           <div class="ex-name">${ex.name}</div>
           <div class="ex-muscles">${ex.muscles}</div>
+          ${progHint}
         </div>
         <div class="ex-right">
           <div class="ex-sets-ct">${exDone}/${ex.sets} sets</div>
@@ -537,6 +604,11 @@ function renderWorkout(){
           <div class="set-tick${s.done?' done':''}" onclick="tickSet(${activeDay},${ei},${si})">${checkSVG()}</div>
         </div>`;
       });
+      // Effort selector
+      html+=`<div class="effort-row">
+        <span class="effort-label">Effort</span>
+        ${['easy','medium','hard'].map(e=>`<button class="effort-btn${exData.effort===e?' sel-'+e:''}" onclick="updateEffort(${activeDay},${ei},'${e}')">${e}</button>`).join('')}
+      </div>`;
       html+=`</div>`;
     }
     html+=`</div>`;
@@ -790,8 +862,27 @@ function renderMindset(){
 // ─── HISTORY PAGE ─────────────────────────────────────────────────────────────
 function renderHistory(){
   const main=document.getElementById('page-history');
+
+  // Weekly stats
+  const trainingDayCount=DAYS.filter(d=>d.type!=='rest').length;
+  const now=new Date();
+  const weekStart=new Date(now);
+  weekStart.setDate(now.getDate()-((now.getDay()+6)%7)); // Monday
+  weekStart.setHours(0,0,0,0);
+  const weekSessions=history.filter(h=>{
+    if(h.ts) return h.ts>=weekStart.getTime();
+    const d=new Date(h.date);return d>=weekStart;
+  });
+  const weekPct=trainingDayCount>0?Math.round(weekSessions.length/trainingDayCount*100):0;
+  const totalSessions=history.length;
+
   let html=`<div class="hist-page-title">Workout history</div>
-  <div class="hist-page-sub">Your logged sessions — most recent first</div>`;
+  <div class="hist-page-sub">Your logged sessions — most recent first</div>
+  <div class="week-stats">
+    <div class="week-stat"><div class="week-stat-val">${weekSessions.length}/${trainingDayCount}</div><div class="week-stat-lbl">This week</div></div>
+    <div class="week-stat"><div class="week-stat-val">${weekPct}%</div><div class="week-stat-lbl">Consistency</div></div>
+    <div class="week-stat"><div class="week-stat-val">${totalSessions}</div><div class="week-stat-lbl">All time</div></div>
+  </div>`;
 
   if(history.length===0){
     html+=`<div class="hist-section"><div class="hist-empty">No sessions logged yet.<br>Complete a workout and tap "Finish & save session."</div></div>`;
@@ -824,25 +915,48 @@ function toggleSubCard(header){
   if(chev) chev.classList.toggle('open');
 }
 function updateSet(dayIdx,ei,si,field,val){if(!session[dayIdx]) return;session[dayIdx][ei].sets[si][field]=val;}
-function tickSet(dayIdx,ei,si){if(!session[dayIdx]) return;session[dayIdx][ei].sets[si].done=!session[dayIdx][ei].sets[si].done;renderWorkout();}
+function tickSet(dayIdx,ei,si){if(!session[dayIdx]) return;session[dayIdx][ei].sets[si].done=!session[dayIdx][ei].sets[si].done;startTimer();renderWorkout();}
 function tickCardio(dayIdx){cardioState[dayIdx]=!cardioState[dayIdx];renderWorkout();}
+function updateEffort(dayIdx,ei,val){
+  if(!session[dayIdx]) return;
+  session[dayIdx][ei].effort=session[dayIdx][ei].effort===val?'':val;
+  renderWorkout();
+}
 
 function finishSession(){
   const day=DAYS[activeDay];
   if(!session[activeDay]) return;
   session[activeDay].forEach(ex=>ex.sets.forEach(s=>s.done=true));
   cardioState[activeDay]=true;
+
+  // Save progression data for each exercise
+  progData[activeDay]=session[activeDay].map((ex,ei)=>{
+    const exDef=day.exercises[ei];
+    const topRep=parseTargetTop(exDef.target);
+    const repsEntered=ex.sets.map(s=>parseInt(s.r)).filter(v=>!isNaN(v));
+    const hitTop=topRep&&repsEntered.length===ex.sets.length&&repsEntered.every(r=>r>=topRep);
+    const weights=ex.sets.map(s=>parseFloat(s.w)).filter(v=>!isNaN(v));
+    const avgW=weights.length?Math.round(weights.reduce((a,b)=>a+b,0)/weights.length):null;
+    return {name:exDef.name,weight:avgW,hitTop:!!hitTop&&repsEntered.length>0};
+  });
+  save('gymProg_v1',progData);
+
   const detail=session[activeDay].map((ex,ei)=>{
     const name=day.exercises[ei].name;
     const sets=ex.sets.map((s,si)=>`S${si+1}: ${s.w||'?'}lb × ${s.r||'?'} reps`).join('  ');
-    return `${name}: ${sets}`;
+    const effort=ex.effort?` [${ex.effort}]`:'';
+    return `${name}: ${sets}${effort}`;
   }).join('\n');
   history.push({
     date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),
+    ts:Date.now(),
     day:`${day.short} — ${day.label} body`,
+    dayIdx:activeDay,
     detail
   });
   save('gymHistory_v3',history);
+  timerStart=null;
+  if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
   renderWorkout();
 }
 
