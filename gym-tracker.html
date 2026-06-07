@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gym Tracker">
+<meta name="theme-color" content="#0f0f0f">
+<title>Gym Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f0f0f;--surface:#1a1a1a;--surface2:#242424;--border:#2e2e2e;
+  --accent:#c8f04a;--accent-dim:rgba(200,240,74,0.12);--accent-text:#0f0f0f;
+  --text:#f0f0f0;--text-muted:#888;--text-dim:#555;
+  --upper:#4a9cf0;--upper-dim:rgba(74,156,240,0.12);
+  --lower:#c8f04a;--lower-dim:rgba(200,240,74,0.12);
+  --success:#4ac98a;--success-dim:rgba(74,201,138,0.12);
+  --warn:#f0a84a;--warn-dim:rgba(240,168,74,0.12);
+  --danger:#f0614a;--radius:12px;--radius-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+body{display:flex;flex-direction:column;min-height:100vh}
+
+/* NAV */
+.bottom-nav{position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);z-index:200;padding-bottom:env(safe-area-inset-bottom,0)}
+.bnav-btn{display:flex;flex-direction:column;align-items:center;padding:10px 4px 8px;cursor:pointer;border:none;background:transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:10px;gap:3px;transition:color 0.15s}
+.bnav-btn svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.8;fill:none}
+.bnav-btn.active{color:var(--accent)}
+
+/* HEADER */
+.app-header{background:var(--bg);padding:env(safe-area-inset-top,16px) 16px 0;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.header-row{display:flex;align-items:center;justify-content:space-between;padding-bottom:10px}
+.app-title{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--accent);letter-spacing:0.06em;text-transform:uppercase}
+.date-chip{font-size:11px;color:var(--text-muted);font-family:'DM Mono',monospace}
+.day-tabs{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding-bottom:10px}
+.dtab{display:flex;flex-direction:column;align-items:center;padding:6px 2px;border-radius:var(--radius-sm);border:1px solid transparent;cursor:pointer;transition:all 0.15s}
+.dtab .ds{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.04em;font-family:'DM Mono',monospace}
+.dtab .dl{font-size:9px;font-weight:500;color:var(--text-muted);margin-top:2px}
+.dtab.active-upper{background:var(--upper-dim);border-color:var(--upper)}
+.dtab.active-upper .ds,.dtab.active-upper .dl{color:var(--upper)}
+.dtab.active-lower{background:var(--lower-dim);border-color:var(--lower)}
+.dtab.active-lower .ds,.dtab.active-lower .dl{color:var(--lower)}
+.dtab.active-rest{background:rgba(136,136,136,0.1);border-color:#555}
+.dtab.active-rest .ds,.dtab.active-rest .dl{color:#aaa}
+
+/* CONTENT */
+.page{flex:1;padding:16px;padding-bottom:24px;display:none}
+.page.active{display:block}
+
+/* SESSION */
+.session-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.session-day{font-size:20px;font-weight:600;color:var(--text);line-height:1.2}
+.session-focus{font-size:12px;color:var(--text-muted);margin-top:3px}
+.type-badge{font-size:10px;font-weight:600;padding:4px 9px;border-radius:99px;letter-spacing:0.04em;font-family:'DM Mono',monospace;white-space:nowrap}
+.badge-upper{background:var(--upper-dim);color:var(--upper);border:1px solid rgba(74,156,240,0.3)}
+.badge-lower{background:var(--lower-dim);color:var(--lower);border:1px solid rgba(200,240,74,0.3)}
+.badge-rest{background:rgba(136,136,136,0.1);color:#aaa;border:1px solid #444}
+
+/* WARM UP CARD */
+.warmup-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px}
+.warmup-title{font-size:11px;font-family:'DM Mono',monospace;color:var(--warn);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.warmup-title svg{width:13px;height:13px;stroke:var(--warn);fill:none;stroke-width:2}
+.warmup-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.warmup-item{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:5px}
+.warmup-item svg{width:10px;height:10px;stroke:var(--accent);fill:none;stroke-width:2.5;flex-shrink:0}
+
+/* PROGRESS */
+.progress-wrap{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.progress-track{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width 0.4s ease}
+.progress-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--text-muted);min-width:38px;text-align:right}
+
+/* SECTION DIVIDER */
+.section-divider{font-size:10px;font-family:'DM Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+.section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* EXERCISE CARD */
+.ex-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;transition:border-color 0.15s}
+.ex-card.ex-complete{border-color:rgba(74,201,138,0.35)}
+.ex-header{display:flex;align-items:center;padding:12px;cursor:pointer;gap:10px}
+.ex-circle{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s}
+.ex-circle.done{background:var(--success);border-color:var(--success)}
+.ex-circle svg{width:10px;height:10px;stroke:#0f0f0f;stroke-width:3;fill:none;display:none}
+.ex-circle.done svg{display:block}
+.ex-info{flex:1;min-width:0}
+.ex-name{font-size:13px;font-weight:500;color:var(--text);line-height:1.2}
+.ex-muscles{font-size:11px;color:var(--text-dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ex-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.ex-sets-ct{font-size:10px;font-family:'DM Mono',monospace;color:var(--text-muted)}
+.chev{width:14px;height:14px;stroke:var(--text-dim);stroke-width:2;fill:none;transition:transform 0.2s;flex-shrink:0}
+.chev.open{transform:rotate(180deg)}
+
+/* EXERCISE BODY */
+.ex-body{border-top:1px solid var(--border);padding:12px}
+.ex-tip{font-size:12px;color:var(--text-muted);line-height:1.6;background:var(--surface2);border-radius:var(--radius-sm);padding:9px 11px;margin-bottom:10px;border-left:2px solid var(--accent)}
+.ex-cue{font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);margin-bottom:10px;padding:6px 10px;background:var(--accent-dim);border-radius:var(--radius-sm)}
+.ex-cue::before{content:'CUE → '}
+.mistakes-toggle{font-size:11px;color:var(--text-dim);cursor:pointer;text-decoration:underline;text-underline-offset:2px;margin-bottom:10px;display:inline-block}
+.mistakes-box{font-size:11px;color:var(--text-muted);background:rgba(240,97,74,0.06);border:1px solid rgba(240,97,74,0.2);border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:10px;line-height:1.7;display:none}
+.mistakes-box.open{display:block}
+.target-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px}
+.col-labels{display:grid;grid-template-columns:26px 1fr 1fr 36px;gap:5px;margin-bottom:4px;padding:0 1px}
+.col-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--text-dim);text-align:center;text-transform:uppercase;letter-spacing:0.03em}
+.set-row{display:grid;grid-template-columns:26px 1fr 1fr 36px;gap:5px;align-items:center;margin-bottom:5px}
+.set-num{font-size:11px;font-family:'DM Mono',monospace;color:var(--text-dim);text-align:center}
+.set-input{width:100%;padding:7px 4px;font-size:14px;font-family:'DM Mono',monospace;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);text-align:center;-webkit-appearance:none;appearance:none}
+.set-input:focus{outline:none;border-color:var(--accent)}
+.set-input::placeholder{color:var(--text-dim)}
+.set-tick{width:34px;height:34px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s}
+.set-tick:active{transform:scale(0.9)}
+.set-tick svg{width:13px;height:13px;stroke:var(--text-dim);stroke-width:2.5;fill:none}
+.set-tick.done{background:var(--success-dim);border-color:var(--success)}
+.set-tick.done svg{stroke:var(--success)}
+.set-row.set-done .set-input{opacity:0.45}
+
+/* CARDIO ROW */
+.cardio-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px}
+.cardio-info .cardio-name{font-size:13px;font-weight:500;color:var(--text)}
+.cardio-info .cardio-desc{font-size:11px;color:var(--text-dim);margin-top:2px}
+.cardio-check{width:34px;height:34px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;flex-shrink:0}
+.cardio-check.done{background:var(--success-dim);border-color:var(--success)}
+.cardio-check svg{width:13px;height:13px;stroke:var(--text-dim);stroke-width:2.5;fill:none}
+.cardio-check.done svg{stroke:var(--success)}
+
+/* REST PAGE */
+.rest-screen{text-align:center;padding:32px 16px}
+.rest-icon-lg{font-size:44px;margin-bottom:14px}
+.rest-title{font-size:18px;font-weight:600;color:var(--text);margin-bottom:8px}
+.rest-body{font-size:13px;color:var(--text-muted);line-height:1.75;max-width:300px;margin:0 auto 20px}
+.rest-opts{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;text-align:left;max-width:300px;margin:0 auto}
+.rest-opts-title{font-size:10px;font-family:'DM Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px}
+.rest-opt{font-size:13px;color:var(--text-muted);padding:4px 0;display:flex;align-items:center;gap:7px}
+.rest-opt svg{width:11px;height:11px;stroke:var(--accent);fill:none;stroke-width:2.5;flex-shrink:0}
+
+/* COMPLETE BANNER */
+.complete-banner{background:var(--success-dim);border:1px solid rgba(74,201,138,0.3);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.complete-banner svg{width:18px;height:18px;stroke:var(--success);stroke-width:2;fill:none;flex-shrink:0}
+.complete-banner p{font-size:13px;color:var(--success);line-height:1.5}
+
+/* FINISH BTN */
+.finish-btn{width:100%;padding:14px;border-radius:var(--radius);border:none;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:6px;transition:all 0.15s}
+.finish-btn.ready{background:var(--accent);color:var(--accent-text)}
+.finish-btn.ready:active{transform:scale(0.98)}
+.finish-btn.done-state{background:var(--surface);color:var(--text-dim);border:1px solid var(--border);cursor:default}
+
+/* GUIDE PAGE */
+.guide-section{margin-bottom:20px}
+.guide-section-title{font-size:10px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.guide-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:8px}
+.guide-card-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:7px}
+.guide-card-title svg{width:14px;height:14px;stroke:var(--accent);fill:none;stroke-width:2;flex-shrink:0}
+.guide-card p{font-size:12px;color:var(--text-muted);line-height:1.7}
+.guide-card ul{padding-left:0;list-style:none}
+.guide-card ul li{font-size:12px;color:var(--text-muted);line-height:1.7;padding:2px 0;display:flex;align-items:flex-start;gap:6px}
+.guide-card ul li::before{content:'→';color:var(--accent);font-size:11px;flex-shrink:0;margin-top:1px}
+.muscles-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.muscle-group{background:var(--surface2);border-radius:var(--radius-sm);padding:10px}
+.muscle-group-name{font-size:11px;font-weight:600;color:var(--text);margin-bottom:4px;font-family:'DM Mono',monospace}
+.muscle-group-sub{font-size:11px;color:var(--text-dim);margin-bottom:6px}
+.muscle-list{font-size:11px;color:var(--text-muted);line-height:1.8}
+.rep-table{width:100%;border-collapse:collapse}
+.rep-table td{font-size:12px;padding:5px 0;color:var(--text-muted);vertical-align:top}
+.rep-table td:first-child{color:var(--text);font-weight:500;padding-right:12px;white-space:nowrap}
+.prog-steps{counter-reset:step}
+.prog-step{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.prog-step-num{width:20px;height:20px;border-radius:50%;background:var(--accent-dim);border:1px solid rgba(200,240,74,0.3);display:flex;align-items:center;justify-content:center;font-size:10px;font-family:'DM Mono',monospace;color:var(--accent);flex-shrink:0;margin-top:1px}
+.prog-step p{font-size:12px;color:var(--text-muted);line-height:1.6}
+.sub-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden}
+.sub-card-header{padding:10px 12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+.sub-card-title{font-size:13px;font-weight:500;color:var(--text)}
+.sub-card-body{border-top:1px solid var(--border);padding:10px 12px;display:none}
+.sub-card-body.open{display:block}
+.sub-item{font-size:12px;color:var(--text-muted);padding:3px 0;display:flex;align-items:flex-start;gap:6px;line-height:1.6}
+.sub-item::before{content:'↳';color:var(--text-dim);flex-shrink:0}
+
+/* HISTORY PAGE */
+.hist-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px}
+.hist-item{padding:12px 14px;border-bottom:1px solid var(--border)}
+.hist-item:last-child{border-bottom:none}
+.hist-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
+.hist-day-name{font-size:13px;font-weight:500;color:var(--text)}
+.hist-date{font-size:11px;font-family:'DM Mono',monospace;color:var(--text-muted)}
+.hist-sets{font-size:11px;color:var(--text-dim);line-height:1.7;white-space:pre-line}
+.hist-empty{padding:32px;text-align:center;font-size:13px;color:var(--text-dim)}
+.hist-clear{width:100%;padding:11px;border-radius:var(--radius);border:1px solid rgba(240,97,74,0.3);background:transparent;font-size:13px;color:var(--danger);font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s}
+.hist-clear:active{background:rgba(240,97,74,0.1)}
+.hist-page-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px}
+.hist-page-sub{font-size:12px;color:var(--text-muted);margin-bottom:14px}
+
+/* MINDSET */
+.mindset-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:8px}
+.mindset-q{font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:7px}
+.mindset-q svg{width:14px;height:14px;stroke:var(--accent);fill:none;stroke-width:2;flex-shrink:0}
+.mindset-a{font-size:12px;color:var(--text-muted);line-height:1.7}
+.checklist-item{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)}
+.checklist-item:last-child{border-bottom:none}
+.checklist-item svg{width:12px;height:12px;stroke:var(--accent);fill:none;stroke-width:2.5;flex-shrink:0;margin-top:2px}
+.checklist-item span{font-size:12px;color:var(--text-muted);line-height:1.6}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-row">
+    <div class="app-title">Gym Tracker</div>
+    <div class="date-chip" id="date-chip"></div>
+  </div>
+  <div class="day-tabs" id="day-tabs"></div>
+</header>
+
+<div id="page-workout" class="page active"></div>
+<div id="page-guide" class="page"></div>
+<div id="page-history" class="page"></div>
+
+<nav class="bottom-nav">
+  <button class="bnav-btn active" id="btn-workout" onclick="switchPage('workout')">
+    <svg viewBox="0 0 24 24"><rect x="2" y="9" width="4" height="6" rx="1"/><rect x="18" y="9" width="4" height="6" rx="1"/><rect x="6" y="7" width="12" height="10" rx="1"/><line x1="6" y1="12" x2="18" y2="12"/></svg>
+    Workout
+  </button>
+  <button class="bnav-btn" id="btn-guide" onclick="switchPage('guide')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="0.5" fill="currentColor"/></svg>
+    Guide
+  </button>
+  <button class="bnav-btn" id="btn-history" onclick="switchPage('history')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,15"/></svg>
+    History
+  </button>
+  <button class="bnav-btn" id="btn-mindset" onclick="switchPage('mindset')">
+    <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.5-1.3 4.7-3.3 6L14 21H10l-1.7-6C6.3 13.7 5 11.5 5 9a7 7 0 0 1 7-7z"/></svg>
+    Mindset
+  </button>
+</nav>
+
+<div id="page-mindset" class="page"></div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+
+const DAYS = [
+  {
+    short:'Mon', label:'Upper', type:'upper', focus:'Chest · Back · Shoulders · Arms',
+    warmup:['5–10 min treadmill walk or bike','Arm circles × 10 each direction','Shoulder rolls × 10','Bodyweight squats × 10','Light warm-up sets on first lift'],
+    exercises:[
+      {name:'Chest press machine', muscles:'Chest, triceps, front shoulders', sets:3, target:'8–12 reps', rest:'90–120 sec',
+       tip:'Keep shoulder blades slightly back and down. Don\'t shrug. Don\'t lock elbows hard at the top.',
+       cue:'Push through your chest, not your neck or shoulders.',
+       mistakes:'Shoulders shrugging up · Locking elbows aggressively · Letting the weight slam back · Seat set too low or too high'},
+      {name:'Seated row machine', muscles:'Mid back, biceps, rear shoulders', sets:3, target:'8–12 reps', rest:'90–120 sec',
+       tip:'Sit tall, pull your elbows back toward your ribs — not your hands. Think: squeeze shoulder blades together.',
+       cue:'Pull your elbows back, not your hands.',
+       mistakes:'Leaning way back · Shrugging shoulders · Rounding your back · Pulling only with your arms'},
+      {name:'Lat pulldown', muscles:'Lats, upper back, biceps', sets:3, target:'8–12 reps', rest:'90–120 sec',
+       tip:'Pull bar toward your upper chest — never behind the neck. Sit tall, thighs secured under pad.',
+       cue:'Drive your elbows down toward your pockets.',
+       mistakes:'Pulling behind the neck · Swinging backward · Shrugging shoulders up · Too much weight'},
+      {name:'Shoulder press machine', muscles:'Shoulders, triceps', sets:3, target:'8–12 reps', rest:'90 sec',
+       tip:'Seat height puts handles at shoulder level. Keep back against pad. Press up without shrugging.',
+       cue:'Press up, but keep your shoulders away from your ears.',
+       mistakes:'Arching lower back · Shrugging hard · Locking elbows aggressively · Going too heavy'},
+      {name:'Cable triceps pushdown', muscles:'Triceps', sets:2, target:'10–15 reps', rest:'60 sec',
+       tip:'Elbows tucked near sides. Chest tall. Only your forearms should move. Push rope or bar down.',
+       cue:'Pin your elbows to your sides and push down.',
+       mistakes:'Moving shoulders too much · Leaning bodyweight into it · Letting elbows flare · Using momentum'},
+      {name:'Dumbbell bicep curls', muscles:'Biceps', sets:2, target:'10–15 reps', rest:'60 sec',
+       tip:'Keep elbows close to body. Curl up, lower slowly. Do not swing or rock backward.',
+       cue:'Lift with your biceps, not your hips.',
+       mistakes:'Rocking body backward · Letting elbows drift forward · Going too heavy · Dropping the weight quickly'},
+    ],
+    cardio:{name:'Optional treadmill walk', desc:'10–15 min · easy pace · cool down'}
+  },
+  {
+    short:'Tue', label:'Lower', type:'lower', focus:'Quads · Glutes · Hamstrings · Calves · Core',
+    warmup:['5–10 min easy bike or elliptical','Bodyweight squats × 10','Hip hinges × 10','Hip circles × 8 each side','Light warm-up sets on leg press'],
+    exercises:[
+      {name:'Leg press', muscles:'Quads, glutes, hamstrings', sets:3, target:'8–12 reps', rest:'90–120 sec',
+       tip:'Feet shoulder-width apart, midway up the platform. Knees track in same direction as toes. Don\'t let lower back round off the seat.',
+       cue:'Push the platform away with your whole foot.',
+       mistakes:'Knees caving inward · Lower back rounding off seat · Locking knees hard at top · Going too deep too soon'},
+      {name:'Seated leg curl', muscles:'Hamstrings', sets:3, target:'10–12 reps', rest:'75 sec',
+       tip:'Pad near lower calf/ankle. Curl smoothly, pause briefly, lower slowly. Slow descent is where the work happens.',
+       cue:'Squeeze the back of your legs.',
+       mistakes:'Hips lifting off pad · Swinging the weight · Not controlling the return · Too much weight'},
+      {name:'Leg extension', muscles:'Quads', sets:3, target:'10–12 reps', rest:'75 sec',
+       tip:'Knees aligned with machine pivot point. Pad near lower shin. Extend fully, hold 1 sec at top, lower slowly.',
+       cue:'Smooth up, slower down.',
+       mistakes:'Going too heavy · Kicking the weight · Locking knees violently · Letting the stack slam'},
+      {name:'Glute bridge / hip thrust machine', muscles:'Glutes, hamstrings', sets:3, target:'8–12 reps', rest:'75 sec',
+       tip:'Upper back supported. Feet planted. Drive hips upward, squeeze glutes at the top. You should feel this in your glutes, not your lower back.',
+       cue:'Squeeze your glutes like you\'re trying to crack a walnut.',
+       mistakes:'Overarching lower back · Feet too far away · Pushing through toes only · Rushing reps'},
+      {name:'Calf raise', muscles:'Calves', sets:3, target:'10–15 reps', rest:'60 sec',
+       tip:'Balls of feet on platform. Lower heels all the way, rise up fully, pause at the top. Full range of motion matters here.',
+       cue:'Stretch low, squeeze high.',
+       mistakes:'Bouncing · Using tiny partial reps · Going too fast · Not pausing'},
+      {name:'Plank', muscles:'Core, lower back, trunk', sets:3, target:'20–45 sec', rest:'60 sec',
+       tip:'Elbows under shoulders. Body in a straight line. Squeeze glutes lightly. Brace your abs. Don\'t let hips sag or pike up.',
+       cue:'Make your body a straight, stiff board.',
+       mistakes:'Hips sagging · Hips too high · Holding your breath · Neck craned upward'},
+    ],
+    cardio:{name:'Easy bike or walk', desc:'10 min · active recovery cooldown'}
+  },
+  {
+    short:'Wed', label:'Rest', type:'rest', focus:'Active recovery',
+    restIcon:'🌿', restTitle:'Active recovery day',
+    restBody:'This day is intentional. Your muscles grow during rest, not during the workout. Keep moving, but keep it easy.',
+    restOpts:['30–45 min walk','Light bike ride','Stretching or mobility work','Easy yoga','Full rest if very sore or tired']
+  },
+  {
+    short:'Thu', label:'Upper', type:'upper', focus:'Chest · Back · Shoulders · Core',
+    warmup:['5–10 min treadmill walk or bike','Arm circles × 10 each direction','Shoulder rolls × 10','Scapular retractions × 10','Light warm-up sets on first lift'],
+    exercises:[
+      {name:'Incline chest press machine', muscles:'Upper chest, shoulders, triceps', sets:3, target:'8–12 reps', rest:'90 sec',
+       tip:'Bench or machine angled 30–45°. This hits more upper chest than a flat press. Use lighter weight than flat press to start.',
+       cue:'Press up and slightly forward — not straight overhead.',
+       mistakes:'Going too heavy · Flaring elbows out · Shrugging shoulders · Arching aggressively'},
+      {name:'Assisted pull-up or lat pulldown', muscles:'Back, lats, biceps', sets:3, target:'8–12 reps', rest:'90 sec',
+       tip:'If the gym has an assisted pull-up machine, use it. Otherwise, lat pulldown is your fallback. Pull toward upper chest.',
+       cue:'Drive your elbows down toward your pockets.',
+       mistakes:'Swinging · Behind-the-neck pulls · Too much weight · Letting shoulder blades rise'},
+      {name:'Cable row or machine row', muscles:'Mid back, biceps', sets:3, target:'10–12 reps', rest:'75 sec',
+       tip:'Different angle from Monday\'s row — equally important for back development. Pull to lower ribs.',
+       cue:'Pull your elbows back, not your hands.',
+       mistakes:'Leaning too far back · Rounding forward · Using arm strength only'},
+      {name:'Lateral raise (machine or dumbbell)', muscles:'Side shoulders', sets:3, target:'12–15 reps', rest:'60 sec',
+       tip:'Use light weight. Slight bend in elbows. Raise to shoulder height only. Lower slowly. This is not an ego lift.',
+       cue:'Pour the weight outward, not upward.',
+       mistakes:'Going too heavy · Swinging · Shrugging traps · Raising above shoulder level'},
+      {name:'Pec deck or cable fly', muscles:'Chest', sets:2, target:'10–15 reps', rest:'60 sec',
+       tip:'Think of hugging a large tree. Slight bend in elbows, bring arms together, return slowly. Great chest isolation.',
+       cue:'Hug, squeeze, control the return.',
+       mistakes:'Too much weight · Bending/straightening elbows excessively · Shoulders rolling forward · Weight yanking arms back'},
+      {name:'Face pulls (cable)', muscles:'Rear shoulders, upper back, posture muscles', sets:2, target:'12–15 reps', rest:'60 sec',
+       tip:'Rope attachment at upper chest/face height. Pull toward your forehead with elbows high and wide. Great for posture and shoulder health.',
+       cue:'Pull the rope apart as it comes toward your face.',
+       mistakes:'Going too heavy · Pulling too low · Leaning backward · Shrugging'},
+      {name:'Cable crunch or ab machine', muscles:'Abs, core', sets:3, target:'10–15 reps', rest:'60 sec',
+       tip:'Curl your ribs toward your hips. Don\'t just yank with your arms. Exhale on the crunch. Feel your abs doing the work.',
+       cue:'Ribs to hips — curl, don\'t yank.',
+       mistakes:'Using arm strength · Going too heavy · Rushing reps · Not feeling abs work'},
+    ],
+    cardio:null
+  },
+  {
+    short:'Fri', label:'Lower', type:'lower', focus:'Glutes · Hamstrings · Core · Conditioning',
+    warmup:['5–10 min bike or elliptical','Hip hinges × 10','Glute bridges × 10 bodyweight','Lateral leg swings × 8 each','Light warm-up sets on first lift'],
+    exercises:[
+      {name:'Goblet squat or hack squat machine', muscles:'Quads, glutes, core', sets:3, target:'8–12 reps', rest:'90 sec',
+       tip:'Hold one dumbbell at chest (goblet) or use the hack squat machine. Keep chest tall. Sit between your heels and stand.',
+       cue:'Sit between your heels, then stand tall.',
+       mistakes:'Knees collapsing inward · Heels lifting · Rounding your back · Dropping too low too soon'},
+      {name:'Romanian deadlift (dumbbells)', muscles:'Hamstrings, glutes, lower back', sets:3, target:'8–10 reps', rest:'90 sec',
+       tip:'This is a hip hinge, not a squat. Hold dumbbells in front of thighs. Push hips back, keep back neutral, feel the stretch in your hamstrings. Stand by squeezing glutes.',
+       cue:'Close a car door with your butt.',
+       mistakes:'Squatting instead of hinging · Rounding back · Letting weights drift far from body · Going too low'},
+      {name:'Step-ups or split squat', muscles:'Quads, glutes, balance', sets:2, target:'8–10 reps each leg', rest:'75 sec',
+       tip:'Use a low box or bench. Whole foot on platform. Drive through the top foot. Step down slowly. Don\'t use your back foot to launch yourself.',
+       cue:'Let the top leg do all the work.',
+       mistakes:'Pushing off back foot · Platform too high · Knee caving inward · Rushing'},
+      {name:'Hip abductor machine', muscles:'Outer glutes, hip stabilizers', sets:3, target:'12–15 reps', rest:'60 sec',
+       tip:'Sit tall, knees against pads. Open legs under control, pause briefly at the widest point, return slowly.',
+       cue:'Open, pause, control back in.',
+       mistakes:'Going too heavy · Bouncing · Leaning way forward · Letting weight slam back'},
+      {name:'Calf raise', muscles:'Calves', sets:3, target:'12–15 reps', rest:'60 sec',
+       tip:'Full range of motion — lower all the way, pause, rise all the way up. Calves respond well to reps.',
+       cue:'Stretch low, squeeze high.',
+       mistakes:'Partial reps · Bouncing at bottom · Not pausing at top'},
+      {name:'Farmer\'s carry', muscles:'Grip, core, traps, posture', sets:3, target:'Short controlled walks', rest:'75 sec',
+       tip:'Hold dumbbells at sides. Stand tall, shoulders down and back. Walk under control. This trains grip and core in a way machines don\'t.',
+       cue:'Walk like you\'re trying to look taller.',
+       mistakes:'Leaning side to side · Shoulders shrugged to ears · Walking too fast · Weights too heavy for posture'},
+    ],
+    cardio:{name:'Incline treadmill walk', desc:'15–25 min · incline 4–8% · speed 2.5–3.2 mph'}
+  },
+  {
+    short:'Sat', label:'Light', type:'rest', focus:'Optional light activity',
+    restIcon:'☀️', restTitle:'Optional light day',
+    restBody:'This should not feel like a workout. Choose something enjoyable and easy. This day supports fat loss and recovery without interfering with your lifting.',
+    restOpts:['30–60 min walk','Light cycling','Stretching or mobility','Recreational activity','Full rest']
+  },
+  {
+    short:'Sun', label:'Rest', type:'rest', focus:'Full rest',
+    restIcon:'🌙', restTitle:'Full rest day',
+    restBody:'Take the day fully off. Rest is when your body actually adapts and grows. Especially early on, recovery is part of the plan — not a sign of laziness.',
+    restOpts:['Prioritize sleep (7–9 hours)','Drink plenty of water','Meal prep for the week','Light walk if you feel like it','Do absolutely nothing — that\'s fine too']
+  },
+];
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let activeDay = 0;
+let activePage = 'workout';
+let session = {};
+let openEx = {};
+let cardioState = {};
+
+function load(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch{return d;}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
+
+let history = load('gymHistory_v3',[]);
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function todayIdx(){const d=new Date().getDay();return d===0?6:d-1;}
+function initSession(i){
+  if(session[i]) return;
+  const day=DAYS[i];
+  if(day.type==='rest') return;
+  session[i]=day.exercises.map(ex=>({sets:Array.from({length:ex.sets},()=>({w:'',r:'',done:false}))}));
+}
+function calcProg(i){
+  if(!session[i]) return {done:0,total:0};
+  let done=0,total=0;
+  session[i].forEach(ex=>ex.sets.forEach(s=>{total++;if(s.done)done++;}));
+  if(cardioState[i]) done++;
+  const day=DAYS[i];
+  if(day.cardio) total++;
+  return {done,total};
+}
+function checkSVG(){return`<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.8"><polyline points="2,7 5.5,11 12,3"/></svg>`;}
+function chevSVG(open){return`<svg class="chev${open?' open':''}" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="2,5 7,9 12,5"/></svg>`;}
+
+// ─── PAGE SWITCH ─────────────────────────────────────────────────────────────
+function switchPage(name){
+  activePage=name;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.getElementById('btn-'+name).classList.add('active');
+  if(name==='history') renderHistory();
+  if(name==='guide') renderGuide();
+  if(name==='mindset') renderMindset();
+}
+
+// ─── TABS ────────────────────────────────────────────────────────────────────
+function renderTabs(){
+  const el=document.getElementById('day-tabs');
+  el.innerHTML=DAYS.map((d,i)=>{
+    let cls='dtab';
+    if(i===activeDay) cls+=d.type==='rest'?' active-rest':' active-'+d.type;
+    const click=d.type!=='rest'?`onclick="selectDay(${i})"`:'';
+    return`<div class="${cls}" ${click}><div class="ds">${d.short}</div><div class="dl">${d.label}</div></div>`;
+  }).join('');
+}
+
+// ─── WORKOUT PAGE ─────────────────────────────────────────────────────────────
+function renderWorkout(){
+  const day=DAYS[activeDay];
+  const main=document.getElementById('page-workout');
+  document.getElementById('date-chip').textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+
+  if(day.type==='rest'){
+    const opts=day.restOpts.map(o=>`<div class="rest-opt"><svg viewBox="0 0 10 10"><polyline points="1,5 4,8 9,2"/></svg>${o}</div>`).join('');
+    main.innerHTML=`<div class="rest-screen">
+      <div class="rest-icon-lg">${day.restIcon}</div>
+      <div class="rest-title">${day.restTitle}</div>
+      <div class="rest-body">${day.restBody}</div>
+      <div class="rest-opts"><div class="rest-opts-title">Good options today</div>${opts}</div>
+    </div>`;
+    return;
+  }
+
+  initSession(activeDay);
+  const {done,total}=calcProg(activeDay);
+  const pct=total>0?Math.round(done/total*100):0;
+  const allDone=done===total&&total>0;
+
+  let html='';
+
+  // Header
+  html+=`<div class="session-row">
+    <div>
+      <div class="session-day">${day.short} — ${day.label} body</div>
+      <div class="session-focus">${day.focus}</div>
+    </div>
+    <span class="type-badge badge-${day.type}">${day.type.toUpperCase()}</span>
+  </div>`;
+
+  // Progress
+  html+=`<div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="progress-label">${done}/${total}</div>
+  </div>`;
+
+  // Warmup
+  const wuItems=day.warmup.map(w=>`<div class="warmup-item"><svg viewBox="0 0 10 10"><polyline points="1,5 4,8 9,2"/></svg>${w}</div>`).join('');
+  html+=`<div class="warmup-card">
+    <div class="warmup-title"><svg viewBox="0 0 14 14"><path d="M7 1v3M7 10v3M1 7h3M10 7h3M3 3l2 2M9 9l2 2M3 11l2-2M9 5l2-2"/></svg>Warm-up first</div>
+    <div class="warmup-grid">${wuItems}</div>
+  </div>`;
+
+  if(allDone){
+    html+=`<div class="complete-banner"><svg viewBox="0 0 20 20"><polyline points="3,10 8,16 17,4"/></svg><p>Session complete! Great work — saved to history.</p></div>`;
+  }
+
+  // Exercises
+  html+=`<div class="section-divider">Exercises</div>`;
+
+  day.exercises.forEach((ex,ei)=>{
+    const exData=session[activeDay][ei];
+    const exDone=exData.sets.filter(s=>s.done).length;
+    const isComplete=exDone===ex.sets;
+    const isOpen=openEx[`${activeDay}-${ei}`]!==false;
+    const mistakeKey=`m-${activeDay}-${ei}`;
+
+    html+=`<div class="ex-card${isComplete?' ex-complete':''}">
+      <div class="ex-header" onclick="toggleEx(${activeDay},${ei})">
+        <div class="ex-circle${isComplete?' done':''}">${checkSVG()}</div>
+        <div class="ex-info">
+          <div class="ex-name">${ex.name}</div>
+          <div class="ex-muscles">${ex.muscles}</div>
+        </div>
+        <div class="ex-right">
+          <div class="ex-sets-ct">${exDone}/${ex.sets} sets</div>
+        </div>
+        ${chevSVG(isOpen)}
+      </div>`;
+
+    if(isOpen){
+      html+=`<div class="ex-body">
+        <div class="ex-tip">${ex.tip}</div>
+        <div class="ex-cue">${ex.cue}</div>
+        <span class="mistakes-toggle" onclick="toggleMistakes('${mistakeKey}',event)">Common mistakes ↓</span>
+        <div class="mistakes-box" id="${mistakeKey}">${ex.mistakes.split(' · ').map(m=>`• ${m}`).join('<br>')}</div>
+        <div class="target-label">Target: ${ex.target} · Rest: ${ex.rest}</div>
+        <div class="col-labels">
+          <div class="col-label"></div>
+          <div class="col-label">lbs</div>
+          <div class="col-label">reps</div>
+          <div class="col-label"></div>
+        </div>`;
+      exData.sets.forEach((s,si)=>{
+        html+=`<div class="set-row${s.done?' set-done':''}">
+          <div class="set-num">S${si+1}</div>
+          <input class="set-input" type="number" inputmode="decimal" min="0" placeholder="—" value="${s.w}" onchange="updateSet(${activeDay},${ei},${si},'w',this.value)" aria-label="Set ${si+1} weight"/>
+          <input class="set-input" type="number" inputmode="numeric" min="0" placeholder="—" value="${s.r}" onchange="updateSet(${activeDay},${ei},${si},'r',this.value)" aria-label="Set ${si+1} reps"/>
+          <div class="set-tick${s.done?' done':''}" onclick="tickSet(${activeDay},${ei},${si})">${checkSVG()}</div>
+        </div>`;
+      });
+      html+=`</div>`;
+    }
+    html+=`</div>`;
+  });
+
+  // Cardio
+  if(day.cardio){
+    const cdone=!!cardioState[activeDay];
+    html+=`<div class="section-divider">Cardio</div>
+    <div class="cardio-row">
+      <div class="cardio-info">
+        <div class="cardio-name">${day.cardio.name}</div>
+        <div class="cardio-desc">${day.cardio.desc}</div>
+      </div>
+      <div class="cardio-check${cdone?' done':''}" onclick="tickCardio(${activeDay})">${checkSVG()}</div>
+    </div>`;
+  }
+
+  html+=`<button class="finish-btn ${allDone?'done-state':'ready'}" onclick="finishSession()" ${allDone?'disabled':''}>
+    ${allDone?'✓ Session saved':'Finish & save session'}
+  </button>`;
+
+  main.innerHTML=html;
+}
+
+// ─── GUIDE PAGE ───────────────────────────────────────────────────────────────
+function renderGuide(){
+  const main=document.getElementById('page-guide');
+
+  const subMap={
+    'Chest press machine':['Dumbbell bench press','Push-up on bench','Pec deck','Smith machine press'],
+    'Seated row machine':['Cable row','Dumbbell row','Chest-supported row machine'],
+    'Lat pulldown':['Assisted pull-up machine','Cable pullover','Row machine'],
+    'Leg press':['Hack squat machine','Goblet squat','Smith machine squat','Step-ups'],
+  };
+
+  const subs=Object.entries(subMap).map(([k,v])=>`
+    <div class="sub-card">
+      <div class="sub-card-header" onclick="toggleSubCard(this)">
+        <div class="sub-card-title">If ${k} is taken…</div>
+        ${chevSVG(false)}
+      </div>
+      <div class="sub-card-body">
+        ${v.map(s=>`<div class="sub-item">${s}</div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  main.innerHTML=`
+  <div class="guide-section">
+    <div class="guide-section-title">How to choose your weight</div>
+    <div class="guide-card">
+      <div class="guide-card-title"><svg viewBox="0 0 14 14"><path d="M7 1v2M7 11v2M1 7h2M11 7h2M3 3l1.5 1.5M9.5 9.5l1.5 1.5M3 11l1.5-1.5M9.5 4.5l1.5-1.5"/></svg>The beginner weight test</div>
+      <p>Pick a weight and do 10 reps. Then ask yourself: Could I have done 3–4 more reps? Did I control every rep? Did I feel the right muscle? Did anything hurt?</p>
+      <br><p>If yes to all — that's your weight. If you barely survived 10 reps, go lighter. If it felt like nothing, go slightly heavier. Start lighter than your ego wants.</p>
+    </div>
+    <div class="guide-card">
+      <div class="guide-card-title"><svg viewBox="0 0 14 14"><polyline points="1,10 4,4 7,7 10,3 13,6"/></svg>Progression rule</div>
+      <div class="prog-steps">
+        <div class="prog-step"><div class="prog-step-num">1</div><p>Start with a weight you can do for 3 sets of 8 reps with good form.</p></div>
+        <div class="prog-step"><div class="prog-step-num">2</div><p>Each session, try to add 1–2 reps to your sets.</p></div>
+        <div class="prog-step"><div class="prog-step-num">3</div><p>When you can complete 3 sets of 12 reps cleanly — add weight next session.</p></div>
+        <div class="prog-step"><div class="prog-step-num">4</div><p>Increase by the smallest available increment (usually 5 lbs). Repeat.</p></div>
+      </div>
+      <p style="font-size:11px;color:var(--text-dim);margin-top:6px">This is called progressive overload — the foundation of all strength and muscle gain.</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">Rep speed & breathing</div>
+    <div class="guide-card">
+      <table class="rep-table">
+        <tr><td>Lifting phase</td><td>1–2 seconds. Controlled — don't throw it.</td></tr>
+        <tr><td>Pause</td><td>Brief hold at the peak position.</td></tr>
+        <tr><td>Lowering phase</td><td>2–3 seconds. This is where most gains happen.</td></tr>
+        <tr><td>Breathing</td><td>Exhale on the push or pull. Inhale on the return. Never hold your breath for a full set.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">Rest times</div>
+    <div class="guide-card">
+      <table class="rep-table">
+        <tr><td>Big machines / compound</td><td>90–120 seconds</td></tr>
+        <tr><td>Smaller / isolation</td><td>45–75 seconds</td></tr>
+        <tr><td>Core / cardio</td><td>As needed</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">Muscle groups explained</div>
+    <div class="muscles-grid">
+      <div class="muscle-group">
+        <div class="muscle-group-name">PUSH</div>
+        <div class="muscle-group-sub">Pushing away from body</div>
+        <div class="muscle-list">Chest<br>Shoulders<br>Triceps</div>
+      </div>
+      <div class="muscle-group">
+        <div class="muscle-group-name">PULL</div>
+        <div class="muscle-group-sub">Pulling toward body</div>
+        <div class="muscle-list">Back<br>Biceps<br>Rear shoulders</div>
+      </div>
+      <div class="muscle-group">
+        <div class="muscle-group-name">LOWER</div>
+        <div class="muscle-group-sub">Legs & hips</div>
+        <div class="muscle-list">Quads<br>Hamstrings<br>Glutes<br>Calves</div>
+      </div>
+      <div class="muscle-group">
+        <div class="muscle-group-name">CORE</div>
+        <div class="muscle-group-sub">Stability & posture</div>
+        <div class="muscle-list">Abs<br>Lower back<br>Obliques</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">When a machine is taken</div>
+    ${subs}
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">How long should workouts take?</div>
+    <div class="guide-card">
+      <table class="rep-table">
+        <tr><td>Warm-up</td><td>5–10 min</td></tr>
+        <tr><td>Lifting</td><td>35–50 min</td></tr>
+        <tr><td>Cardio (if included)</td><td>10–25 min</td></tr>
+        <tr><td>Total target</td><td>45–75 min</td></tr>
+      </table>
+      <p style="font-size:12px;color:var(--text-dim);margin-top:8px">If you're regularly going 90+ minutes, you're likely resting too long or doing too much. Keep it focused.</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">Nutrition basics</div>
+    <div class="guide-card">
+      <div class="guide-card-title"><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6"/><path d="M7 4v3l2 2"/></svg>Simple plate structure</div>
+      <ul>
+        <li>½ plate — vegetables or fruit</li>
+        <li>¼ plate — protein source</li>
+        <li>¼ plate — carbs (rice, potato, bread)</li>
+        <li>Add a small healthy fat source</li>
+      </ul>
+    </div>
+    <div class="guide-card">
+      <div class="guide-card-title"><svg viewBox="0 0 14 14"><path d="M7 1v2M7 11v2M1 7h2M11 7h2"/></svg>Good protein sources</div>
+      <ul>
+        <li>Chicken, turkey, lean beef</li>
+        <li>Eggs, Greek yogurt, cottage cheese</li>
+        <li>Fish and seafood</li>
+        <li>Protein shakes (as a supplement, not a meal)</li>
+        <li>Beans, lentils, tofu, tempeh</li>
+      </ul>
+      <p style="font-size:11px;color:var(--text-dim);margin-top:8px">Target: ~0.7–1g of protein per pound of bodyweight per day.</p>
+    </div>
+  </div>`;
+}
+
+// ─── MINDSET PAGE ─────────────────────────────────────────────────────────────
+function renderMindset(){
+  const main=document.getElementById('page-mindset');
+  const weeks=[
+    {w:'Weeks 1–2',t:'Use lighter weights. Learn the machines. Leave the gym feeling like you could have done more. This is intentional.'},
+    {w:'Weeks 3–4',t:'Start pushing a little harder. Add weight when you hit the top of the rep range consistently.'},
+    {w:'Week 5–8',t:'Begin taking some final sets closer to real effort. Strength gains become more noticeable. Stay patient.'},
+    {w:'After 8 weeks',t:'Reassess. Decide whether to shift toward more fat loss, strength, muscle gain, or athletic conditioning.'},
+  ];
+  const mistakes=[
+    'Training to failure every session','Doing random exercises instead of following a plan',
+    'Skipping leg days','Going too heavy before learning form','Changing the plan every week',
+    'Too much cardio, not enough strength','Comparing yourself to people who\'ve trained for years',
+    'Not resting enough','Not eating enough protein',
+  ];
+  const checklist=[
+    'Did I train the planned muscle groups?','Did I use controlled form on every rep?',
+    'Did I avoid sharp or joint pain?','Did I log my weights and reps?',
+    'Did I leave feeling like I could come back again?',
+  ];
+
+  main.innerHTML=`
+  <div class="guide-section">
+    <div class="guide-section-title">Your 8-week roadmap</div>
+    ${weeks.map(w=>`<div class="mindset-card">
+      <div class="mindset-q"><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6"/><line x1="7" y1="4" x2="7" y2="8"/><circle cx="7" cy="10" r="0.6" fill="currentColor"/></svg>${w.w}</div>
+      <div class="mindset-a">${w.t}</div>
+    </div>`).join('')}
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">How a good session should feel</div>
+    <div class="guide-card">
+      <ul>
+        <li>First 10 min: warming up, getting loose</li>
+        <li>Middle: focused, steady, mildly uncomfortable</li>
+        <li>Last few exercises: tired but still in control</li>
+        <li>After: proud and energized — not wrecked</li>
+        <li>Next day: maybe sore, but able to move normally</li>
+      </ul>
+      <p style="font-size:12px;color:var(--text-dim);margin-top:10px">If you dread going back because you're too sore, the workout was too aggressive. Dial it back.</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">Signs the plan is working</div>
+    <div class="guide-card">
+      <ul>
+        <li>You feel more confident walking into the gym</li>
+        <li>You know where machines are and what they do</li>
+        <li>You're adding reps or weight slowly over time</li>
+        <li>Your posture feels better</li>
+        <li>Energy and sleep improving</li>
+        <li>Clothes fitting differently</li>
+        <li>You feel capable instead of lost</li>
+      </ul>
+      <p style="font-size:12px;color:var(--text-dim);margin-top:10px">The first signs of progress are rarely dramatic visual changes. They're confidence, coordination, and strength.</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">Beginner mistakes to avoid</div>
+    <div class="guide-card">
+      <ul>
+        ${mistakes.map(m=>`<li>${m}</li>`).join('')}
+      </ul>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">End-of-session checklist</div>
+    <div class="guide-card">
+      ${checklist.map(c=>`<div class="checklist-item"><svg viewBox="0 0 12 12"><polyline points="1,6 4.5,10 11,2"/></svg><span>${c}</span></div>`).join('')}
+      <p style="font-size:11px;color:var(--text-dim);margin-top:10px">If you can say yes to all five — that was a successful workout, regardless of how the weight felt.</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">Your beginner mindset</div>
+    <div class="guide-card">
+      <ul>
+        <li>I am learning how to train, not testing my maximum</li>
+        <li>I am building the habit first</li>
+        <li>I am practicing form before adding weight</li>
+        <li>I am earning the right to train harder later</li>
+        <li>Consistency over weeks beats intensity in any single session</li>
+      </ul>
+    </div>
+  </div>`;
+}
+
+// ─── HISTORY PAGE ─────────────────────────────────────────────────────────────
+function renderHistory(){
+  const main=document.getElementById('page-history');
+  let html=`<div class="hist-page-title">Workout history</div>
+  <div class="hist-page-sub">Your logged sessions — most recent first</div>`;
+
+  if(history.length===0){
+    html+=`<div class="hist-section"><div class="hist-empty">No sessions logged yet.<br>Complete a workout and tap "Finish & save session."</div></div>`;
+  } else {
+    html+=`<div class="hist-section">`;
+    history.slice().reverse().slice(0,30).forEach(h=>{
+      html+=`<div class="hist-item">
+        <div class="hist-head">
+          <div class="hist-day-name">${h.day}</div>
+          <div class="hist-date">${h.date}</div>
+        </div>
+        <div class="hist-sets">${h.detail}</div>
+      </div>`;
+    });
+    html+=`</div>`;
+    html+=`<button class="hist-clear" onclick="clearHistory()">Clear all history</button>`;
+  }
+
+  main.innerHTML=html;
+}
+
+// ─── INTERACTIONS ─────────────────────────────────────────────────────────────
+function selectDay(i){activeDay=i;initSession(i);renderTabs();renderWorkout();}
+function toggleEx(dayIdx,ei){const k=`${dayIdx}-${ei}`;openEx[k]=openEx[k]===false?true:false;renderWorkout();}
+function toggleMistakes(id,e){e.stopPropagation();const el=document.getElementById(id);if(el){el.classList.toggle('open');}}
+function toggleSubCard(header){
+  const body=header.nextElementSibling;
+  const chev=header.querySelector('.chev');
+  body.classList.toggle('open');
+  if(chev) chev.classList.toggle('open');
+}
+function updateSet(dayIdx,ei,si,field,val){if(!session[dayIdx]) return;session[dayIdx][ei].sets[si][field]=val;}
+function tickSet(dayIdx,ei,si){if(!session[dayIdx]) return;session[dayIdx][ei].sets[si].done=!session[dayIdx][ei].sets[si].done;renderWorkout();}
+function tickCardio(dayIdx){cardioState[dayIdx]=!cardioState[dayIdx];renderWorkout();}
+
+function finishSession(){
+  const day=DAYS[activeDay];
+  if(!session[activeDay]) return;
+  session[activeDay].forEach(ex=>ex.sets.forEach(s=>s.done=true));
+  cardioState[activeDay]=true;
+  const detail=session[activeDay].map((ex,ei)=>{
+    const name=day.exercises[ei].name;
+    const sets=ex.sets.map((s,si)=>`S${si+1}: ${s.w||'?'}lb × ${s.r||'?'} reps`).join('  ');
+    return `${name}: ${sets}`;
+  }).join('\n');
+  history.push({
+    date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),
+    day:`${day.short} — ${day.label} body`,
+    detail
+  });
+  save('gymHistory_v3',history);
+  renderWorkout();
+}
+
+function clearHistory(){
+  if(confirm('Clear all workout history? This cannot be undone.')){
+    history=[];save('gymHistory_v3',[]);renderHistory();
+  }
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+activeDay=todayIdx();
+if(DAYS[activeDay].type==='rest') activeDay=DAYS.findIndex(d=>d.type!=='rest');
+initSession(activeDay);
+renderTabs();
+renderWorkout();
+</script>
+</body>
+</html>
