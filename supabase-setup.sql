@@ -13,7 +13,8 @@ create table if not exists workout_history (
   day         text not null,           -- e.g. "Mon — Upper body"
   day_idx     integer not null,        -- 0–6 index into the weekly DAYS array
   detail      text,                    -- multi-line log of sets/reps/effort
-  created_at  timestamptz default now()
+  created_at  timestamptz default now(),
+  unique (user_id, ts)                 -- ts is the deduplication key per user
 );
 
 -- Row Level Security: users can only access their own rows
