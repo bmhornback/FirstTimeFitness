@@ -9,6 +9,7 @@
 <meta name="theme-color" content="#0f0f0f">
 <title>Gym Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 :root{
   --bg:#0f0f0f;--surface:#1a1a1a;--surface2:#242424;--border:#2e2e2e;
@@ -199,6 +200,52 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .checklist-item:last-child{border-bottom:none}
 .checklist-item svg{width:12px;height:12px;stroke:var(--accent);fill:none;stroke-width:2.5;flex-shrink:0;margin-top:2px}
 .checklist-item span{font-size:12px;color:var(--text-muted);line-height:1.6}
+
+/* EFFORT SELECTOR */
+.effort-row{display:flex;align-items:center;gap:6px;margin-top:10px}
+.effort-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;flex-shrink:0}
+.effort-btn{flex:1;padding:5px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);font-size:11px;font-family:'DM Mono',monospace;color:var(--text-dim);cursor:pointer;text-align:center;transition:all 0.15s}
+.effort-btn.sel-easy{background:rgba(74,201,138,0.15);border-color:var(--success);color:var(--success)}
+.effort-btn.sel-medium{background:rgba(240,168,74,0.15);border-color:var(--warn);color:var(--warn)}
+.effort-btn.sel-hard{background:rgba(240,97,74,0.15);border-color:var(--danger);color:var(--danger)}
+
+/* NEXT EXERCISE HIGHLIGHT */
+.ex-card.ex-next{border-color:rgba(200,240,74,0.5);box-shadow:0 0 0 1px rgba(200,240,74,0.08)}
+
+/* PROGRESSION HINT */
+.prog-hint{font-size:10px;font-family:'DM Mono',monospace;padding:3px 7px;border-radius:99px;margin-top:3px;display:inline-flex;align-items:center;gap:4px}
+.prog-hint.inc{background:rgba(74,201,138,0.12);color:var(--success);border:1px solid rgba(74,201,138,0.25)}
+.prog-hint.rep{background:rgba(200,240,74,0.10);color:var(--accent);border:1px solid rgba(200,240,74,0.2)}
+
+/* WEEKLY STATS */
+.week-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.week-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center}
+.week-stat-val{font-size:20px;font-weight:600;color:var(--text);font-family:'DM Mono',monospace}
+.week-stat-lbl{font-size:10px;color:var(--text-dim);margin-top:2px;text-transform:uppercase;letter-spacing:0.04em}
+
+/* SESSION TIMER */
+.session-timer{font-size:11px;font-family:'DM Mono',monospace;color:var(--text-muted);padding:3px 8px;background:var(--surface2);border-radius:99px;border:1px solid var(--border);white-space:nowrap;flex-shrink:0}
+
+/* SYNC BADGE */
+.sync-badge{font-size:10px;font-family:'DM Mono',monospace;padding:3px 8px;border-radius:99px;background:rgba(74,201,138,0.12);color:var(--success);border:1px solid rgba(74,201,138,0.25);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.sync-badge.offline{background:rgba(136,136,136,0.08);color:var(--text-dim);border-color:var(--border)}
+
+/* AUTH OVERLAY */
+.auth-overlay{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-y:auto}
+.auth-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;width:100%;max-width:360px}
+.auth-logo{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--accent);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px}
+.auth-sub{font-size:12px;color:var(--text-muted);margin-bottom:20px;line-height:1.6}
+.auth-input{width:100%;padding:11px 12px;font-size:14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);font-family:'DM Sans',sans-serif;margin-bottom:10px;-webkit-appearance:none;appearance:none}
+.auth-input:focus{outline:none;border-color:var(--accent)}
+.auth-btn{width:100%;padding:12px;border-radius:var(--radius-sm);border:none;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-bottom:8px;transition:all 0.15s}
+.auth-btn.primary{background:var(--accent);color:var(--accent-text)}
+.auth-btn.secondary{background:transparent;color:var(--text-muted);border:1px solid var(--border)}
+.auth-btn:active{transform:scale(0.98)}
+.auth-divider{text-align:center;font-size:11px;color:var(--text-dim);margin:4px 0 8px}
+.auth-error{font-size:12px;color:var(--danger);margin-bottom:10px;padding:8px 10px;background:rgba(240,97,74,0.08);border-radius:var(--radius-sm);border:1px solid rgba(240,97,74,0.2);display:none}
+.auth-error.visible{display:block}
+.auth-msg{font-size:12px;color:var(--success);margin-bottom:10px;padding:8px 10px;background:var(--success-dim);border-radius:var(--radius-sm);border:1px solid rgba(74,201,138,0.3);display:none}
+.auth-msg.visible{display:block}
 </style>
 </head>
 <body>
@@ -206,7 +253,10 @@ body{display:flex;flex-direction:column;min-height:100vh}
 <header class="app-header">
   <div class="header-row">
     <div class="app-title">Gym Tracker</div>
-    <div class="date-chip" id="date-chip"></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="date-chip" id="date-chip"></div>
+      <div class="sync-badge offline" id="sync-badge" onclick="showAuthMenu()" title="Sync status">☁ offline</div>
+    </div>
   </div>
   <div class="day-tabs" id="day-tabs"></div>
 </header>
@@ -234,9 +284,214 @@ body{display:flex;flex-direction:column;min-height:100vh}
   </button>
 </nav>
 
+<div id="auth-overlay" style="display:none">
+  <div class="auth-overlay">
+    <div class="auth-card">
+      <div class="auth-logo">Gym Tracker</div>
+      <div class="auth-sub">Sign in to sync your workouts across devices and keep your history safe in the cloud.</div>
+      <div class="auth-error" id="auth-error"></div>
+      <div class="auth-msg" id="auth-msg"></div>
+      <input class="auth-input" type="email" id="auth-email" placeholder="Email address" autocomplete="email"/>
+      <input class="auth-input" type="password" id="auth-password" placeholder="Password (min 6 chars)" autocomplete="current-password"/>
+      <button class="auth-btn primary" onclick="authSignIn()">Sign in</button>
+      <div class="auth-divider">— or —</div>
+      <button class="auth-btn secondary" onclick="authSignUp()">Create account</button>
+      <div class="auth-divider"></div>
+      <button class="auth-btn secondary" onclick="authSkip()">Continue without account</button>
+    </div>
+  </div>
+</div>
+
 <div id="page-mindset" class="page"></div>
 
 <script>
+// ─── SUPABASE CONFIG ──────────────────────────────────────────────────────────
+// Replace these with your Supabase project URL and anon key.
+// Get them from: https://app.supabase.com → Project Settings → API
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+let sb = null;        // Supabase client
+let currentUser = null;
+
+function initSupabase() {
+  if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || !window.supabase) return;
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+// ─── AUTH ─────────────────────────────────────────────────────────────────────
+async function authSignIn() {
+  if (!sb) { showAuthError('Supabase not configured. See SUPABASE_URL in the source.'); return; }
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  showAuthError('');
+  if (!email || !password) { showAuthError('Please enter your email and password.'); return; }
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) { showAuthError(error.message); return; }
+  await onSignedIn(data.user);
+}
+
+async function authSignUp() {
+  if (!sb) { showAuthError('Supabase not configured. See SUPABASE_URL in the source.'); return; }
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  showAuthError('');
+  if (!email || !password) { showAuthError('Please enter your email and password.'); return; }
+  if (password.length < 6) { showAuthError('Password must be at least 6 characters.'); return; }
+  const { data, error } = await sb.auth.signUp({ email, password });
+  if (error) { showAuthError(error.message); return; }
+  if (data.user && !data.user.confirmed_at && !data.user.email_confirmed_at) {
+    showAuthMsg('Check your email to confirm your account, then sign in.');
+    return;
+  }
+  await onSignedIn(data.user);
+}
+
+function authSkip() {
+  document.getElementById('auth-overlay').style.display = 'none';
+  updateSyncBadge();
+}
+
+async function authSignOut() {
+  if (sb) await sb.auth.signOut();
+  currentUser = null;
+  updateSyncBadge();
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.toggle('visible', !!msg);
+}
+
+function showAuthMsg(msg) {
+  const el = document.getElementById('auth-msg');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.toggle('visible', !!msg);
+}
+
+function showAuthOverlay() {
+  showAuthError('');
+  showAuthMsg('');
+  document.getElementById('auth-overlay').style.display = 'block';
+}
+
+async function onSignedIn(user) {
+  currentUser = user;
+  document.getElementById('auth-overlay').style.display = 'none';
+  updateSyncBadge();
+  await loadFromSupabase();
+}
+
+function updateSyncBadge() {
+  const el = document.getElementById('sync-badge');
+  if (!el) return;
+  if (currentUser) {
+    el.textContent = '⟳ synced';
+    el.className = 'sync-badge';
+    el.title = currentUser.email + ' — tap to sign out';
+  } else {
+    el.textContent = '☁ offline';
+    el.className = 'sync-badge offline';
+    el.title = 'Not signed in — tap to sign in';
+  }
+}
+
+function showAuthMenu() {
+  if (currentUser) {
+    if (confirm('Signed in as ' + currentUser.email + '\n\nSign out?')) {
+      authSignOut();
+    }
+  } else {
+    showAuthOverlay();
+  }
+}
+
+// ─── SUPABASE SYNC ────────────────────────────────────────────────────────────
+async function syncHistoryEntryToCloud(entry) {
+  if (!sb || !currentUser) return;
+  try {
+    await sb.from('workout_history').insert({
+      user_id: currentUser.id,
+      date: entry.date,
+      ts: entry.ts,
+      day: entry.day,
+      day_idx: entry.dayIdx,
+      detail: entry.detail,
+    });
+  } catch (e) { console.warn('Supabase history sync failed:', e); }
+}
+
+async function syncProgToCloud() {
+  if (!sb || !currentUser) return;
+  try {
+    const rows = Object.entries(progData).map(([idx, data]) => ({
+      user_id: currentUser.id,
+      day_idx: parseInt(idx),
+      exercise_data: data,
+      updated_at: new Date().toISOString(),
+    }));
+    if (rows.length > 0) {
+      await sb.from('progression_data').upsert(rows, { onConflict: 'user_id,day_idx' });
+    }
+  } catch (e) { console.warn('Supabase prog sync failed:', e); }
+}
+
+async function loadFromSupabase() {
+  if (!sb || !currentUser) return;
+  try {
+    // Fetch cloud workout history
+    const { data: cloudHistory } = await sb
+      .from('workout_history')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .order('ts', { ascending: true });
+
+    if (cloudHistory) {
+      const cloudTs = new Set(cloudHistory.map(h => h.ts));
+      const localTs = new Set(history.map(h => h.ts));
+
+      // Merge cloud records into local
+      const newFromCloud = cloudHistory
+        .filter(h => !localTs.has(h.ts))
+        .map(h => ({ date: h.date, ts: h.ts, day: h.day, dayIdx: h.day_idx, detail: h.detail }));
+      if (newFromCloud.length > 0) {
+        history = [...history, ...newFromCloud].sort((a, b) => (a.ts || 0) - (b.ts || 0));
+        save('gymHistory_v3', history);
+      }
+
+      // Upload any local records not yet in cloud
+      for (const entry of history) {
+        if (!cloudTs.has(entry.ts)) await syncHistoryEntryToCloud(entry);
+      }
+    }
+
+    // Fetch cloud progression data
+    const { data: cloudProg } = await sb
+      .from('progression_data')
+      .select('*')
+      .eq('user_id', currentUser.id);
+    if (cloudProg && cloudProg.length > 0) {
+      cloudProg.forEach(row => { progData[row.day_idx] = row.exercise_data; });
+      save('gymProg_v1', progData);
+    } else {
+      await syncProgToCloud();
+    }
+  } catch (e) { console.warn('Supabase load failed:', e); }
+
+  if (activePage === 'history') renderHistory();
+  renderWorkout();
+}
+
+async function clearHistoryFromCloud() {
+  if (!sb || !currentUser) return;
+  try {
+    await sb.from('workout_history').delete().eq('user_id', currentUser.id);
+  } catch (e) { console.warn('Supabase clear history failed:', e); }
+}
+
 // ─── DATA ───────────────────────────────────────────────────────────────────
 
 const DAYS = [
@@ -344,7 +599,13 @@ const DAYS = [
     cardio:null
   },
   {
-    short:'Fri', label:'Lower', type:'lower', focus:'Glutes · Hamstrings · Core · Conditioning',
+    short:'Fri', label:'Rest', type:'rest', focus:'Active recovery',
+    restIcon:'🌿', restTitle:'Recovery day',
+    restBody:'Take today to recover. Your muscles grow during rest, not during the workout. Stay active but keep it easy.',
+    restOpts:['30–45 min walk','Light bike ride','Stretching or mobility work','Easy yoga','Full rest if very sore or tired']
+  },
+  {
+    short:'Sat', label:'Lower', type:'lower', focus:'Glutes · Hamstrings · Core · Conditioning',
     warmup:['5–10 min bike or elliptical','Hip hinges × 10','Glute bridges × 10 bodyweight','Lateral leg swings × 8 each','Light warm-up sets on first lift'],
     exercises:[
       {name:'Goblet squat or hack squat machine', muscles:'Quads, glutes, core', sets:3, target:'8–12 reps', rest:'90 sec',
@@ -375,12 +636,6 @@ const DAYS = [
     cardio:{name:'Incline treadmill walk', desc:'15–25 min · incline 4–8% · speed 2.5–3.2 mph'}
   },
   {
-    short:'Sat', label:'Light', type:'rest', focus:'Optional light activity',
-    restIcon:'☀️', restTitle:'Optional light day',
-    restBody:'This should not feel like a workout. Choose something enjoyable and easy. This day supports fat loss and recovery without interfering with your lifting.',
-    restOpts:['30–60 min walk','Light cycling','Stretching or mobility','Recreational activity','Full rest']
-  },
-  {
     short:'Sun', label:'Rest', type:'rest', focus:'Full rest',
     restIcon:'🌙', restTitle:'Full rest day',
     restBody:'Take the day fully off. Rest is when your body actually adapts and grows. Especially early on, recovery is part of the plan — not a sign of laziness.',
@@ -399,6 +654,21 @@ function load(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
 
 let history = load('gymHistory_v3',[]);
+let progData = load('gymProg_v1',{});
+
+// ─── SESSION TIMER ─────────────────────────────────────────────────────────────
+let timerStart = null;
+let timerInterval = null;
+function startTimer(){
+  if(timerStart) return;
+  timerStart = Date.now();
+  timerInterval = setInterval(()=>{
+    const el = document.getElementById('session-timer');
+    if(!el) return;
+    const s = Math.floor((Date.now()-timerStart)/1000);
+    el.textContent = Math.floor(s/60)+':'+(s%60<10?'0':'')+(s%60);
+  }, 1000);
+}
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 function todayIdx(){const d=new Date().getDay();return d===0?6:d-1;}
@@ -406,7 +676,14 @@ function initSession(i){
   if(session[i]) return;
   const day=DAYS[i];
   if(day.type==='rest') return;
-  session[i]=day.exercises.map(ex=>({sets:Array.from({length:ex.sets},()=>({w:'',r:'',done:false}))}));
+  session[i]=day.exercises.map(ex=>({effort:'',sets:Array.from({length:ex.sets},()=>({w:'',r:'',done:false}))}));
+}
+function parseTargetTop(target){
+  const m=target.match(/(\d+)[–\-](\d+)/);
+  if(m) return parseInt(m[2]);
+  const m2=target.match(/(\d+)\s*reps?/i);
+  if(m2) return parseInt(m2[1]);
+  return null;
 }
 function calcProg(i){
   if(!session[i]) return {done:0,total:0};
@@ -465,6 +742,12 @@ function renderWorkout(){
   const pct=total>0?Math.round(done/total*100):0;
   const allDone=done===total&&total>0;
 
+  // Find first incomplete exercise index for "next up" highlight
+  let nextExIdx=-1;
+  if(!allDone && session[activeDay]){
+    nextExIdx=session[activeDay].findIndex(ex=>ex.sets.some(s=>!s.done));
+  }
+
   let html='';
 
   // Header
@@ -476,10 +759,11 @@ function renderWorkout(){
     <span class="type-badge badge-${day.type}">${day.type.toUpperCase()}</span>
   </div>`;
 
-  // Progress
+  // Progress + timer
   html+=`<div class="progress-wrap">
     <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
     <div class="progress-label">${done}/${total}</div>
+    <span class="session-timer" id="session-timer">${timerStart?Math.floor((Date.now()-timerStart)/60000)+':'+(Math.floor((Date.now()-timerStart)/1000)%60<10?'0':'')+Math.floor((Date.now()-timerStart)/1000)%60:'0:00'}</span>
   </div>`;
 
   // Warmup
@@ -500,15 +784,28 @@ function renderWorkout(){
     const exData=session[activeDay][ei];
     const exDone=exData.sets.filter(s=>s.done).length;
     const isComplete=exDone===ex.sets;
+    const isNext=!isComplete&&ei===nextExIdx;
     const isOpen=openEx[`${activeDay}-${ei}`]!==false;
     const mistakeKey=`m-${activeDay}-${ei}`;
 
-    html+=`<div class="ex-card${isComplete?' ex-complete':''}">
+    // Progression hint from previous session
+    const prevEx=(progData[activeDay]||[])[ei];
+    let progHint='';
+    if(prevEx&&prevEx.weight!=null){
+      if(prevEx.hitTop){
+        progHint=`<span class="prog-hint inc">↑ Try ${prevEx.weight+5}lb today</span>`;
+      } else {
+        progHint=`<span class="prog-hint rep">↔ Repeat ${prevEx.weight}lb — build reps first</span>`;
+      }
+    }
+
+    html+=`<div class="ex-card${isComplete?' ex-complete':''}${isNext?' ex-next':''}">
       <div class="ex-header" onclick="toggleEx(${activeDay},${ei})">
         <div class="ex-circle${isComplete?' done':''}">${checkSVG()}</div>
         <div class="ex-info">
           <div class="ex-name">${ex.name}</div>
           <div class="ex-muscles">${ex.muscles}</div>
+          ${progHint}
         </div>
         <div class="ex-right">
           <div class="ex-sets-ct">${exDone}/${ex.sets} sets</div>
@@ -537,6 +834,11 @@ function renderWorkout(){
           <div class="set-tick${s.done?' done':''}" onclick="tickSet(${activeDay},${ei},${si})">${checkSVG()}</div>
         </div>`;
       });
+      // Effort selector
+      html+=`<div class="effort-row">
+        <span class="effort-label">Effort</span>
+        ${['easy','medium','hard'].map(e=>`<button class="effort-btn${exData.effort===e?' sel-'+e:''}" onclick="updateEffort(${activeDay},${ei},'${e}')">${e}</button>`).join('')}
+      </div>`;
       html+=`</div>`;
     }
     html+=`</div>`;
@@ -790,8 +1092,27 @@ function renderMindset(){
 // ─── HISTORY PAGE ─────────────────────────────────────────────────────────────
 function renderHistory(){
   const main=document.getElementById('page-history');
+
+  // Weekly stats
+  const trainingDayCount=DAYS.filter(d=>d.type!=='rest').length;
+  const now=new Date();
+  const weekStart=new Date(now);
+  weekStart.setDate(now.getDate()-((now.getDay()+6)%7)); // Monday
+  weekStart.setHours(0,0,0,0);
+  const weekSessions=history.filter(h=>{
+    if(h.ts) return h.ts>=weekStart.getTime();
+    const d=new Date(h.date);return d>=weekStart;
+  });
+  const weekPct=trainingDayCount>0?Math.round(weekSessions.length/trainingDayCount*100):0;
+  const totalSessions=history.length;
+
   let html=`<div class="hist-page-title">Workout history</div>
-  <div class="hist-page-sub">Your logged sessions — most recent first</div>`;
+  <div class="hist-page-sub">Your logged sessions — most recent first</div>
+  <div class="week-stats">
+    <div class="week-stat"><div class="week-stat-val">${weekSessions.length}/${trainingDayCount}</div><div class="week-stat-lbl">This week</div></div>
+    <div class="week-stat"><div class="week-stat-val">${weekPct}%</div><div class="week-stat-lbl">Consistency</div></div>
+    <div class="week-stat"><div class="week-stat-val">${totalSessions}</div><div class="week-stat-lbl">All time</div></div>
+  </div>`;
 
   if(history.length===0){
     html+=`<div class="hist-section"><div class="hist-empty">No sessions logged yet.<br>Complete a workout and tap "Finish & save session."</div></div>`;
@@ -824,31 +1145,56 @@ function toggleSubCard(header){
   if(chev) chev.classList.toggle('open');
 }
 function updateSet(dayIdx,ei,si,field,val){if(!session[dayIdx]) return;session[dayIdx][ei].sets[si][field]=val;}
-function tickSet(dayIdx,ei,si){if(!session[dayIdx]) return;session[dayIdx][ei].sets[si].done=!session[dayIdx][ei].sets[si].done;renderWorkout();}
+function tickSet(dayIdx,ei,si){if(!session[dayIdx]) return;session[dayIdx][ei].sets[si].done=!session[dayIdx][ei].sets[si].done;startTimer();renderWorkout();}
 function tickCardio(dayIdx){cardioState[dayIdx]=!cardioState[dayIdx];renderWorkout();}
+function updateEffort(dayIdx,ei,val){
+  if(!session[dayIdx]) return;
+  session[dayIdx][ei].effort=session[dayIdx][ei].effort===val?'':val;
+  renderWorkout();
+}
 
 function finishSession(){
   const day=DAYS[activeDay];
   if(!session[activeDay]) return;
   session[activeDay].forEach(ex=>ex.sets.forEach(s=>s.done=true));
   cardioState[activeDay]=true;
+
+  // Save progression data for each exercise
+  progData[activeDay]=session[activeDay].map((ex,ei)=>{
+    const exDef=day.exercises[ei];
+    const topRep=parseTargetTop(exDef.target);
+    const repsEntered=ex.sets.map(s=>parseInt(s.r)).filter(v=>!isNaN(v));
+    const hitTop=topRep&&repsEntered.length===ex.sets.length&&repsEntered.every(r=>r>=topRep);
+    const weights=ex.sets.map(s=>parseFloat(s.w)).filter(v=>!isNaN(v));
+    const avgW=weights.length?Math.round(weights.reduce((a,b)=>a+b,0)/weights.length):null;
+    return {name:exDef.name,weight:avgW,hitTop:!!hitTop&&repsEntered.length>0};
+  });
+  save('gymProg_v1',progData);
+
   const detail=session[activeDay].map((ex,ei)=>{
     const name=day.exercises[ei].name;
     const sets=ex.sets.map((s,si)=>`S${si+1}: ${s.w||'?'}lb × ${s.r||'?'} reps`).join('  ');
-    return `${name}: ${sets}`;
+    const effort=ex.effort?` [${ex.effort}]`:'';
+    return `${name}: ${sets}${effort}`;
   }).join('\n');
   history.push({
     date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),
+    ts:Date.now(),
     day:`${day.short} — ${day.label} body`,
+    dayIdx:activeDay,
     detail
   });
   save('gymHistory_v3',history);
+  syncHistoryEntryToCloud(history[history.length-1]);
+  syncProgToCloud();
+  timerStart=null;
+  if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
   renderWorkout();
 }
 
 function clearHistory(){
   if(confirm('Clear all workout history? This cannot be undone.')){
-    history=[];save('gymHistory_v3',[]);renderHistory();
+    history=[];save('gymHistory_v3',[]);clearHistoryFromCloud();renderHistory();
   }
 }
 
@@ -858,6 +1204,26 @@ if(DAYS[activeDay].type==='rest') activeDay=DAYS.findIndex(d=>d.type!=='rest');
 initSession(activeDay);
 renderTabs();
 renderWorkout();
+updateSyncBadge();
+
+// Restore Supabase session or show sign-in prompt
+initSupabase();
+if(sb){
+  sb.auth.getSession().then(({data:{session}})=>{
+    if(session){
+      currentUser=session.user;
+      updateSyncBadge();
+      loadFromSupabase();
+    } else {
+      showAuthOverlay();
+    }
+  });
+  // Keep currentUser in sync when auth state changes (e.g. token refresh, sign-out)
+  sb.auth.onAuthStateChange((_event, session)=>{
+    currentUser=session?session.user:null;
+    updateSyncBadge();
+  });
+}
 </script>
 </body>
 </html>
