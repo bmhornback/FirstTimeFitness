@@ -1,4 +1,4 @@
-# FirstTimeFitness — Development Roadmap
+# FirstTimeFitness — Development Plan
 
 This document outlines the vision for the project, what has already been built, and a structured plan for what comes next. The goal is to keep each phase focused and shippable — building on a solid foundation rather than adding complexity before it's earned.
 
@@ -26,13 +26,15 @@ FirstTimeFitness exists to make the gym accessible to people who feel like it wa
 - [x] Set logging — weight (lbs) + reps per set with tap-to-complete checkmarks
 - [x] Effort rating (Easy / Medium / Hard) per exercise
 - [x] Session timer — starts on first set tap
+- [x] Interval / HIIT timer — presets + custom rounds, warm-up/cooldown, cue options
 - [x] Progressive overload hints — suggests weight increase or rep-building on return visits
 - [x] Finish & save session — writes full session detail to `localStorage`
 - [x] History page — last 30 sessions, weekly consistency stats, all-time count
 - [x] Guide page — weight selection, rep speed, rest times, muscle groups, substitutions, nutrition
 - [x] Mindset page — 8-week phase expectations, signs of progress, beginner mistakes
 - [x] Mobile-first design — bottom nav, sticky header, iOS safe-area support
-- [x] Supabase auth and sync code written and in-app (activation requires credentials — see Phase 3)
+- [x] Supabase auth and sync flows wired in-app (activation requires credentials — see Phase 3)
+- [x] Documentation baseline updated (`README.md`, `DOCUMENTATION.md`, `ROADMAP.md`)
 
 ---
 
@@ -148,4 +150,4 @@ These principles guide every decision about what to build and how to build it:
 - Keep PRs focused — one feature or fix per PR
 - Test on mobile (iOS Safari and Android Chrome) before submitting
 - Follow the existing code style — no build tooling, no frameworks, no transpilation
-- Document new features in README.md and update this roadmap when phases are completed
+- Document new features in `README.md` + `DOCUMENTATION.md`, and update this plan when phases are completed

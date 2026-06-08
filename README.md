@@ -4,6 +4,13 @@
 
 ---
 
+## Documentation Index
+
+- [`DOCUMENTATION.md`](./DOCUMENTATION.md) — product + technical documentation
+- [`ROADMAP.md`](./ROADMAP.md) — development plan and phased priorities
+
+---
+
 ## What This Is
 
 FirstTimeFitness is a **mobile-first, single-file web app** that gives gym beginners exactly what they need to show up, train with purpose, and actually make progress.
@@ -33,6 +40,12 @@ The app runs entirely in your browser. No installation required. No account need
 - **Session timer** starts automatically when you begin logging sets
 - **Finish & save** button logs the full session with a detailed breakdown
 - **Interval / HIIT timer** with presets (Tabata/30:30/40:20/60:30), custom intervals, warm-up/cooldown phases, and cue options
+
+### ☁️ Optional Cloud Sync (Supabase)
+- Built-in sign in / sign up overlay with "continue without account"
+- Cloud sync status badge in the header (offline / syncing / synced)
+- Sync of workout history and progression data after session completion
+- Local-first behavior remains the default — cloud features are optional
 
 ### 📈 Progressive Overload Hints
 - After each session, the app calculates your average weight and whether you hit the top of your rep range
@@ -125,10 +138,11 @@ Drop the repository into Netlify or Vercel as a static site — no build command
 
 ```
 FirstTimeFitness/
+├── DOCUMENTATION.md      # Detailed product + technical documentation
 ├── gym-tracker.html      # The entire app — HTML, CSS, and JavaScript in one file
 ├── supabase-setup.sql    # Database schema for future cloud sync (see ROADMAP.md)
 ├── README.md             # You are here
-└── ROADMAP.md            # Development roadmap and structured feature plan
+└── ROADMAP.md            # Development plan and structured feature roadmap
 ```
 
 ---
