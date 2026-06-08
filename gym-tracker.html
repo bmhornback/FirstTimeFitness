@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0f0f0f">
 <title>Gym Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.107.0/dist/umd/supabase.js"></script>
 <style>
 :root{
   --bg:#0f0f0f;--surface:#1a1a1a;--surface2:#242424;--border:#2e2e2e;
@@ -315,7 +315,7 @@ let sb = null;        // Supabase client
 let currentUser = null;
 
 function initSupabase() {
-  if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || !window.supabase) return;
+  if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY' || !window.supabase) return;
   sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
@@ -413,7 +413,7 @@ function showAuthMenu() {
 async function syncHistoryEntryToCloud(entry) {
   if (!sb || !currentUser) return;
   try {
-    await sb.from('workout_history').insert({
+    const { error } = await sb.from('workout_history').insert({
       user_id: currentUser.id,
       date: entry.date,
       ts: entry.ts,
@@ -421,6 +421,7 @@ async function syncHistoryEntryToCloud(entry) {
       day_idx: entry.dayIdx,
       detail: entry.detail,
     });
+    if (error) console.warn('Supabase history sync failed:', error.message);
   } catch (e) { console.warn('Supabase history sync failed:', e); }
 }
 
@@ -434,7 +435,8 @@ async function syncProgToCloud() {
       updated_at: new Date().toISOString(),
     }));
     if (rows.length > 0) {
-      await sb.from('progression_data').upsert(rows, { onConflict: 'user_id,day_idx' });
+      const { error } = await sb.from('progression_data').upsert(rows, { onConflict: 'user_id,day_idx' });
+      if (error) console.warn('Supabase prog sync failed:', error.message);
     }
   } catch (e) { console.warn('Supabase prog sync failed:', e); }
 }
@@ -443,13 +445,15 @@ async function loadFromSupabase() {
   if (!sb || !currentUser) return;
   try {
     // Fetch cloud workout history
-    const { data: cloudHistory } = await sb
+    const { data: cloudHistory, error: historyError } = await sb
       .from('workout_history')
       .select('*')
       .eq('user_id', currentUser.id)
       .order('ts', { ascending: true });
 
-    if (cloudHistory) {
+    if (historyError) {
+      console.warn('Supabase history load failed:', historyError.message);
+    } else if (cloudHistory) {
       const cloudTs = new Set(cloudHistory.map(h => h.ts));
       const localTs = new Set(history.map(h => h.ts));
 
@@ -462,18 +466,21 @@ async function loadFromSupabase() {
         save('gymHistory_v3', history);
       }
 
-      // Upload any local records not yet in cloud
+      // Upload any local records not yet in cloud (skip legacy entries without a ts)
       for (const entry of history) {
+        if (entry.ts == null) continue;
         if (!cloudTs.has(entry.ts)) await syncHistoryEntryToCloud(entry);
       }
     }
 
     // Fetch cloud progression data
-    const { data: cloudProg } = await sb
+    const { data: cloudProg, error: progError } = await sb
       .from('progression_data')
       .select('*')
       .eq('user_id', currentUser.id);
-    if (cloudProg && cloudProg.length > 0) {
+    if (progError) {
+      console.warn('Supabase prog load failed:', progError.message);
+    } else if (cloudProg && cloudProg.length > 0) {
       cloudProg.forEach(row => { progData[row.day_idx] = row.exercise_data; });
       save('gymProg_v1', progData);
     } else {
@@ -488,7 +495,10 @@ async function loadFromSupabase() {
 async function clearHistoryFromCloud() {
   if (!sb || !currentUser) return;
   try {
-    await sb.from('workout_history').delete().eq('user_id', currentUser.id);
+    const { error: histError } = await sb.from('workout_history').delete().eq('user_id', currentUser.id);
+    if (histError) console.warn('Supabase clear history failed:', histError.message);
+    const { error: progError } = await sb.from('progression_data').delete().eq('user_id', currentUser.id);
+    if (progError) console.warn('Supabase clear progression failed:', progError.message);
   } catch (e) { console.warn('Supabase clear history failed:', e); }
 }
 
@@ -1194,7 +1204,9 @@ function finishSession(){
 
 function clearHistory(){
   if(confirm('Clear all workout history? This cannot be undone.')){
-    history=[];save('gymHistory_v3',[]);clearHistoryFromCloud();renderHistory();
+    history=[];save('gymHistory_v3',[]);
+    progData={};save('gymProg_v1',{});
+    clearHistoryFromCloud();renderHistory();
   }
 }
 
