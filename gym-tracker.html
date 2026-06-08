@@ -226,6 +226,32 @@ body{display:flex;flex-direction:column;min-height:100vh}
 /* SESSION TIMER */
 .session-timer{font-size:11px;font-family:'DM Mono',monospace;color:var(--text-muted);padding:3px 8px;background:var(--surface2);border-radius:99px;border:1px solid var(--border);white-space:nowrap;flex-shrink:0}
 
+/* HIIT TIMER */
+.hiit-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px}
+.hiit-presets{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:10px}
+.hiit-preset{padding:7px 9px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text-muted);font-size:11px;font-family:'DM Mono',monospace;display:flex;align-items:center;justify-content:space-between;gap:6px;cursor:pointer}
+.hiit-preset.active{border-color:rgba(200,240,74,0.45);background:var(--accent-dim);color:var(--accent)}
+.hiit-fav{font-size:12px;line-height:1;opacity:0.8;cursor:pointer}
+.hiit-fav.active{color:var(--warn);opacity:1}
+.hiit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
+.hiit-grid.two{grid-template-columns:repeat(2,1fr)}
+.hiit-field{display:flex;flex-direction:column;gap:4px}
+.hiit-field label{font-size:10px;font-family:'DM Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.05em}
+.hiit-field input{width:100%;padding:7px 6px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);font-size:12px;font-family:'DM Mono',monospace;text-align:center}
+.hiit-field input:focus{outline:none;border-color:var(--accent)}
+.hiit-options{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin:8px 0}
+.hiit-toggle{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);background:var(--surface2);border:1px solid var(--border);padding:6px 8px;border-radius:var(--radius-sm)}
+.hiit-toggle input{accent-color:var(--accent)}
+.hiit-status{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;margin:8px 0}
+.hiit-meta{font-size:10px;font-family:'DM Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.05em}
+.hiit-phase{font-size:13px;color:var(--text);font-weight:500;margin-top:3px}
+.hiit-round{font-size:11px;color:var(--text-muted);margin-top:2px}
+.hiit-countdown{font-size:30px;line-height:1;font-family:'DM Mono',monospace;color:var(--accent)}
+.hiit-cue{font-size:11px;color:var(--accent);min-height:16px;margin:6px 0 2px}
+.hiit-controls{display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px}
+.hiit-btn{padding:9px 8px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:11px;font-family:'DM Mono',monospace;cursor:pointer}
+.hiit-btn.primary{background:var(--accent);color:var(--accent-text);border-color:transparent}
+
 /* SYNC BADGE */
 .sync-badge{font-size:10px;font-family:'DM Mono',monospace;padding:3px 8px;border-radius:99px;background:rgba(74,201,138,0.12);color:var(--success);border:1px solid rgba(74,201,138,0.25);cursor:pointer;white-space:nowrap;flex-shrink:0}
 .sync-badge.offline{background:rgba(136,136,136,0.08);color:var(--text-dim);border-color:var(--border)}
@@ -666,6 +692,299 @@ function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
 let history = load('gymHistory_v3',[]);
 let progData = load('gymProg_v1',{});
 
+const HIIT_PRESETS = [
+  {id:'tabata',label:'20:10 Tabata',work:20,rest:10,rounds:8},
+  {id:'thirty',label:'30:30',work:30,rest:30,rounds:10},
+  {id:'forty',label:'40:20',work:40,rest:20,rounds:8},
+  {id:'sixty',label:'60:30',work:60,rest:30,rounds:6},
+];
+
+let hiitState = load('gymHiit_v1',{
+  selectedPreset:'tabata',
+  work:20,
+  rest:10,
+  rounds:8,
+  warmup:30,
+  cooldown:30,
+  autoStart:true,
+  soundCue:true,
+  vibrateCue:true,
+  voiceCue:false,
+  textCue:true,
+  favorites:{tabata:true}
+});
+
+let hiitTimer = {
+  phases:[],
+  phaseIndex:0,
+  remainingSec:0,
+  running:false,
+  awaiting:false,
+  interval:null,
+  phaseEndMs:0,
+  lastCue:'Ready to start'
+};
+let hiitAudioCtx = null;
+
+function clampInt(v,min,max,def){
+  const n = parseInt(v,10);
+  if(Number.isNaN(n)) return def;
+  return Math.min(max,Math.max(min,n));
+}
+function saveHiitState(){save('gymHiit_v1',hiitState);}
+function hiitConfig(){
+  return {
+    work:clampInt(hiitState.work,5,600,20),
+    rest:clampInt(hiitState.rest,0,600,10),
+    rounds:clampInt(hiitState.rounds,1,50,8),
+    warmup:clampInt(hiitState.warmup,0,600,30),
+    cooldown:clampInt(hiitState.cooldown,0,600,30),
+    autoStart:!!hiitState.autoStart
+  };
+}
+function formatSecs(total){
+  const s = Math.max(0,Math.floor(total||0));
+  const m = Math.floor(s/60);
+  const rs = s%60;
+  return m+':'+(rs<10?'0':'')+rs;
+}
+function currentHiitPhase(){return hiitTimer.phases[hiitTimer.phaseIndex]||null;}
+function hiitPhaseLabel(type){
+  if(type==='warmup') return 'Warm-up';
+  if(type==='work') return 'Work';
+  if(type==='rest') return 'Rest';
+  if(type==='cooldown') return 'Cooldown';
+  return 'Ready';
+}
+function buildHiitPhases(cfg){
+  const phases=[];
+  if(cfg.warmup>0) phases.push({type:'warmup',seconds:cfg.warmup,round:0,totalRounds:cfg.rounds});
+  for(let i=1;i<=cfg.rounds;i++){
+    phases.push({type:'work',seconds:cfg.work,round:i,totalRounds:cfg.rounds});
+    if(i<cfg.rounds&&cfg.rest>0) phases.push({type:'rest',seconds:cfg.rest,round:i,totalRounds:cfg.rounds});
+  }
+  if(cfg.cooldown>0) phases.push({type:'cooldown',seconds:cfg.cooldown,round:cfg.rounds,totalRounds:cfg.rounds});
+  return phases;
+}
+function playHiitBeep(){
+  try{
+    const AC = window.AudioContext||window.webkitAudioContext;
+    if(!AC) return;
+    if(!hiitAudioCtx) hiitAudioCtx = new AC();
+    const osc = hiitAudioCtx.createOscillator();
+    const gain = hiitAudioCtx.createGain();
+    osc.type='sine';
+    osc.frequency.value=820;
+    gain.gain.value=0.001;
+    osc.connect(gain);
+    gain.connect(hiitAudioCtx.destination);
+    const now = hiitAudioCtx.currentTime;
+    gain.gain.exponentialRampToValueAtTime(0.08, now+0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, now+0.18);
+    osc.start(now);
+    osc.stop(now+0.2);
+  }catch{}
+}
+function fireHiitCue(msg){
+  if(hiitState.soundCue) playHiitBeep();
+  if(hiitState.vibrateCue&&navigator.vibrate) navigator.vibrate([100,50,100]);
+  if(hiitState.voiceCue&&window.speechSynthesis){
+    try{
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(msg);
+      u.rate=1;
+      window.speechSynthesis.speak(u);
+    }catch{}
+  }
+  hiitTimer.lastCue = hiitState.textCue ? msg : '';
+}
+function clearHiitInterval(){
+  if(hiitTimer.interval){clearInterval(hiitTimer.interval);hiitTimer.interval=null;}
+}
+function startCurrentHiitPhase(withCue){
+  const phase=currentHiitPhase();
+  if(!phase) return;
+  if(withCue) fireHiitCue(hiitPhaseLabel(phase.type));
+  hiitTimer.running=true;
+  hiitTimer.awaiting=false;
+  hiitTimer.phaseEndMs=Date.now()+Math.max(1,hiitTimer.remainingSec)*1000;
+  clearHiitInterval();
+  hiitTimer.interval=setInterval(tickHiit,250);
+  tickHiit();
+}
+function advanceHiitPhase(){
+  clearHiitInterval();
+  hiitTimer.running=false;
+  hiitTimer.awaiting=false;
+  const next = hiitTimer.phaseIndex+1;
+  if(next>=hiitTimer.phases.length){
+    hiitTimer.remainingSec=0;
+    fireHiitCue('Complete');
+    hiitRefreshUI();
+    return;
+  }
+  hiitTimer.phaseIndex=next;
+  hiitTimer.remainingSec=currentHiitPhase().seconds;
+  if(hiitConfig().autoStart){
+    startCurrentHiitPhase(true);
+  }else{
+    hiitTimer.awaiting=true;
+    fireHiitCue('Next: '+hiitPhaseLabel(currentHiitPhase().type));
+    hiitRefreshUI();
+  }
+}
+function tickHiit(){
+  if(!hiitTimer.running) return;
+  const leftMs=hiitTimer.phaseEndMs-Date.now();
+  hiitTimer.remainingSec=Math.max(0,Math.ceil(leftMs/1000));
+  if(leftMs<=0){advanceHiitPhase();return;}
+  hiitRefreshUI();
+}
+function startHiit(){
+  if(hiitTimer.running) return;
+  if(hiitTimer.awaiting){startCurrentHiitPhase(false);return;}
+  const done = hiitTimer.phases.length>0&&!hiitTimer.running&&!hiitTimer.awaiting&&hiitTimer.remainingSec===0;
+  if(hiitTimer.phases.length===0||done){
+    hiitTimer.phases=buildHiitPhases(hiitConfig());
+    hiitTimer.phaseIndex=0;
+    if(!hiitTimer.phases.length){hiitRefreshUI();return;}
+    hiitTimer.remainingSec=hiitTimer.phases[0].seconds;
+  }
+  startCurrentHiitPhase(true);
+}
+function pauseHiit(){
+  if(!hiitTimer.running) return;
+  hiitTimer.remainingSec=Math.max(0,Math.ceil((hiitTimer.phaseEndMs-Date.now())/1000));
+  hiitTimer.running=false;
+  clearHiitInterval();
+  hiitRefreshUI();
+}
+function skipHiitPhase(){
+  if(!hiitTimer.phases.length) return;
+  advanceHiitPhase();
+}
+function resetHiit(){
+  clearHiitInterval();
+  hiitTimer={phases:[],phaseIndex:0,remainingSec:0,running:false,awaiting:false,interval:null,phaseEndMs:0,lastCue:'Ready to start'};
+  hiitRefreshUI();
+}
+function hiitStatusText(){
+  const done = hiitTimer.phases.length>0&&!hiitTimer.running&&!hiitTimer.awaiting&&hiitTimer.remainingSec===0;
+  if(hiitTimer.running) return 'Running';
+  if(hiitTimer.awaiting) return 'Ready for next';
+  if(done) return 'Complete';
+  if(hiitTimer.phases.length&&hiitTimer.remainingSec>0) return 'Paused';
+  return 'Ready';
+}
+function hiitRoundText(phase){
+  if(!phase) return 'Round —';
+  if(phase.type==='work'||phase.type==='rest') return `Round ${phase.round}/${phase.totalRounds}`;
+  if(phase.type==='warmup') return `Warm-up before ${phase.totalRounds} rounds`;
+  if(phase.type==='cooldown') return 'Cooldown';
+  return 'Round —';
+}
+function hiitRefreshUI(){
+  const phase=currentHiitPhase();
+  const elCountdown=document.getElementById('hiit-countdown');
+  const elPhase=document.getElementById('hiit-phase');
+  const elRound=document.getElementById('hiit-round');
+  const elStatus=document.getElementById('hiit-status');
+  const elCue=document.getElementById('hiit-cue');
+  const primary=document.getElementById('hiit-primary-btn');
+  if(elCountdown){
+    const fallback=hiitConfig().work;
+    const show=hiitTimer.phases.length?hiitTimer.remainingSec:fallback;
+    elCountdown.textContent=formatSecs(show);
+  }
+  if(elPhase) elPhase.textContent=phase?hiitPhaseLabel(phase.type):'Ready';
+  if(elRound) elRound.textContent=hiitRoundText(phase);
+  if(elStatus) elStatus.textContent=hiitStatusText();
+  if(elCue) elCue.textContent=hiitTimer.lastCue||'';
+  if(primary){
+    let txt='Start HIIT';
+    if(hiitTimer.running) txt='Pause';
+    else if(hiitTimer.awaiting) txt='Start next';
+    else if(hiitTimer.phases.length&&hiitTimer.remainingSec>0) txt='Resume';
+    primary.textContent=txt;
+  }
+}
+function hiitPrimaryAction(){
+  if(hiitTimer.running) pauseHiit();
+  else startHiit();
+}
+function setHiitPreset(id){
+  const p = HIIT_PRESETS.find(x=>x.id===id);
+  if(!p) return;
+  hiitState.selectedPreset=id;
+  hiitState.work=p.work;
+  hiitState.rest=p.rest;
+  hiitState.rounds=p.rounds;
+  saveHiitState();
+  resetHiit();
+  renderWorkout();
+}
+function toggleHiitFavorite(id,e){
+  if(e) e.stopPropagation();
+  hiitState.favorites=hiitState.favorites||{};
+  hiitState.favorites[id]=!hiitState.favorites[id];
+  saveHiitState();
+  renderWorkout();
+}
+function updateHiitField(field,val){
+  hiitState[field]=clampInt(val,field==='rounds'?1:0,field==='rounds'?50:600,hiitState[field]);
+  hiitState.selectedPreset='custom';
+  saveHiitState();
+  resetHiit();
+  renderWorkout();
+}
+function toggleHiitOption(field){
+  hiitState[field]=!hiitState[field];
+  saveHiitState();
+  renderWorkout();
+}
+function renderHiitCard(){
+  const cfg=hiitConfig();
+  const presets=HIIT_PRESETS.map(p=>{
+    const active=hiitState.selectedPreset===p.id?' active':'';
+    const fav=hiitState.favorites&&hiitState.favorites[p.id];
+    return `<button class="hiit-preset${active}" onclick="setHiitPreset('${p.id}')">${p.label}<span class="hiit-fav${fav?' active':''}" onclick="toggleHiitFavorite('${p.id}',event)">${fav?'★':'☆'}</span></button>`;
+  }).join('');
+  return `<div class="section-divider">Interval / HIIT Timer</div>
+  <div class="hiit-card">
+    <div class="hiit-presets">${presets}</div>
+    <div class="hiit-grid">
+      <div class="hiit-field"><label>Work sec</label><input type="number" min="5" max="600" value="${cfg.work}" onchange="updateHiitField('work',this.value)"/></div>
+      <div class="hiit-field"><label>Rest sec</label><input type="number" min="0" max="600" value="${cfg.rest}" onchange="updateHiitField('rest',this.value)"/></div>
+      <div class="hiit-field"><label>Rounds</label><input type="number" min="1" max="50" value="${cfg.rounds}" onchange="updateHiitField('rounds',this.value)"/></div>
+    </div>
+    <div class="hiit-grid two">
+      <div class="hiit-field"><label>Warm-up sec</label><input type="number" min="0" max="600" value="${cfg.warmup}" onchange="updateHiitField('warmup',this.value)"/></div>
+      <div class="hiit-field"><label>Cooldown sec</label><input type="number" min="0" max="600" value="${cfg.cooldown}" onchange="updateHiitField('cooldown',this.value)"/></div>
+    </div>
+    <div class="hiit-options">
+      <label class="hiit-toggle"><input type="checkbox" ${cfg.autoStart?'checked':''} onchange="toggleHiitOption('autoStart')"/>Auto-start</label>
+      <label class="hiit-toggle"><input type="checkbox" ${hiitState.soundCue?'checked':''} onchange="toggleHiitOption('soundCue')"/>Sound cue</label>
+      <label class="hiit-toggle"><input type="checkbox" ${hiitState.vibrateCue?'checked':''} onchange="toggleHiitOption('vibrateCue')"/>Vibrate cue</label>
+      <label class="hiit-toggle"><input type="checkbox" ${hiitState.voiceCue?'checked':''} onchange="toggleHiitOption('voiceCue')"/>Voice cue</label>
+      <label class="hiit-toggle"><input type="checkbox" ${hiitState.textCue?'checked':''} onchange="toggleHiitOption('textCue')"/>Text cue</label>
+    </div>
+    <div class="hiit-status">
+      <div>
+        <div class="hiit-meta" id="hiit-status">Ready</div>
+        <div class="hiit-phase" id="hiit-phase">Ready</div>
+        <div class="hiit-round" id="hiit-round">Round —</div>
+      </div>
+      <div class="hiit-countdown" id="hiit-countdown">0:00</div>
+    </div>
+    <div class="hiit-cue" id="hiit-cue"></div>
+    <div class="hiit-controls">
+      <button class="hiit-btn primary" id="hiit-primary-btn" onclick="hiitPrimaryAction()">Start HIIT</button>
+      <button class="hiit-btn" onclick="skipHiitPhase()">Skip</button>
+      <button class="hiit-btn" onclick="resetHiit()">Reset</button>
+    </div>
+  </div>`;
+}
+
 // ─── SESSION TIMER ─────────────────────────────────────────────────────────────
 let timerStart = null;
 let timerInterval = null;
@@ -743,7 +1062,8 @@ function renderWorkout(){
       <div class="rest-title">${day.restTitle}</div>
       <div class="rest-body">${day.restBody}</div>
       <div class="rest-opts"><div class="rest-opts-title">Good options today</div>${opts}</div>
-    </div>`;
+    </div>${renderHiitCard()}`;
+    hiitRefreshUI();
     return;
   }
 
@@ -775,6 +1095,8 @@ function renderWorkout(){
     <div class="progress-label">${done}/${total}</div>
     <span class="session-timer" id="session-timer">${timerStart?Math.floor((Date.now()-timerStart)/60000)+':'+(Math.floor((Date.now()-timerStart)/1000)%60<10?'0':'')+Math.floor((Date.now()-timerStart)/1000)%60:'0:00'}</span>
   </div>`;
+
+  html+=renderHiitCard();
 
   // Warmup
   const wuItems=day.warmup.map(w=>`<div class="warmup-item"><svg viewBox="0 0 10 10"><polyline points="1,5 4,8 9,2"/></svg>${w}</div>`).join('');
@@ -872,6 +1194,7 @@ function renderWorkout(){
   </button>`;
 
   main.innerHTML=html;
+  hiitRefreshUI();
 }
 
 // ─── GUIDE PAGE ───────────────────────────────────────────────────────────────
