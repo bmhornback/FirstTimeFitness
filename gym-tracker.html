@@ -9,6 +9,7 @@
 <meta name="theme-color" content="#0f0f0f">
 <title>Gym Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 :root{
   --bg:#0f0f0f;--surface:#1a1a1a;--surface2:#242424;--border:#2e2e2e;
@@ -224,6 +225,27 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
 /* SESSION TIMER */
 .session-timer{font-size:11px;font-family:'DM Mono',monospace;color:var(--text-muted);padding:3px 8px;background:var(--surface2);border-radius:99px;border:1px solid var(--border);white-space:nowrap;flex-shrink:0}
+
+/* SYNC BADGE */
+.sync-badge{font-size:10px;font-family:'DM Mono',monospace;padding:3px 8px;border-radius:99px;background:rgba(74,201,138,0.12);color:var(--success);border:1px solid rgba(74,201,138,0.25);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.sync-badge.offline{background:rgba(136,136,136,0.08);color:var(--text-dim);border-color:var(--border)}
+
+/* AUTH OVERLAY */
+.auth-overlay{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-y:auto}
+.auth-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;width:100%;max-width:360px}
+.auth-logo{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--accent);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px}
+.auth-sub{font-size:12px;color:var(--text-muted);margin-bottom:20px;line-height:1.6}
+.auth-input{width:100%;padding:11px 12px;font-size:14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);font-family:'DM Sans',sans-serif;margin-bottom:10px;-webkit-appearance:none;appearance:none}
+.auth-input:focus{outline:none;border-color:var(--accent)}
+.auth-btn{width:100%;padding:12px;border-radius:var(--radius-sm);border:none;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-bottom:8px;transition:all 0.15s}
+.auth-btn.primary{background:var(--accent);color:var(--accent-text)}
+.auth-btn.secondary{background:transparent;color:var(--text-muted);border:1px solid var(--border)}
+.auth-btn:active{transform:scale(0.98)}
+.auth-divider{text-align:center;font-size:11px;color:var(--text-dim);margin:4px 0 8px}
+.auth-error{font-size:12px;color:var(--danger);margin-bottom:10px;padding:8px 10px;background:rgba(240,97,74,0.08);border-radius:var(--radius-sm);border:1px solid rgba(240,97,74,0.2);display:none}
+.auth-error.visible{display:block}
+.auth-msg{font-size:12px;color:var(--success);margin-bottom:10px;padding:8px 10px;background:var(--success-dim);border-radius:var(--radius-sm);border:1px solid rgba(74,201,138,0.3);display:none}
+.auth-msg.visible{display:block}
 </style>
 </head>
 <body>
@@ -231,7 +253,10 @@ body{display:flex;flex-direction:column;min-height:100vh}
 <header class="app-header">
   <div class="header-row">
     <div class="app-title">Gym Tracker</div>
-    <div class="date-chip" id="date-chip"></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="date-chip" id="date-chip"></div>
+      <div class="sync-badge offline" id="sync-badge" onclick="showAuthMenu()" title="Sync status">☁ offline</div>
+    </div>
   </div>
   <div class="day-tabs" id="day-tabs"></div>
 </header>
@@ -259,9 +284,214 @@ body{display:flex;flex-direction:column;min-height:100vh}
   </button>
 </nav>
 
+<div id="auth-overlay" style="display:none">
+  <div class="auth-overlay">
+    <div class="auth-card">
+      <div class="auth-logo">Gym Tracker</div>
+      <div class="auth-sub">Sign in to sync your workouts across devices and keep your history safe in the cloud.</div>
+      <div class="auth-error" id="auth-error"></div>
+      <div class="auth-msg" id="auth-msg"></div>
+      <input class="auth-input" type="email" id="auth-email" placeholder="Email address" autocomplete="email"/>
+      <input class="auth-input" type="password" id="auth-password" placeholder="Password (min 6 chars)" autocomplete="current-password"/>
+      <button class="auth-btn primary" onclick="authSignIn()">Sign in</button>
+      <div class="auth-divider">— or —</div>
+      <button class="auth-btn secondary" onclick="authSignUp()">Create account</button>
+      <div class="auth-divider"></div>
+      <button class="auth-btn secondary" onclick="authSkip()">Continue without account</button>
+    </div>
+  </div>
+</div>
+
 <div id="page-mindset" class="page"></div>
 
 <script>
+// ─── SUPABASE CONFIG ──────────────────────────────────────────────────────────
+// Replace these with your Supabase project URL and anon key.
+// Get them from: https://app.supabase.com → Project Settings → API
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+let sb = null;        // Supabase client
+let currentUser = null;
+
+function initSupabase() {
+  if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || !window.supabase) return;
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+// ─── AUTH ─────────────────────────────────────────────────────────────────────
+async function authSignIn() {
+  if (!sb) { showAuthError('Supabase not configured. See SUPABASE_URL in the source.'); return; }
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  showAuthError('');
+  if (!email || !password) { showAuthError('Please enter your email and password.'); return; }
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) { showAuthError(error.message); return; }
+  await onSignedIn(data.user);
+}
+
+async function authSignUp() {
+  if (!sb) { showAuthError('Supabase not configured. See SUPABASE_URL in the source.'); return; }
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  showAuthError('');
+  if (!email || !password) { showAuthError('Please enter your email and password.'); return; }
+  if (password.length < 6) { showAuthError('Password must be at least 6 characters.'); return; }
+  const { data, error } = await sb.auth.signUp({ email, password });
+  if (error) { showAuthError(error.message); return; }
+  if (data.user && !data.user.confirmed_at && !data.user.email_confirmed_at) {
+    showAuthMsg('Check your email to confirm your account, then sign in.');
+    return;
+  }
+  await onSignedIn(data.user);
+}
+
+function authSkip() {
+  document.getElementById('auth-overlay').style.display = 'none';
+  updateSyncBadge();
+}
+
+async function authSignOut() {
+  if (sb) await sb.auth.signOut();
+  currentUser = null;
+  updateSyncBadge();
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.toggle('visible', !!msg);
+}
+
+function showAuthMsg(msg) {
+  const el = document.getElementById('auth-msg');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.toggle('visible', !!msg);
+}
+
+function showAuthOverlay() {
+  showAuthError('');
+  showAuthMsg('');
+  document.getElementById('auth-overlay').style.display = 'block';
+}
+
+async function onSignedIn(user) {
+  currentUser = user;
+  document.getElementById('auth-overlay').style.display = 'none';
+  updateSyncBadge();
+  await loadFromSupabase();
+}
+
+function updateSyncBadge() {
+  const el = document.getElementById('sync-badge');
+  if (!el) return;
+  if (currentUser) {
+    el.textContent = '⟳ synced';
+    el.className = 'sync-badge';
+    el.title = currentUser.email + ' — tap to sign out';
+  } else {
+    el.textContent = '☁ offline';
+    el.className = 'sync-badge offline';
+    el.title = 'Not signed in — tap to sign in';
+  }
+}
+
+function showAuthMenu() {
+  if (currentUser) {
+    if (confirm('Signed in as ' + currentUser.email + '\n\nSign out?')) {
+      authSignOut();
+    }
+  } else {
+    showAuthOverlay();
+  }
+}
+
+// ─── SUPABASE SYNC ────────────────────────────────────────────────────────────
+async function syncHistoryEntryToCloud(entry) {
+  if (!sb || !currentUser) return;
+  try {
+    await sb.from('workout_history').insert({
+      user_id: currentUser.id,
+      date: entry.date,
+      ts: entry.ts,
+      day: entry.day,
+      day_idx: entry.dayIdx,
+      detail: entry.detail,
+    });
+  } catch (e) { console.warn('Supabase history sync failed:', e); }
+}
+
+async function syncProgToCloud() {
+  if (!sb || !currentUser) return;
+  try {
+    const rows = Object.entries(progData).map(([idx, data]) => ({
+      user_id: currentUser.id,
+      day_idx: parseInt(idx),
+      exercise_data: data,
+      updated_at: new Date().toISOString(),
+    }));
+    if (rows.length > 0) {
+      await sb.from('progression_data').upsert(rows, { onConflict: 'user_id,day_idx' });
+    }
+  } catch (e) { console.warn('Supabase prog sync failed:', e); }
+}
+
+async function loadFromSupabase() {
+  if (!sb || !currentUser) return;
+  try {
+    // Fetch cloud workout history
+    const { data: cloudHistory } = await sb
+      .from('workout_history')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .order('ts', { ascending: true });
+
+    if (cloudHistory) {
+      const cloudTs = new Set(cloudHistory.map(h => h.ts));
+      const localTs = new Set(history.map(h => h.ts));
+
+      // Merge cloud records into local
+      const newFromCloud = cloudHistory
+        .filter(h => !localTs.has(h.ts))
+        .map(h => ({ date: h.date, ts: h.ts, day: h.day, dayIdx: h.day_idx, detail: h.detail }));
+      if (newFromCloud.length > 0) {
+        history = [...history, ...newFromCloud].sort((a, b) => (a.ts || 0) - (b.ts || 0));
+        save('gymHistory_v3', history);
+      }
+
+      // Upload any local records not yet in cloud
+      for (const entry of history) {
+        if (!cloudTs.has(entry.ts)) await syncHistoryEntryToCloud(entry);
+      }
+    }
+
+    // Fetch cloud progression data
+    const { data: cloudProg } = await sb
+      .from('progression_data')
+      .select('*')
+      .eq('user_id', currentUser.id);
+    if (cloudProg && cloudProg.length > 0) {
+      cloudProg.forEach(row => { progData[row.day_idx] = row.exercise_data; });
+      save('gymProg_v1', progData);
+    } else {
+      await syncProgToCloud();
+    }
+  } catch (e) { console.warn('Supabase load failed:', e); }
+
+  if (activePage === 'history') renderHistory();
+  renderWorkout();
+}
+
+async function clearHistoryFromCloud() {
+  if (!sb || !currentUser) return;
+  try {
+    await sb.from('workout_history').delete().eq('user_id', currentUser.id);
+  } catch (e) { console.warn('Supabase clear history failed:', e); }
+}
+
 // ─── DATA ───────────────────────────────────────────────────────────────────
 
 const DAYS = [
@@ -955,6 +1185,8 @@ function finishSession(){
     detail
   });
   save('gymHistory_v3',history);
+  syncHistoryEntryToCloud(history[history.length-1]);
+  syncProgToCloud();
   timerStart=null;
   if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
   renderWorkout();
@@ -962,7 +1194,7 @@ function finishSession(){
 
 function clearHistory(){
   if(confirm('Clear all workout history? This cannot be undone.')){
-    history=[];save('gymHistory_v3',[]);renderHistory();
+    history=[];save('gymHistory_v3',[]);clearHistoryFromCloud();renderHistory();
   }
 }
 
@@ -972,6 +1204,26 @@ if(DAYS[activeDay].type==='rest') activeDay=DAYS.findIndex(d=>d.type!=='rest');
 initSession(activeDay);
 renderTabs();
 renderWorkout();
+updateSyncBadge();
+
+// Restore Supabase session or show sign-in prompt
+initSupabase();
+if(sb){
+  sb.auth.getSession().then(({data:{session}})=>{
+    if(session){
+      currentUser=session.user;
+      updateSyncBadge();
+      loadFromSupabase();
+    } else {
+      showAuthOverlay();
+    }
+  });
+  // Keep currentUser in sync when auth state changes (e.g. token refresh, sign-out)
+  sb.auth.onAuthStateChange((_event, session)=>{
+    currentUser=session?session.user:null;
+    updateSyncBadge();
+  });
+}
 </script>
 </body>
 </html>
