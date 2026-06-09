@@ -64,12 +64,39 @@ Then open a URL like `http://YOUR-COMPUTER-IP:8000/gym-tracker.html` on your pho
 
 ## Optional: Add a Home Screen Shortcut
 
-The app is not a native mobile app or full installable PWA yet, but you can save a shortcut on your device:
+The app is not a native mobile app or full installable PWA yet, but you can still place it on your phone's home screen for quick access.
 
-- **iPhone / iPad (Safari):** Share → **Add to Home Screen**
-- **Android (Chrome):** Browser menu → **Add to Home screen**
+Before adding it, make sure you are on the final hosted app URL:
 
-This creates a quick-launch shortcut to the hosted app in your mobile browser.
+- GitHub Pages: `https://bmhornback.github.io/FirstTimeFitness/gym-tracker.html`
+- Netlify / Vercel: your deployed `gym-tracker.html` page URL
+
+### iPhone / iPad (Safari)
+
+1. Open the hosted app in **Safari**
+2. Wait until the page finishes loading
+3. Tap the **Share** button at the bottom of the screen
+4. Scroll down in the Share menu and tap **Add to Home Screen**
+5. Review the name shown for the shortcut and change it if you want
+6. Tap **Add**
+7. Find the new shortcut on your home screen and tap it to reopen the app quickly
+
+### Android (Chrome)
+
+1. Open the hosted app in **Chrome**
+2. Wait until the page finishes loading
+3. Tap the **three-dot menu** in the top-right corner
+4. Tap **Add to Home screen**
+5. Review the shortcut name and change it if you want
+6. Tap **Add** and confirm the placement when Android prompts you
+7. Find the new shortcut on your home screen and tap it to reopen the app quickly
+
+### What to expect
+
+- This creates a browser shortcut, not a full native app install
+- The shortcut opens the hosted web app directly from your home screen
+- Because the project does not yet include a dedicated mobile app icon or full PWA install support, the icon style may vary by device and browser
+- If you later change hosting providers or URLs, remove the old shortcut and add a new one from the updated page
 
 ---
 
