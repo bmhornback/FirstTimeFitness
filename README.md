@@ -6,6 +6,7 @@
 
 ## Documentation Index
 
+- [`INSTALLATION.md`](./INSTALLATION.md) — setup, browser requirements, and mobile access instructions
 - [`DOCUMENTATION.md`](./DOCUMENTATION.md) — product + technical documentation
 - [`ROADMAP.md`](./ROADMAP.md) — development plan and phased priorities
 
@@ -95,6 +96,25 @@ The entire app is a **single `.html` file**. Open it in a browser and it works.
 
 ---
 
+## System / Browser Prerequisites
+
+Before opening the app, make sure you have:
+
+- A phone, tablet, or computer with a modern browser
+- JavaScript enabled in the browser
+- `localStorage` available so workout history can save on-device
+- An internet connection for the first time you load a hosted copy of the app
+
+Recommended browsers:
+
+- **iPhone / iPad:** Safari (current iOS/iPadOS release)
+- **Android:** Chrome (current Android release)
+- **Desktop:** Current Chrome, Edge, Firefox, or Safari
+
+For full setup and mobile access guidance, see [`INSTALLATION.md`](./INSTALLATION.md).
+
+---
+
 ## Getting Started
 
 ### Run Locally
@@ -119,6 +139,16 @@ npx serve .
 ### Deploy to Netlify / Vercel
 Drop the repository into Netlify or Vercel as a static site — no build command needed.
 
+### Access on a Mobile Browser
+
+If you want to use the app on your phone, open a hosted copy in your mobile browser:
+
+1. **Use GitHub Pages** by following the deploy steps above, then open `https://bmhornback.github.io/FirstTimeFitness/gym-tracker.html` on your phone
+2. **Or deploy to Netlify / Vercel** and open the generated site URL in Safari or Chrome on your phone
+3. **Optional:** Use your browser's **Add to Home Screen** action to save a shortcut for faster access
+
+This project is not packaged as a native iOS or Android app yet, so mobile access currently happens through the browser.
+
 ---
 
 ## How to Use the App
@@ -138,6 +168,7 @@ Drop the repository into Netlify or Vercel as a static site — no build command
 
 ```
 FirstTimeFitness/
+├── INSTALLATION.md       # Setup, browser requirements, and mobile access instructions
 ├── DOCUMENTATION.md      # Detailed product + technical documentation
 ├── gym-tracker.html      # The entire app — HTML, CSS, and JavaScript in one file
 ├── supabase-setup.sql    # Database schema for future cloud sync (see ROADMAP.md)
