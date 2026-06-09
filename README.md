@@ -145,7 +145,7 @@ If you want to use the app on your phone, open a hosted copy in your mobile brow
 
 1. **Use GitHub Pages** by following the deploy steps above, then open `https://bmhornback.github.io/FirstTimeFitness/gym-tracker.html` on your phone
 2. **Or deploy to Netlify / Vercel** and open the generated site URL in Safari or Chrome on your phone
-3. **Optional:** Use your browser's **Add to Home Screen** action to save a shortcut for faster access
+3. **Optional:** Use your browser's **Add to Home Screen** action to save a shortcut for faster access, or follow the detailed steps in [`INSTALLATION.md`](./INSTALLATION.md#optional-add-a-home-screen-shortcut)
 
 This project is not packaged as a native iOS or Android app yet, so mobile access currently happens through the browser.
 
