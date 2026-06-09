@@ -102,7 +102,7 @@ Before opening the app, make sure you have:
 
 - A phone, tablet, or computer with a modern browser
 - JavaScript enabled in the browser
-- `localStorage` available so workout history can save on-device
+- `localStorage` available so workout history can be saved on-device
 - An internet connection for the first time you load a hosted copy of the app
 
 Recommended browsers:
