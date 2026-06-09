@@ -92,10 +92,12 @@ No build command is required.
 
 When features change:
 1. Update feature summaries in `README.md`
-2. Update implementation/state details in `DOCUMENTATION.md`
-3. Update phase status and next priorities in `ROADMAP.md`
+2. Update setup, browser, and access guidance in `INSTALLATION.md` when access requirements change
+3. Update implementation/state details in `DOCUMENTATION.md`
+4. Update phase status and next priorities in `ROADMAP.md`
 
-Keep all three files aligned so contributors can quickly see:
+Keep all four files aligned so contributors can quickly see:
 - what exists now,
+- how to access it,
 - how it works,
 - what comes next.
