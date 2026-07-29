@@ -1,5 +1,7 @@
 # FirstTimeFitness
 
+[![Version](https://img.shields.io/badge/version-v1.2.0-brightgreen)](./CHANGELOG.md)
+
 > A guided fitness app for people who are new to the gym — built to remove the confusion, anxiety, and guesswork that stops most beginners before they ever get started.
 
 ---
@@ -9,6 +11,7 @@
 - [`INSTALLATION.md`](./INSTALLATION.md) — setup, browser requirements, and mobile access instructions
 - [`DOCUMENTATION.md`](./DOCUMENTATION.md) — product + technical documentation
 - [`ROADMAP.md`](./ROADMAP.md) — development plan and phased priorities
+- [`CHANGELOG.md`](./CHANGELOG.md) — version history and release notes
 
 ---
 
@@ -35,7 +38,7 @@ The app runs entirely in your browser. No installation required. No account need
 
 ### 🏋️ Guided Workout Tracker
 - **7-day weekly plan** — Upper body (Mon/Thu), Lower body (Tue/Sat), Active recovery (Wed/Fri), Full rest (Sun)
-- **Exercise cards** for every movement with form tips, coaching cues, and common mistakes
+- **Exercise cards** for every movement with form tips, coaching cues, common mistakes, and dataset-based swap ideas
 - **Set logging** — track weight (lbs) and reps for each set with a simple tap-to-complete interface
 - **Effort rating** per exercise — Easy / Medium / Hard
 - **Session timer** starts automatically when you begin logging sets
@@ -57,7 +60,7 @@ The app runs entirely in your browser. No installation required. No account need
 - How to choose your starting weight (the beginner weight test)
 - Rep speed, breathing, and rest time tables
 - Muscle group explanations (push, pull, lower, core)
-- Substitution suggestions when a machine is taken
+- Curated dataset-based substitution suggestions when a machine is taken
 - Workout duration guidelines
 - Simple nutrition and protein intake reference
 
@@ -168,12 +171,14 @@ This project is not packaged as a native iOS or Android app yet, so mobile acces
 
 ```
 FirstTimeFitness/
-├── INSTALLATION.md       # Setup, browser requirements, and mobile access instructions
+├── CHANGELOG.md          # Version history and release notes
 ├── DOCUMENTATION.md      # Detailed product + technical documentation
-├── gym-tracker.html      # The entire app — HTML, CSS, and JavaScript in one file
-├── supabase-setup.sql    # Database schema for future cloud sync (see ROADMAP.md)
+├── INSTALLATION.md       # Setup, browser requirements, and mobile access instructions
 ├── README.md             # You are here
-└── ROADMAP.md            # Development plan and structured feature roadmap
+├── ROADMAP.md            # Development plan and structured feature roadmap
+├── VERSION               # Current version number (drives auto-release on push to main)
+├── gym-tracker.html      # The entire app — HTML, CSS, and JavaScript in one file
+└── supabase-setup.sql    # Database schema for future cloud sync (see ROADMAP.md)
 ```
 
 ---
@@ -187,6 +192,18 @@ See [`ROADMAP.md`](./ROADMAP.md) for the full development plan, including planne
 ## Contributing
 
 This project is in active early development. If you have ideas, feature requests, or bug reports, open an issue. The goal is to keep the app focused on beginners — every feature should serve someone who is new to the gym and overwhelmed.
+
+### Releasing a New Version
+
+1. Decide on the version bump using [Semantic Versioning](https://semver.org/): `MAJOR.MINOR.PATCH`
+   - `PATCH` — bug fixes and small corrections (e.g. `1.1.1`)
+   - `MINOR` — new features that are backward-compatible (e.g. `1.2.0`)
+   - `MAJOR` — breaking changes or major rewrites (e.g. `2.0.0`)
+2. Update the `VERSION` file with the new version number
+3. In `CHANGELOG.md`, move the items from `## [Unreleased]` into a new `## [X.Y.Z] — YYYY-MM-DD` section directly below it (where `X.Y.Z` matches the `VERSION` file), then clear `## [Unreleased]` so it stays in place for future changes
+4. Update the version comment at the top of `gym-tracker.html`
+5. Update the version badge in `README.md`
+6. Open a PR — when it merges to `main`, the auto-release workflow tags the commit and creates a GitHub Release automatically
 
 ---
 

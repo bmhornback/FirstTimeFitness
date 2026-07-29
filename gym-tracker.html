@@ -1,3 +1,4 @@
+<!-- FirstTimeFitness v1.2.0 — https://github.com/bmhornback/FirstTimeFitness/blob/main/CHANGELOG.md -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -67,6 +68,14 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .warmup-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .warmup-item{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:5px}
 .warmup-item svg{width:10px;height:10px;stroke:var(--accent);fill:none;stroke-width:2.5;flex-shrink:0}
+
+/* COOL DOWN CARD */
+.cooldown-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px}
+.cooldown-title{font-size:11px;font-family:'DM Mono',monospace;color:var(--success);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.cooldown-title svg{width:13px;height:13px;stroke:var(--success);fill:none;stroke-width:2}
+.cooldown-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.cooldown-item{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:5px}
+.cooldown-item svg{width:10px;height:10px;stroke:var(--success);fill:none;stroke-width:2.5;flex-shrink:0}
 
 /* PROGRESS */
 .progress-wrap{display:flex;align-items:center;gap:10px;margin-bottom:14px}
@@ -176,6 +185,15 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .sub-card-body.open{display:block}
 .sub-item{font-size:12px;color:var(--text-muted);padding:3px 0;display:flex;align-items:flex-start;gap:6px;line-height:1.6}
 .sub-item::before{content:'↳';color:var(--text-dim);flex-shrink:0}
+.alt-card{margin-top:10px}
+.alt-source{font-size:10px;color:var(--text-dim);margin-top:3px;line-height:1.5}
+.alt-source a,.alt-footnote a{color:var(--accent);text-decoration:none}
+.alt-list{display:grid;gap:8px}
+.alt-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 10px}
+.alt-item-name{font-size:12px;font-weight:500;color:var(--text)}
+.alt-item-meta{font-size:10px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.04em;margin-top:4px}
+.alt-item-note{font-size:11px;color:var(--text-muted);line-height:1.6;margin-top:5px}
+.alt-footnote{font-size:10px;color:var(--text-dim);line-height:1.6;margin-top:8px}
 
 /* HISTORY PAGE */
 .hist-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px}
@@ -560,7 +578,8 @@ const DAYS = [
        cue:'Lift with your biceps, not your hips.',
        mistakes:'Rocking body backward · Letting elbows drift forward · Going too heavy · Dropping the weight quickly'},
     ],
-    cardio:{name:'Optional treadmill walk', desc:'10–15 min · easy pace · cool down'}
+    cardio:{name:'Optional treadmill walk', desc:'10–15 min · easy pace · cool down'},
+    cooldown:['Chest doorway stretch · 30 sec each','Lat overhead stretch · 20 sec each','Rear delt cross-body pull · 20 sec each','Triceps overhead stretch · 20 sec each','Neck side tilt · 20 sec each']
   },
   {
     short:'Tue', label:'Lower', type:'lower', focus:'Quads · Glutes · Hamstrings · Calves · Core',
@@ -591,7 +610,8 @@ const DAYS = [
        cue:'Make your body a straight, stiff board.',
        mistakes:'Hips sagging · Hips too high · Holding your breath · Neck craned upward'},
     ],
-    cardio:{name:'Easy bike or walk', desc:'10 min · active recovery cooldown'}
+    cardio:{name:'Easy bike or walk', desc:'10 min · active recovery cooldown'},
+    cooldown:['Hip flexor lunge stretch · 30 sec each','Standing quad stretch · 20 sec each','Seated hamstring stretch · 30 sec each','Figure-4 glute stretch · 30 sec each','Adductor butterfly stretch · 30 sec','Calf wall stretch · 20 sec each']
   },
   {
     short:'Wed', label:'Rest', type:'rest', focus:'Active recovery',
@@ -632,7 +652,8 @@ const DAYS = [
        cue:'Ribs to hips — curl, don\'t yank.',
        mistakes:'Using arm strength · Going too heavy · Rushing reps · Not feeling abs work'},
     ],
-    cardio:null
+    cardio:null,
+    cooldown:['Chest doorway stretch · 30 sec each','Lat overhead stretch · 20 sec each','Rear delt cross-body pull · 20 sec each','Triceps overhead stretch · 20 sec each','Neck side tilt · 20 sec each']
   },
   {
     short:'Fri', label:'Rest', type:'rest', focus:'Active recovery',
@@ -669,7 +690,8 @@ const DAYS = [
        cue:'Walk like you\'re trying to look taller.',
        mistakes:'Leaning side to side · Shoulders shrugged to ears · Walking too fast · Weights too heavy for posture'},
     ],
-    cardio:{name:'Incline treadmill walk', desc:'15–25 min · incline 4–8% · speed 2.5–3.2 mph'}
+    cardio:{name:'Incline treadmill walk', desc:'15–25 min · incline 4–8% · speed 2.5–3.2 mph'},
+    cooldown:['Hip flexor lunge stretch · 30 sec each','Standing quad stretch · 20 sec each','Seated hamstring stretch · 30 sec each','Figure-4 glute stretch · 30 sec each','Adductor butterfly stretch · 30 sec','Calf wall stretch · 20 sec each']
   },
   {
     short:'Sun', label:'Rest', type:'rest', focus:'Full rest',
@@ -677,6 +699,231 @@ const DAYS = [
     restBody:'Take the day fully off. Rest is when your body actually adapts and grows. Especially early on, recovery is part of the plan — not a sign of laziness.',
     restOpts:['Prioritize sleep (7–9 hours)','Drink plenty of water','Meal prep for the week','Light walk if you feel like it','Do absolutely nothing — that\'s fine too']
   },
+];
+
+const DATASET_SOURCE_URL = 'https://github.com/hasaneyldrm/exercises-dataset';
+const DATASET_ALTERNATIVE_GROUPS = {
+  chestPress:{
+    title:'Chest press swaps',
+    focus:'Chest · triceps',
+    options:[
+      {name:'Dumbbell bench press', equipment:'Dumbbell', target:'Pectorals', note:'Lie flat on a bench with your feet flat on the ground and your back pressed against the bench.'},
+      {name:'Cable seated chest press', equipment:'Cable', target:'Pectorals', note:'Adjust the seat height and cable handles to a comfortable position.'},
+      {name:'Chest tap push-up', equipment:'Body weight', target:'Pectorals', note:'Start in a high plank position with your hands slightly wider than shoulder-width apart and your body in a straight line.'},
+    ]
+  },
+  inclineChest:{
+    title:'Incline chest swaps',
+    focus:'Upper chest · shoulders · triceps',
+    options:[
+      {name:'Dumbbell incline bench press', equipment:'Dumbbell', target:'Pectorals', note:'Set up an incline bench at a 45-degree angle.'},
+      {name:'Cable one arm incline press', equipment:'Cable', target:'Pectorals', note:'Adjust the cable machine to a low pulley position.'},
+      {name:'Dumbbell incline fly', equipment:'Dumbbell', target:'Pectorals', note:'Set an incline bench to a 45-degree angle.'},
+    ]
+  },
+  horizontalPull:{
+    title:'Row / horizontal pull swaps',
+    focus:'Upper back · biceps',
+    options:[
+      {name:'Cable low seated row', equipment:'Cable', target:'Upper back', note:'Sit on the machine with your feet flat on the footrests and your knees slightly bent.'},
+      {name:'Barbell bent over row', equipment:'Barbell', target:'Upper back', note:'Stand with your feet shoulder-width apart and knees slightly bent.'},
+      {name:'Standing towel row', equipment:'Body weight', target:'Upper back', note:'Stand with your feet shoulder-width apart and hold a towel in front of you with both hands.'},
+    ]
+  },
+  verticalPull:{
+    title:'Pulldown / vertical pull swaps',
+    focus:'Lats · upper back · biceps',
+    options:[
+      {name:'Assisted pull-up', equipment:'Leverage machine', target:'Lats', note:'Adjust the machine to your desired weight and height settings.'},
+      {name:'Cable lat pulldown', equipment:'Cable', target:'Lats', note:'Sit on the lat pulldown machine with your knees positioned under the pads.'},
+      {name:'Cable straight arm pulldown', equipment:'Cable', target:'Lats', note:'Attach a straight bar to the high pulley of a cable machine.'},
+    ]
+  },
+  shoulderPress:{
+    title:'Shoulder press swaps',
+    focus:'Delts · triceps',
+    options:[
+      {name:'Cable shoulder press', equipment:'Cable', target:'Delts', note:'Adjust the cable machine so that the handles are at shoulder height.'},
+      {name:'Band shoulder press', equipment:'Band', target:'Delts', note:'Stand with your feet shoulder-width apart and place the band under your feet.'},
+      {name:'Barbell seated overhead press', equipment:'Barbell', target:'Delts', note:'Sit on a bench with your back straight and feet flat on the ground.'},
+    ]
+  },
+  lateralRaise:{
+    title:'Lateral raise swaps',
+    focus:'Side delts',
+    options:[
+      {name:'Dumbbell lateral raise', equipment:'Dumbbell', target:'Delts', note:'Stand with your feet shoulder-width apart and hold a dumbbell in each hand, palms facing your body.'},
+      {name:'Cable lateral raise', equipment:'Cable', target:'Delts', note:'Stand with your feet shoulder-width apart and grasp the cable handles with an overhand grip.'},
+      {name:'Band front lateral raise', equipment:'Band', target:'Delts', note:'Stand with your feet shoulder-width apart and hold the band in front of your thighs with your palms facing down.'},
+    ]
+  },
+  chestIsolation:{
+    title:'Chest isolation swaps',
+    focus:'Chest',
+    options:[
+      {name:'Dumbbell fly', equipment:'Dumbbell', target:'Pectorals', note:'Lie flat on a bench with a dumbbell in each hand, palms facing each other.'},
+      {name:'Cable standing fly', equipment:'Cable', target:'Pectorals', note:'Attach the handles to the cables at chest height.'},
+      {name:'Assisted chest dip', equipment:'Leverage machine', target:'Pectorals', note:'Adjust the machine to your desired height and secure your knees on the pad.'},
+    ]
+  },
+  rearDelts:{
+    title:'Rear delt / posture swaps',
+    focus:'Rear shoulders · upper back',
+    options:[
+      {name:'Cable rear delt row', equipment:'Cable', target:'Delts', note:'Attach a rope handle to a low pulley cable machine.'},
+      {name:'Dumbbell rear delt raise', equipment:'Dumbbell', target:'Delts', note:'Stand with your feet shoulder-width apart and hold a dumbbell in each hand, palms facing your body.'},
+      {name:'Band reverse fly', equipment:'Band', target:'Delts', note:'Attach the band to a stationary object at chest height.'},
+    ]
+  },
+  triceps:{
+    title:'Triceps swaps',
+    focus:'Triceps',
+    options:[
+      {name:'Cable triceps pushdown', equipment:'Cable', target:'Triceps', note:'Attach a v-bar attachment to the cable machine at the highest setting.'},
+      {name:'Cable alternate triceps extension', equipment:'Cable', target:'Triceps', note:'Stand facing the cable machine with your feet shoulder-width apart.'},
+      {name:'Kneeling triceps extension', equipment:'Body weight', target:'Triceps', note:'Kneel down on the ground with your knees hip-width apart.'},
+    ]
+  },
+  biceps:{
+    title:'Biceps swaps',
+    focus:'Biceps',
+    options:[
+      {name:'Dumbbell biceps curl', equipment:'Dumbbell', target:'Biceps', note:'Stand up straight with a dumbbell in each hand, palms facing forward and arms fully extended.'},
+      {name:'Cable curl', equipment:'Cable', target:'Biceps', note:'Stand facing the cable machine with your feet shoulder-width apart.'},
+      {name:'Dumbbell concentration curl', equipment:'Dumbbell', target:'Biceps', note:'Sit on a bench with your legs spread apart and a dumbbell in one hand, resting your elbow on the inside of your thigh.'},
+    ]
+  },
+  quadCompound:{
+    title:'Quad-dominant lower-body swaps',
+    focus:'Quads · glutes',
+    options:[
+      {name:'Dumbbell goblet squat', equipment:'Dumbbell', target:'Quads', note:'Stand with your feet shoulder-width apart, holding a dumbbell vertically against your chest with both hands.'},
+      {name:'Sled hack squat', equipment:'Sled machine', target:'Glutes', note:'Adjust the sled machine to a comfortable position for your height.'},
+      {name:'Split squats', equipment:'Body weight', target:'Quads', note:'Stand with your feet shoulder-width apart.'},
+    ]
+  },
+  quadIsolation:{
+    title:'Quad isolation swaps',
+    focus:'Quads',
+    options:[
+      {name:'Lever leg extension', equipment:'Leverage machine', target:'Quads', note:'Adjust the seat height and backrest of the machine to fit your body.'},
+      {name:'Resistance band leg extension', equipment:'Resistance band', target:'Quads', note:'Attach the resistance band to a sturdy anchor point and secure it around your ankle.'},
+      {name:'Dumbbell step-up split squat', equipment:'Dumbbell', target:'Quads', note:'Stand in front of a bench or step with a dumbbell in each hand, palms facing your body.'},
+    ]
+  },
+  hamstringCurl:{
+    title:'Hamstring curl swaps',
+    focus:'Hamstrings',
+    options:[
+      {name:'Lever lying leg curl', equipment:'Leverage machine', target:'Hamstrings', note:'Adjust the machine to fit your body and select the desired weight.'},
+      {name:'Lever seated leg curl', equipment:'Leverage machine', target:'Hamstrings', note:'Adjust the machine to fit your body and sit on it with your back against the backrest.'},
+      {name:'Inverse leg curl', equipment:'Body weight', target:'Hamstrings', note:'Lie face down on a bench with your hips at the edge and your legs extended straight behind you.'},
+    ]
+  },
+  hinge:{
+    title:'Hip hinge swaps',
+    focus:'Hamstrings · glutes · posterior chain',
+    options:[
+      {name:'Dumbbell Romanian deadlift', equipment:'Dumbbell', target:'Glutes', note:'Stand with your feet shoulder-width apart, holding a dumbbell in each hand with an overhand grip.'},
+      {name:'Barbell Romanian deadlift', equipment:'Barbell', target:'Glutes', note:'Stand with your feet shoulder-width apart and your toes pointing forward.'},
+      {name:'Glute-ham raise', equipment:'Body weight', target:'Hamstrings', note:'Adjust the glute-ham raise machine to fit your body.'},
+    ]
+  },
+  gluteBridge:{
+    title:'Glute bridge / thrust swaps',
+    focus:'Glutes · hamstrings',
+    options:[
+      {name:'Barbell glute bridge', equipment:'Barbell', target:'Glutes', note:'Start by lying flat on your back on the ground with your knees bent and feet flat on the floor.'},
+      {name:'Bench glute bridge', equipment:'Body weight', target:'Glutes', note:'Sit on the edge of a bench with your back against it and your feet flat on the ground.'},
+      {name:'Band hip thrust on knees', equipment:'Resistance band', target:'Glutes', note:'Start by kneeling on the ground with your knees hip-width apart and your feet flexed.'},
+    ]
+  },
+  hipAbduction:{
+    title:'Hip abduction swaps',
+    focus:'Outer glutes · hip stabilizers',
+    options:[
+      {name:'Straight leg outer hip abductor', equipment:'Body weight', target:'Abductors', note:'Lie on your side with your legs straight and stacked on top of each other.'},
+      {name:'Lever seated hip abduction', equipment:'Leverage machine', target:'Abductors', note:'Adjust the seat height so that your knees are at a 90-degree angle.'},
+      {name:'Resistance band seated hip abduction', equipment:'Resistance band', target:'Abductors', note:'Sit on a chair or bench with your back straight and feet flat on the ground.'},
+    ]
+  },
+  calves:{
+    title:'Calf raise swaps',
+    focus:'Calves',
+    options:[
+      {name:'Lever standing calf raise', equipment:'Leverage machine', target:'Calves', note:'Adjust the machine to your height and stand with your feet shoulder-width apart.'},
+      {name:'Bodyweight standing calf raise', equipment:'Body weight', target:'Calves', note:'Stand with your feet shoulder-width apart, toes pointing forward.'},
+      {name:'Lever seated calf raise', equipment:'Leverage machine', target:'Calves', note:'Adjust the seat height so that your knees are slightly bent and your feet are flat on the footplate.'},
+    ]
+  },
+  coreBrace:{
+    title:'Core bracing swaps',
+    focus:'Abs · trunk stability',
+    options:[
+      {name:'Weighted front plank', equipment:'Weighted', target:'Abs', note:'Start by lying face down on the floor.'},
+      {name:'Kneeling plank tap shoulder', equipment:'Body weight', target:'Abs', note:'Start in a kneeling position with your hands on the ground, shoulder-width apart.'},
+      {name:'Front plank with twist', equipment:'Body weight', target:'Abs', note:'Start in a high plank position with your hands directly under your shoulders and your body in a straight line from head to toe.'},
+    ]
+  },
+  coreCrunch:{
+    title:'Core crunch swaps',
+    focus:'Abs · flexion',
+    options:[
+      {name:'Cable kneeling crunch', equipment:'Cable', target:'Abs', note:'Attach a rope handle to a high pulley and kneel down facing away from the machine.'},
+      {name:'Lever seated crunch', equipment:'Leverage machine', target:'Abs', note:'Sit on the leverage machine with your back against the pad and your feet flat on the floor.'},
+      {name:'Reverse crunch', equipment:'Body weight', target:'Abs', note:'Lie flat on your back with your arms extended along your sides.'},
+    ]
+  },
+  singleLegLower:{
+    title:'Single-leg lower-body swaps',
+    focus:'Quads · glutes · balance',
+    options:[
+      {name:'Dumbbell step-up', equipment:'Dumbbell', target:'Glutes', note:'Stand in front of a bench or step with a dumbbell in each hand, palms facing your body.'},
+      {name:'Split squats', equipment:'Body weight', target:'Quads', note:'Stand with your feet shoulder-width apart.'},
+      {name:'Dumbbell single leg split squat', equipment:'Dumbbell', target:'Quads', note:'Stand with your feet shoulder-width apart, holding a dumbbell in each hand.'},
+    ]
+  },
+  carry:{
+    title:'Carry / posture swaps',
+    focus:'Grip · posture · trunk',
+    options:[
+      {name:'Farmers walk', equipment:'Dumbbell', target:'Quads', note:'Stand up straight with a dumbbell in each hand, palms facing your sides.'},
+      {name:'Single arm overhead carry', equipment:'Dumbbell', target:'Delts', note:'Stand tall with your feet shoulder-width apart, holding a dumbbell in one hand.'},
+      {name:'Walking lunge', equipment:'Body weight', target:'Glutes', note:'Stand with your feet shoulder-width apart.'},
+    ]
+  },
+};
+const EXERCISE_ALTERNATIVE_KEYS = {
+  'Chest press machine':'chestPress',
+  'Seated row machine':'horizontalPull',
+  'Lat pulldown':'verticalPull',
+  'Shoulder press machine':'shoulderPress',
+  'Cable triceps pushdown':'triceps',
+  'Dumbbell bicep curls':'biceps',
+  'Leg press':'quadCompound',
+  'Seated leg curl':'hamstringCurl',
+  'Leg extension':'quadIsolation',
+  'Glute bridge / hip thrust machine':'gluteBridge',
+  'Calf raise':'calves',
+  'Plank':'coreBrace',
+  'Incline chest press machine':'inclineChest',
+  'Assisted pull-up or lat pulldown':'verticalPull',
+  'Cable row or machine row':'horizontalPull',
+  'Lateral raise (machine or dumbbell)':'lateralRaise',
+  'Pec deck or cable fly':'chestIsolation',
+  'Face pulls (cable)':'rearDelts',
+  'Cable crunch or ab machine':'coreCrunch',
+  'Goblet squat or hack squat machine':'quadCompound',
+  'Romanian deadlift (dumbbells)':'hinge',
+  'Step-ups or split squat':'singleLegLower',
+  'Hip abductor machine':'hipAbduction',
+  'Farmer\'s carry':'carry',
+};
+const GUIDE_ALTERNATIVE_ORDER = [
+  'chestPress','inclineChest','horizontalPull','verticalPull','shoulderPress','lateralRaise',
+  'chestIsolation','rearDelts','triceps','biceps','quadCompound','quadIsolation',
+  'hamstringCurl','hinge','gluteBridge','hipAbduction','calves','coreBrace','coreCrunch',
+  'singleLegLower','carry'
 ];
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
@@ -1049,6 +1296,33 @@ function renderTabs(){
   }).join('');
 }
 
+function renderAlternativeItems(group){
+  return group.options.map(o=>`<div class="alt-item">
+    <div class="alt-item-name">${o.name}</div>
+    <div class="alt-item-meta">${o.equipment} · muscles: ${o.target}</div>
+    <div class="alt-item-note">${o.note}</div>
+  </div>`).join('');
+}
+
+function renderExerciseAlternatives(exerciseName){
+  const key=EXERCISE_ALTERNATIVE_KEYS[exerciseName];
+  const group=key?DATASET_ALTERNATIVE_GROUPS[key]:null;
+  if(!group) return '';
+  return `<div class="sub-card alt-card">
+    <div class="sub-card-header" onclick="toggleSubCard(this)">
+      <div>
+        <div class="sub-card-title">Dataset-based alternatives</div>
+        <div class="alt-source">${group.focus} · Keep this slot's sets, reps, and rest the same.</div>
+      </div>
+      ${chevSVG(false)}
+    </div>
+    <div class="sub-card-body">
+      <div class="alt-list">${renderAlternativeItems(group)}</div>
+      <div class="alt-footnote">Curated from <a href="${DATASET_SOURCE_URL}" target="_blank" rel="noreferrer noopener">hasaneyldrm/exercises-dataset</a>. Exercise data only — no GIFs or images imported.</div>
+    </div>
+  </div>`;
+}
+
 // ─── WORKOUT PAGE ─────────────────────────────────────────────────────────────
 function renderWorkout(){
   const day=DAYS[activeDay];
@@ -1152,6 +1426,7 @@ function renderWorkout(){
         <span class="mistakes-toggle" onclick="toggleMistakes('${mistakeKey}',event)">Common mistakes ↓</span>
         <div class="mistakes-box" id="${mistakeKey}">${ex.mistakes.split(' · ').map(m=>`• ${m}`).join('<br>')}</div>
         <div class="target-label">Target: ${ex.target} · Rest: ${ex.rest}</div>
+        ${renderExerciseAlternatives(ex.name)}
         <div class="col-labels">
           <div class="col-label"></div>
           <div class="col-label">lbs</div>
@@ -1189,6 +1464,16 @@ function renderWorkout(){
     </div>`;
   }
 
+  // Cooldown stretches
+  if(day.cooldown){
+    const cuItems=day.cooldown.map(s=>`<div class="cooldown-item"><svg viewBox="0 0 10 10"><polyline points="1,5 4,8 9,2"/></svg>${s}</div>`).join('');
+    html+=`<div class="section-divider">Cool-down</div>
+    <div class="cooldown-card">
+      <div class="cooldown-title"><svg viewBox="0 0 14 14"><path d="M7 1v12M1 7h12M3 3l8 8M11 3L3 11"/></svg>Cool-down stretches</div>
+      <div class="cooldown-grid">${cuItems}</div>
+    </div>`;
+  }
+
   html+=`<button class="finish-btn ${allDone?'done-state':'ready'}" onclick="finishSession()" ${allDone?'disabled':''}>
     ${allDone?'✓ Session saved':'Finish & save session'}
   </button>`;
@@ -1201,23 +1486,22 @@ function renderWorkout(){
 function renderGuide(){
   const main=document.getElementById('page-guide');
 
-  const subMap={
-    'Chest press machine':['Dumbbell bench press','Push-up on bench','Pec deck','Smith machine press'],
-    'Seated row machine':['Cable row','Dumbbell row','Chest-supported row machine'],
-    'Lat pulldown':['Assisted pull-up machine','Cable pullover','Row machine'],
-    'Leg press':['Hack squat machine','Goblet squat','Smith machine squat','Step-ups'],
-  };
-
-  const subs=Object.entries(subMap).map(([k,v])=>`
+  const subs=GUIDE_ALTERNATIVE_ORDER.map(key=>{
+    const group=DATASET_ALTERNATIVE_GROUPS[key];
+    return `
     <div class="sub-card">
       <div class="sub-card-header" onclick="toggleSubCard(this)">
-        <div class="sub-card-title">If ${k} is taken…</div>
+        <div>
+          <div class="sub-card-title">${group.title}</div>
+          <div class="alt-source">${group.focus}</div>
+        </div>
         ${chevSVG(false)}
       </div>
       <div class="sub-card-body">
-        ${v.map(s=>`<div class="sub-item">${s}</div>`).join('')}
+        <div class="alt-list">${renderAlternativeItems(group)}</div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   main.innerHTML=`
   <div class="guide-section">
@@ -1290,6 +1574,9 @@ function renderGuide(){
 
   <div class="guide-section">
     <div class="guide-section-title">When a machine is taken</div>
+    <div class="guide-card">
+      <p>Instead of importing all 1,324 exercises right away, this app uses a curated beginner-friendly subset from <a href="${DATASET_SOURCE_URL}" target="_blank" rel="noreferrer noopener" style="color:var(--accent);text-decoration:none">hasaneyldrm/exercises-dataset</a>. Use these swaps to keep training the same muscle group when equipment is busy, and keep the planned sets, reps, and rest the same.</p>
+    </div>
     ${subs}
   </div>
 
@@ -1300,9 +1587,38 @@ function renderGuide(){
         <tr><td>Warm-up</td><td>5–10 min</td></tr>
         <tr><td>Lifting</td><td>35–50 min</td></tr>
         <tr><td>Cardio (if included)</td><td>10–25 min</td></tr>
-        <tr><td>Total target</td><td>45–75 min</td></tr>
+        <tr><td>Cool-down stretches</td><td>5 min</td></tr>
+        <tr><td>Total target</td><td>50–90 min</td></tr>
       </table>
       <p style="font-size:12px;color:var(--text-dim);margin-top:8px">If you're regularly going 90+ minutes, you're likely resting too long or doing too much. Keep it focused.</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">Cool-down &amp; stretching</div>
+    <div class="guide-card">
+      <p>After every lifting session, spend 5 minutes stretching the muscles you just trained. Your muscles are warm — this is the best time to improve flexibility and reduce next-day soreness. Hold each stretch steadily for 20–30 seconds without bouncing.</p>
+    </div>
+    <div class="guide-card">
+      <div class="guide-card-title"><svg viewBox="0 0 14 14"><path d="M7 1v12M1 7h12M3 3l8 8M11 3L3 11"/></svg>Upper body stretches (Mon / Thu)</div>
+      <table class="rep-table">
+        <tr><td>Chest doorway stretch</td><td>Chest · front shoulders · 30 sec each side</td></tr>
+        <tr><td>Lat overhead stretch</td><td>Lats · upper back · 20 sec each side</td></tr>
+        <tr><td>Rear delt cross-body pull</td><td>Rear shoulders · 20 sec each side</td></tr>
+        <tr><td>Triceps overhead stretch</td><td>Triceps · 20 sec each side</td></tr>
+        <tr><td>Neck side tilt</td><td>Neck · upper traps · 20 sec each side</td></tr>
+      </table>
+    </div>
+    <div class="guide-card">
+      <div class="guide-card-title"><svg viewBox="0 0 14 14"><path d="M7 1v12M1 7h12M3 3l8 8M11 3L3 11"/></svg>Lower body stretches (Tue / Sat)</div>
+      <table class="rep-table">
+        <tr><td>Hip flexor lunge stretch</td><td>Hip flexors · 30 sec each side</td></tr>
+        <tr><td>Standing quad stretch</td><td>Quads · 20 sec each side</td></tr>
+        <tr><td>Seated hamstring stretch</td><td>Hamstrings · 30 sec each side</td></tr>
+        <tr><td>Figure-4 glute stretch</td><td>Glutes · 30 sec each side</td></tr>
+        <tr><td>Adductor butterfly stretch</td><td>Inner thighs (adductors) · 30 sec</td></tr>
+        <tr><td>Calf wall stretch</td><td>Calves · 20 sec each side</td></tr>
+      </table>
     </div>
   </div>
 
