@@ -1,4 +1,4 @@
-<!-- FirstTimeFitness v1.1.0 — https://github.com/bmhornback/FirstTimeFitness/blob/main/CHANGELOG.md -->
+<!-- FirstTimeFitness v1.2.0 — https://github.com/bmhornback/FirstTimeFitness/blob/main/CHANGELOG.md -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,6 +68,14 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .warmup-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .warmup-item{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:5px}
 .warmup-item svg{width:10px;height:10px;stroke:var(--accent);fill:none;stroke-width:2.5;flex-shrink:0}
+
+/* COOL DOWN CARD */
+.cooldown-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px}
+.cooldown-title{font-size:11px;font-family:'DM Mono',monospace;color:var(--success);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.cooldown-title svg{width:13px;height:13px;stroke:var(--success);fill:none;stroke-width:2}
+.cooldown-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.cooldown-item{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:5px}
+.cooldown-item svg{width:10px;height:10px;stroke:var(--success);fill:none;stroke-width:2.5;flex-shrink:0}
 
 /* PROGRESS */
 .progress-wrap{display:flex;align-items:center;gap:10px;margin-bottom:14px}
@@ -570,7 +578,8 @@ const DAYS = [
        cue:'Lift with your biceps, not your hips.',
        mistakes:'Rocking body backward · Letting elbows drift forward · Going too heavy · Dropping the weight quickly'},
     ],
-    cardio:{name:'Optional treadmill walk', desc:'10–15 min · easy pace · cool down'}
+    cardio:{name:'Optional treadmill walk', desc:'10–15 min · easy pace · cool down'},
+    cooldown:['Chest doorway stretch · 30 sec each','Lat overhead stretch · 20 sec each','Rear delt cross-body pull · 20 sec each','Triceps overhead stretch · 20 sec each','Neck side tilt · 20 sec each']
   },
   {
     short:'Tue', label:'Lower', type:'lower', focus:'Quads · Glutes · Hamstrings · Calves · Core',
@@ -601,7 +610,8 @@ const DAYS = [
        cue:'Make your body a straight, stiff board.',
        mistakes:'Hips sagging · Hips too high · Holding your breath · Neck craned upward'},
     ],
-    cardio:{name:'Easy bike or walk', desc:'10 min · active recovery cooldown'}
+    cardio:{name:'Easy bike or walk', desc:'10 min · active recovery cooldown'},
+    cooldown:['Hip flexor lunge stretch · 30 sec each','Standing quad stretch · 20 sec each','Seated hamstring stretch · 30 sec each','Figure-4 glute stretch · 30 sec each','Adductor butterfly stretch · 30 sec','Calf wall stretch · 20 sec each']
   },
   {
     short:'Wed', label:'Rest', type:'rest', focus:'Active recovery',
@@ -642,7 +652,8 @@ const DAYS = [
        cue:'Ribs to hips — curl, don\'t yank.',
        mistakes:'Using arm strength · Going too heavy · Rushing reps · Not feeling abs work'},
     ],
-    cardio:null
+    cardio:null,
+    cooldown:['Chest doorway stretch · 30 sec each','Lat overhead stretch · 20 sec each','Rear delt cross-body pull · 20 sec each','Triceps overhead stretch · 20 sec each','Neck side tilt · 20 sec each']
   },
   {
     short:'Fri', label:'Rest', type:'rest', focus:'Active recovery',
@@ -679,7 +690,8 @@ const DAYS = [
        cue:'Walk like you\'re trying to look taller.',
        mistakes:'Leaning side to side · Shoulders shrugged to ears · Walking too fast · Weights too heavy for posture'},
     ],
-    cardio:{name:'Incline treadmill walk', desc:'15–25 min · incline 4–8% · speed 2.5–3.2 mph'}
+    cardio:{name:'Incline treadmill walk', desc:'15–25 min · incline 4–8% · speed 2.5–3.2 mph'},
+    cooldown:['Hip flexor lunge stretch · 30 sec each','Standing quad stretch · 20 sec each','Seated hamstring stretch · 30 sec each','Figure-4 glute stretch · 30 sec each','Adductor butterfly stretch · 30 sec','Calf wall stretch · 20 sec each']
   },
   {
     short:'Sun', label:'Rest', type:'rest', focus:'Full rest',
@@ -1452,6 +1464,16 @@ function renderWorkout(){
     </div>`;
   }
 
+  // Cooldown stretches
+  if(day.cooldown){
+    const cuItems=day.cooldown.map(s=>`<div class="cooldown-item"><svg viewBox="0 0 10 10"><polyline points="1,5 4,8 9,2"/></svg>${s}</div>`).join('');
+    html+=`<div class="section-divider">Cool-down</div>
+    <div class="cooldown-card">
+      <div class="cooldown-title"><svg viewBox="0 0 14 14"><path d="M7 1v12M1 7h12M3 3l8 8M11 3L3 11"/></svg>Cool-down stretches</div>
+      <div class="cooldown-grid">${cuItems}</div>
+    </div>`;
+  }
+
   html+=`<button class="finish-btn ${allDone?'done-state':'ready'}" onclick="finishSession()" ${allDone?'disabled':''}>
     ${allDone?'✓ Session saved':'Finish & save session'}
   </button>`;
@@ -1565,9 +1587,38 @@ function renderGuide(){
         <tr><td>Warm-up</td><td>5–10 min</td></tr>
         <tr><td>Lifting</td><td>35–50 min</td></tr>
         <tr><td>Cardio (if included)</td><td>10–25 min</td></tr>
-        <tr><td>Total target</td><td>45–75 min</td></tr>
+        <tr><td>Cool-down stretches</td><td>5 min</td></tr>
+        <tr><td>Total target</td><td>50–90 min</td></tr>
       </table>
       <p style="font-size:12px;color:var(--text-dim);margin-top:8px">If you're regularly going 90+ minutes, you're likely resting too long or doing too much. Keep it focused.</p>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">Cool-down &amp; stretching</div>
+    <div class="guide-card">
+      <p>After every lifting session, spend 5 minutes stretching the muscles you just trained. Your muscles are warm — this is the best time to improve flexibility and reduce next-day soreness. Hold each stretch steadily for 20–30 seconds without bouncing.</p>
+    </div>
+    <div class="guide-card">
+      <div class="guide-card-title"><svg viewBox="0 0 14 14"><path d="M7 1v12M1 7h12M3 3l8 8M11 3L3 11"/></svg>Upper body stretches (Mon / Thu)</div>
+      <table class="rep-table">
+        <tr><td>Chest doorway stretch</td><td>Chest · front shoulders · 30 sec each side</td></tr>
+        <tr><td>Lat overhead stretch</td><td>Lats · upper back · 20 sec each side</td></tr>
+        <tr><td>Rear delt cross-body pull</td><td>Rear shoulders · 20 sec each side</td></tr>
+        <tr><td>Triceps overhead stretch</td><td>Triceps · 20 sec each side</td></tr>
+        <tr><td>Neck side tilt</td><td>Neck · upper traps · 20 sec each side</td></tr>
+      </table>
+    </div>
+    <div class="guide-card">
+      <div class="guide-card-title"><svg viewBox="0 0 14 14"><path d="M7 1v12M1 7h12M3 3l8 8M11 3L3 11"/></svg>Lower body stretches (Tue / Sat)</div>
+      <table class="rep-table">
+        <tr><td>Hip flexor lunge stretch</td><td>Hip flexors · 30 sec each side</td></tr>
+        <tr><td>Standing quad stretch</td><td>Quads · 20 sec each side</td></tr>
+        <tr><td>Seated hamstring stretch</td><td>Hamstrings · 30 sec each side</td></tr>
+        <tr><td>Figure-4 glute stretch</td><td>Glutes · 30 sec each side</td></tr>
+        <tr><td>Adductor butterfly stretch</td><td>Inner thighs (adductors) · 30 sec</td></tr>
+        <tr><td>Calf wall stretch</td><td>Calves · 20 sec each side</td></tr>
+      </table>
     </div>
   </div>
 

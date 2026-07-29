@@ -1,6 +1,6 @@
 # FirstTimeFitness
 
-[![Version](https://img.shields.io/badge/version-v1.1.0-brightgreen)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v1.2.0-brightgreen)](./CHANGELOG.md)
 
 > A guided fitness app for people who are new to the gym — built to remove the confusion, anxiety, and guesswork that stops most beginners before they ever get started.
 

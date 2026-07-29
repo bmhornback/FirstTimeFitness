@@ -13,6 +13,17 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.2.0] — 2026-07-29
+
+### Added
+- Per-day cool-down stretch cards on every workout day — upper body stretches (Mon/Thu) and lower body stretches (Tue/Sat) appear in a green card below the cardio row, giving beginners a guided 5-minute post-workout routine
+- Stretches added: chest doorway stretch, lat overhead stretch, rear delt cross-body pull, triceps overhead stretch, neck side tilt (upper); hip flexor lunge stretch, standing quad stretch, seated hamstring stretch, figure-4 glute stretch, adductor butterfly stretch, calf wall stretch (lower)
+- "Cool-down & stretching" section added to the Guide page — reference tables covering upper and lower body stretches with target muscle and hold time for each movement
+- Updated workout duration table in Guide to include the 5-minute cool-down row (total target now 50–90 min)
+- Cool-down stretches address the gap muscle groups not covered by any workout exercise: hip flexors, inner-thigh adductors, and lower back
+
+---
+
 ## [1.1.0] — 2026-07-29
 
 ### Added
@@ -46,6 +57,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-[Unreleased]: https://github.com/bmhornback/FirstTimeFitness/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/bmhornback/FirstTimeFitness/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/bmhornback/FirstTimeFitness/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/bmhornback/FirstTimeFitness/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/bmhornback/FirstTimeFitness/releases/tag/v1.0.0
