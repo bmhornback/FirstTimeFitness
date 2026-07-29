@@ -35,7 +35,7 @@ The app runs entirely in your browser. No installation required. No account need
 
 ### 🏋️ Guided Workout Tracker
 - **7-day weekly plan** — Upper body (Mon/Thu), Lower body (Tue/Sat), Active recovery (Wed/Fri), Full rest (Sun)
-- **Exercise cards** for every movement with form tips, coaching cues, and common mistakes
+- **Exercise cards** for every movement with form tips, coaching cues, common mistakes, and dataset-based swap ideas
 - **Set logging** — track weight (lbs) and reps for each set with a simple tap-to-complete interface
 - **Effort rating** per exercise — Easy / Medium / Hard
 - **Session timer** starts automatically when you begin logging sets
@@ -57,7 +57,7 @@ The app runs entirely in your browser. No installation required. No account need
 - How to choose your starting weight (the beginner weight test)
 - Rep speed, breathing, and rest time tables
 - Muscle group explanations (push, pull, lower, core)
-- Substitution suggestions when a machine is taken
+- Curated dataset-based substitution suggestions when a machine is taken
 - Workout duration guidelines
 - Simple nutrition and protein intake reference
 
