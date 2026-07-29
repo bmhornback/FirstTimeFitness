@@ -1301,7 +1301,7 @@ function renderTabs(){
 
 function renderAlternativeItems(group){
   return group.options.map(o=>`<div class="alt-item">
-    ${o.img ? `<img class="alt-item-img" src="${DATASET_IMG_BASE}${o.img}" alt="${o.name}" loading="lazy">` : ''}
+    ${o.img ? `<img class="alt-item-img" src="${DATASET_IMG_BASE}${o.img}" alt="${o.name}" width="64" height="64" loading="lazy">` : ''}
     <div class="alt-item-content">
       <div class="alt-item-name">${o.name}</div>
       <div class="alt-item-meta">${o.equipment} · muscles: ${o.target}</div>
@@ -1581,6 +1581,7 @@ function renderGuide(){
   <div class="guide-section">
     <div class="guide-section-title">When a machine is taken</div>
     ${subs}
+    <div class="alt-footnote">Images and data from <a href="${DATASET_SOURCE_URL}" target="_blank" rel="noreferrer noopener">hasaneyldrm/exercises-dataset</a> (MIT licensed).</div>
   </div>
 
   <div class="guide-section">
