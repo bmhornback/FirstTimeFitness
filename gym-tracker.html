@@ -1,4 +1,4 @@
-<!-- FirstTimeFitness v1.2.0 — https://github.com/bmhornback/FirstTimeFitness/blob/main/CHANGELOG.md -->
+<!-- FirstTimeFitness v1.3.0 — https://github.com/bmhornback/FirstTimeFitness/blob/main/CHANGELOG.md -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,19 +28,19 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
 /* NAV */
 .bottom-nav{position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);z-index:200;padding-bottom:env(safe-area-inset-bottom,0)}
-.bnav-btn{display:flex;flex-direction:column;align-items:center;padding:10px 4px 8px;cursor:pointer;border:none;background:transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:10px;gap:3px;transition:color 0.15s}
+.bnav-btn{display:flex;flex-direction:column;align-items:center;padding:10px 4px 8px;cursor:pointer;border:none;background:transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:11px;gap:3px;transition:color 0.15s}
 .bnav-btn svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.8;fill:none}
 .bnav-btn.active{color:var(--accent)}
 
 /* HEADER */
 .app-header{background:var(--bg);padding:env(safe-area-inset-top,16px) 16px 0;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
 .header-row{display:flex;align-items:center;justify-content:space-between;padding-bottom:10px}
-.app-title{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--accent);letter-spacing:0.06em;text-transform:uppercase}
-.date-chip{font-size:11px;color:var(--text-muted);font-family:'DM Mono',monospace}
+.app-title{font-family:'DM Mono',monospace;font-size:15px;font-weight:500;color:var(--accent);letter-spacing:0.06em;text-transform:uppercase}
+.date-chip{font-size:12px;color:var(--text-muted);font-family:'DM Mono',monospace}
 .day-tabs{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding-bottom:10px}
 .dtab{display:flex;flex-direction:column;align-items:center;padding:6px 2px;border-radius:var(--radius-sm);border:1px solid transparent;cursor:pointer;transition:all 0.15s}
-.dtab .ds{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.04em;font-family:'DM Mono',monospace}
-.dtab .dl{font-size:9px;font-weight:500;color:var(--text-muted);margin-top:2px}
+.dtab .ds{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.04em;font-family:'DM Mono',monospace}
+.dtab .dl{font-size:10px;font-weight:500;color:var(--text-muted);margin-top:2px}
 .dtab.active-upper{background:var(--upper-dim);border-color:var(--upper)}
 .dtab.active-upper .ds,.dtab.active-upper .dl{color:var(--upper)}
 .dtab.active-lower{background:var(--lower-dim);border-color:var(--lower)}
@@ -55,36 +55,36 @@ body{display:flex;flex-direction:column;min-height:100vh}
 /* SESSION */
 .session-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
 .session-day{font-size:20px;font-weight:600;color:var(--text);line-height:1.2}
-.session-focus{font-size:12px;color:var(--text-muted);margin-top:3px}
-.type-badge{font-size:10px;font-weight:600;padding:4px 9px;border-radius:99px;letter-spacing:0.04em;font-family:'DM Mono',monospace;white-space:nowrap}
+.session-focus{font-size:13px;color:var(--text-muted);margin-top:3px}
+.type-badge{font-size:11px;font-weight:600;padding:4px 9px;border-radius:99px;letter-spacing:0.04em;font-family:'DM Mono',monospace;white-space:nowrap}
 .badge-upper{background:var(--upper-dim);color:var(--upper);border:1px solid rgba(74,156,240,0.3)}
 .badge-lower{background:var(--lower-dim);color:var(--lower);border:1px solid rgba(200,240,74,0.3)}
 .badge-rest{background:rgba(136,136,136,0.1);color:#aaa;border:1px solid #444}
 
 /* WARM UP CARD */
 .warmup-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px}
-.warmup-title{font-size:11px;font-family:'DM Mono',monospace;color:var(--warn);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.warmup-title{font-size:12px;font-family:'DM Mono',monospace;color:var(--warn);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .warmup-title svg{width:13px;height:13px;stroke:var(--warn);fill:none;stroke-width:2}
 .warmup-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.warmup-item{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:5px}
+.warmup-item{font-size:13px;color:var(--text-muted);display:flex;align-items:center;gap:5px}
 .warmup-item svg{width:10px;height:10px;stroke:var(--accent);fill:none;stroke-width:2.5;flex-shrink:0}
 
 /* COOL DOWN CARD */
 .cooldown-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px}
-.cooldown-title{font-size:11px;font-family:'DM Mono',monospace;color:var(--success);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.cooldown-title{font-size:12px;font-family:'DM Mono',monospace;color:var(--success);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .cooldown-title svg{width:13px;height:13px;stroke:var(--success);fill:none;stroke-width:2}
 .cooldown-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.cooldown-item{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:5px}
+.cooldown-item{font-size:13px;color:var(--text-muted);display:flex;align-items:center;gap:5px}
 .cooldown-item svg{width:10px;height:10px;stroke:var(--success);fill:none;stroke-width:2.5;flex-shrink:0}
 
 /* PROGRESS */
 .progress-wrap{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .progress-track{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
 .progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width 0.4s ease}
-.progress-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--text-muted);min-width:38px;text-align:right}
+.progress-label{font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted);min-width:38px;text-align:right}
 
 /* SECTION DIVIDER */
-.section-divider{font-size:10px;font-family:'DM Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+.section-divider{font-size:11px;font-family:'DM Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin:14px 0 8px;display:flex;align-items:center;gap:8px}
 .section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
 
 /* EXERCISE CARD */
@@ -96,27 +96,27 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .ex-circle svg{width:10px;height:10px;stroke:#0f0f0f;stroke-width:3;fill:none;display:none}
 .ex-circle.done svg{display:block}
 .ex-info{flex:1;min-width:0}
-.ex-name{font-size:13px;font-weight:500;color:var(--text);line-height:1.2}
-.ex-muscles{font-size:11px;color:var(--text-dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ex-name{font-size:14px;font-weight:500;color:var(--text);line-height:1.2}
+.ex-muscles{font-size:12px;color:var(--text-dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ex-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
-.ex-sets-ct{font-size:10px;font-family:'DM Mono',monospace;color:var(--text-muted)}
+.ex-sets-ct{font-size:11px;font-family:'DM Mono',monospace;color:var(--text-muted)}
 .chev{width:14px;height:14px;stroke:var(--text-dim);stroke-width:2;fill:none;transition:transform 0.2s;flex-shrink:0}
 .chev.open{transform:rotate(180deg)}
 
 /* EXERCISE BODY */
 .ex-body{border-top:1px solid var(--border);padding:12px}
-.ex-tip{font-size:12px;color:var(--text-muted);line-height:1.6;background:var(--surface2);border-radius:var(--radius-sm);padding:9px 11px;margin-bottom:10px;border-left:2px solid var(--accent)}
-.ex-cue{font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);margin-bottom:10px;padding:6px 10px;background:var(--accent-dim);border-radius:var(--radius-sm)}
+.ex-tip{font-size:13px;color:var(--text-muted);line-height:1.6;background:var(--surface2);border-radius:var(--radius-sm);padding:9px 11px;margin-bottom:10px;border-left:2px solid var(--accent)}
+.ex-cue{font-size:12px;font-family:'DM Mono',monospace;color:var(--accent);margin-bottom:10px;padding:6px 10px;background:var(--accent-dim);border-radius:var(--radius-sm)}
 .ex-cue::before{content:'CUE → '}
-.mistakes-toggle{font-size:11px;color:var(--text-dim);cursor:pointer;text-decoration:underline;text-underline-offset:2px;margin-bottom:10px;display:inline-block}
-.mistakes-box{font-size:11px;color:var(--text-muted);background:rgba(240,97,74,0.06);border:1px solid rgba(240,97,74,0.2);border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:10px;line-height:1.7;display:none}
+.mistakes-toggle{font-size:12px;color:var(--text-dim);cursor:pointer;text-decoration:underline;text-underline-offset:2px;margin-bottom:10px;display:inline-block}
+.mistakes-box{font-size:12px;color:var(--text-muted);background:rgba(240,97,74,0.06);border:1px solid rgba(240,97,74,0.2);border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:10px;line-height:1.7;display:none}
 .mistakes-box.open{display:block}
-.target-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px}
+.target-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px}
 .col-labels{display:grid;grid-template-columns:26px 1fr 1fr 36px;gap:5px;margin-bottom:4px;padding:0 1px}
-.col-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--text-dim);text-align:center;text-transform:uppercase;letter-spacing:0.03em}
+.col-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--text-dim);text-align:center;text-transform:uppercase;letter-spacing:0.03em}
 .set-row{display:grid;grid-template-columns:26px 1fr 1fr 36px;gap:5px;align-items:center;margin-bottom:5px}
-.set-num{font-size:11px;font-family:'DM Mono',monospace;color:var(--text-dim);text-align:center}
-.set-input{width:100%;padding:7px 4px;font-size:14px;font-family:'DM Mono',monospace;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);text-align:center;-webkit-appearance:none;appearance:none}
+.set-num{font-size:12px;font-family:'DM Mono',monospace;color:var(--text-dim);text-align:center}
+.set-input{width:100%;padding:7px 4px;font-size:15px;font-family:'DM Mono',monospace;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);text-align:center;-webkit-appearance:none;appearance:none}
 .set-input:focus{outline:none;border-color:var(--accent)}
 .set-input::placeholder{color:var(--text-dim)}
 .set-tick{width:34px;height:34px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s}
@@ -128,8 +128,8 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
 /* CARDIO ROW */
 .cardio-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px}
-.cardio-info .cardio-name{font-size:13px;font-weight:500;color:var(--text)}
-.cardio-info .cardio-desc{font-size:11px;color:var(--text-dim);margin-top:2px}
+.cardio-info .cardio-name{font-size:14px;font-weight:500;color:var(--text)}
+.cardio-info .cardio-desc{font-size:12px;color:var(--text-dim);margin-top:2px}
 .cardio-check{width:34px;height:34px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;flex-shrink:0}
 .cardio-check.done{background:var(--success-dim);border-color:var(--success)}
 .cardio-check svg{width:13px;height:13px;stroke:var(--text-dim);stroke-width:2.5;fill:none}
@@ -139,90 +139,92 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .rest-screen{text-align:center;padding:32px 16px}
 .rest-icon-lg{font-size:44px;margin-bottom:14px}
 .rest-title{font-size:18px;font-weight:600;color:var(--text);margin-bottom:8px}
-.rest-body{font-size:13px;color:var(--text-muted);line-height:1.75;max-width:300px;margin:0 auto 20px}
+.rest-body{font-size:14px;color:var(--text-muted);line-height:1.75;max-width:300px;margin:0 auto 20px}
 .rest-opts{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;text-align:left;max-width:300px;margin:0 auto}
-.rest-opts-title{font-size:10px;font-family:'DM Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px}
-.rest-opt{font-size:13px;color:var(--text-muted);padding:4px 0;display:flex;align-items:center;gap:7px}
+.rest-opts-title{font-size:11px;font-family:'DM Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px}
+.rest-opt{font-size:14px;color:var(--text-muted);padding:4px 0;display:flex;align-items:center;gap:7px}
 .rest-opt svg{width:11px;height:11px;stroke:var(--accent);fill:none;stroke-width:2.5;flex-shrink:0}
 
 /* COMPLETE BANNER */
 .complete-banner{background:var(--success-dim);border:1px solid rgba(74,201,138,0.3);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
 .complete-banner svg{width:18px;height:18px;stroke:var(--success);stroke-width:2;fill:none;flex-shrink:0}
-.complete-banner p{font-size:13px;color:var(--success);line-height:1.5}
+.complete-banner p{font-size:14px;color:var(--success);line-height:1.5}
 
 /* FINISH BTN */
-.finish-btn{width:100%;padding:14px;border-radius:var(--radius);border:none;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:6px;transition:all 0.15s}
+.finish-btn{width:100%;padding:14px;border-radius:var(--radius);border:none;font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:6px;transition:all 0.15s}
 .finish-btn.ready{background:var(--accent);color:var(--accent-text)}
 .finish-btn.ready:active{transform:scale(0.98)}
 .finish-btn.done-state{background:var(--surface);color:var(--text-dim);border:1px solid var(--border);cursor:default}
 
 /* GUIDE PAGE */
 .guide-section{margin-bottom:20px}
-.guide-section-title{font-size:10px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.guide-section-title{font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
 .guide-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:8px}
-.guide-card-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:7px}
+.guide-card-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:7px}
 .guide-card-title svg{width:14px;height:14px;stroke:var(--accent);fill:none;stroke-width:2;flex-shrink:0}
-.guide-card p{font-size:12px;color:var(--text-muted);line-height:1.7}
+.guide-card p{font-size:13px;color:var(--text-muted);line-height:1.7}
 .guide-card ul{padding-left:0;list-style:none}
-.guide-card ul li{font-size:12px;color:var(--text-muted);line-height:1.7;padding:2px 0;display:flex;align-items:flex-start;gap:6px}
-.guide-card ul li::before{content:'→';color:var(--accent);font-size:11px;flex-shrink:0;margin-top:1px}
+.guide-card ul li{font-size:13px;color:var(--text-muted);line-height:1.7;padding:2px 0;display:flex;align-items:flex-start;gap:6px}
+.guide-card ul li::before{content:'→';color:var(--accent);font-size:12px;flex-shrink:0;margin-top:1px}
 .muscles-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .muscle-group{background:var(--surface2);border-radius:var(--radius-sm);padding:10px}
-.muscle-group-name{font-size:11px;font-weight:600;color:var(--text);margin-bottom:4px;font-family:'DM Mono',monospace}
-.muscle-group-sub{font-size:11px;color:var(--text-dim);margin-bottom:6px}
-.muscle-list{font-size:11px;color:var(--text-muted);line-height:1.8}
+.muscle-group-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;font-family:'DM Mono',monospace}
+.muscle-group-sub{font-size:12px;color:var(--text-dim);margin-bottom:6px}
+.muscle-list{font-size:12px;color:var(--text-muted);line-height:1.8}
 .rep-table{width:100%;border-collapse:collapse}
-.rep-table td{font-size:12px;padding:5px 0;color:var(--text-muted);vertical-align:top}
+.rep-table td{font-size:13px;padding:5px 0;color:var(--text-muted);vertical-align:top}
 .rep-table td:first-child{color:var(--text);font-weight:500;padding-right:12px;white-space:nowrap}
 .prog-steps{counter-reset:step}
 .prog-step{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
-.prog-step-num{width:20px;height:20px;border-radius:50%;background:var(--accent-dim);border:1px solid rgba(200,240,74,0.3);display:flex;align-items:center;justify-content:center;font-size:10px;font-family:'DM Mono',monospace;color:var(--accent);flex-shrink:0;margin-top:1px}
-.prog-step p{font-size:12px;color:var(--text-muted);line-height:1.6}
+.prog-step-num{width:20px;height:20px;border-radius:50%;background:var(--accent-dim);border:1px solid rgba(200,240,74,0.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);flex-shrink:0;margin-top:1px}
+.prog-step p{font-size:13px;color:var(--text-muted);line-height:1.6}
 .sub-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden}
 .sub-card-header{padding:10px 12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
-.sub-card-title{font-size:13px;font-weight:500;color:var(--text)}
+.sub-card-title{font-size:14px;font-weight:500;color:var(--text)}
 .sub-card-body{border-top:1px solid var(--border);padding:10px 12px;display:none}
 .sub-card-body.open{display:block}
-.sub-item{font-size:12px;color:var(--text-muted);padding:3px 0;display:flex;align-items:flex-start;gap:6px;line-height:1.6}
+.sub-item{font-size:13px;color:var(--text-muted);padding:3px 0;display:flex;align-items:flex-start;gap:6px;line-height:1.6}
 .sub-item::before{content:'↳';color:var(--text-dim);flex-shrink:0}
 .alt-card{margin-top:10px}
-.alt-source{font-size:10px;color:var(--text-dim);margin-top:3px;line-height:1.5}
+.alt-source{font-size:11px;color:var(--text-dim);margin-top:3px;line-height:1.5}
 .alt-source a,.alt-footnote a{color:var(--accent);text-decoration:none}
 .alt-list{display:grid;gap:8px}
-.alt-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 10px}
-.alt-item-name{font-size:12px;font-weight:500;color:var(--text)}
-.alt-item-meta{font-size:10px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.04em;margin-top:4px}
-.alt-item-note{font-size:11px;color:var(--text-muted);line-height:1.6;margin-top:5px}
-.alt-footnote{font-size:10px;color:var(--text-dim);line-height:1.6;margin-top:8px}
+.alt-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 10px;display:flex;gap:10px;align-items:flex-start}
+.alt-item-img{width:64px;height:64px;border-radius:6px;object-fit:cover;flex-shrink:0;border:1px solid var(--border)}
+.alt-item-content{flex:1;min-width:0}
+.alt-item-name{font-size:13px;font-weight:500;color:var(--text)}
+.alt-item-meta{font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.04em;margin-top:4px}
+.alt-item-note{font-size:12px;color:var(--text-muted);line-height:1.6;margin-top:5px}
+.alt-footnote{font-size:11px;color:var(--text-dim);line-height:1.6;margin-top:8px}
 
 /* HISTORY PAGE */
 .hist-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px}
 .hist-item{padding:12px 14px;border-bottom:1px solid var(--border)}
 .hist-item:last-child{border-bottom:none}
 .hist-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
-.hist-day-name{font-size:13px;font-weight:500;color:var(--text)}
-.hist-date{font-size:11px;font-family:'DM Mono',monospace;color:var(--text-muted)}
-.hist-sets{font-size:11px;color:var(--text-dim);line-height:1.7;white-space:pre-line}
-.hist-empty{padding:32px;text-align:center;font-size:13px;color:var(--text-dim)}
-.hist-clear{width:100%;padding:11px;border-radius:var(--radius);border:1px solid rgba(240,97,74,0.3);background:transparent;font-size:13px;color:var(--danger);font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s}
+.hist-day-name{font-size:14px;font-weight:500;color:var(--text)}
+.hist-date{font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted)}
+.hist-sets{font-size:12px;color:var(--text-dim);line-height:1.7;white-space:pre-line}
+.hist-empty{padding:32px;text-align:center;font-size:14px;color:var(--text-dim)}
+.hist-clear{width:100%;padding:11px;border-radius:var(--radius);border:1px solid rgba(240,97,74,0.3);background:transparent;font-size:14px;color:var(--danger);font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s}
 .hist-clear:active{background:rgba(240,97,74,0.1)}
 .hist-page-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px}
-.hist-page-sub{font-size:12px;color:var(--text-muted);margin-bottom:14px}
+.hist-page-sub{font-size:13px;color:var(--text-muted);margin-bottom:14px}
 
 /* MINDSET */
 .mindset-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:8px}
-.mindset-q{font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:7px}
+.mindset-q{font-size:14px;font-weight:500;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:7px}
 .mindset-q svg{width:14px;height:14px;stroke:var(--accent);fill:none;stroke-width:2;flex-shrink:0}
-.mindset-a{font-size:12px;color:var(--text-muted);line-height:1.7}
+.mindset-a{font-size:13px;color:var(--text-muted);line-height:1.7}
 .checklist-item{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)}
 .checklist-item:last-child{border-bottom:none}
 .checklist-item svg{width:12px;height:12px;stroke:var(--accent);fill:none;stroke-width:2.5;flex-shrink:0;margin-top:2px}
-.checklist-item span{font-size:12px;color:var(--text-muted);line-height:1.6}
+.checklist-item span{font-size:13px;color:var(--text-muted);line-height:1.6}
 
 /* EFFORT SELECTOR */
 .effort-row{display:flex;align-items:center;gap:6px;margin-top:10px}
-.effort-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;flex-shrink:0}
-.effort-btn{flex:1;padding:5px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);font-size:11px;font-family:'DM Mono',monospace;color:var(--text-dim);cursor:pointer;text-align:center;transition:all 0.15s}
+.effort-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em;flex-shrink:0}
+.effort-btn{flex:1;padding:5px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);font-size:12px;font-family:'DM Mono',monospace;color:var(--text-dim);cursor:pointer;text-align:center;transition:all 0.15s}
 .effort-btn.sel-easy{background:rgba(74,201,138,0.15);border-color:var(--success);color:var(--success)}
 .effort-btn.sel-medium{background:rgba(240,168,74,0.15);border-color:var(--warn);color:var(--warn)}
 .effort-btn.sel-hard{background:rgba(240,97,74,0.15);border-color:var(--danger);color:var(--danger)}
@@ -231,7 +233,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .ex-card.ex-next{border-color:rgba(200,240,74,0.5);box-shadow:0 0 0 1px rgba(200,240,74,0.08)}
 
 /* PROGRESSION HINT */
-.prog-hint{font-size:10px;font-family:'DM Mono',monospace;padding:3px 7px;border-radius:99px;margin-top:3px;display:inline-flex;align-items:center;gap:4px}
+.prog-hint{font-size:11px;font-family:'DM Mono',monospace;padding:3px 7px;border-radius:99px;margin-top:3px;display:inline-flex;align-items:center;gap:4px}
 .prog-hint.inc{background:rgba(74,201,138,0.12);color:var(--success);border:1px solid rgba(74,201,138,0.25)}
 .prog-hint.rep{background:rgba(200,240,74,0.10);color:var(--accent);border:1px solid rgba(200,240,74,0.2)}
 
@@ -239,56 +241,56 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .week-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
 .week-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center}
 .week-stat-val{font-size:20px;font-weight:600;color:var(--text);font-family:'DM Mono',monospace}
-.week-stat-lbl{font-size:10px;color:var(--text-dim);margin-top:2px;text-transform:uppercase;letter-spacing:0.04em}
+.week-stat-lbl{font-size:11px;color:var(--text-dim);margin-top:2px;text-transform:uppercase;letter-spacing:0.04em}
 
 /* SESSION TIMER */
-.session-timer{font-size:11px;font-family:'DM Mono',monospace;color:var(--text-muted);padding:3px 8px;background:var(--surface2);border-radius:99px;border:1px solid var(--border);white-space:nowrap;flex-shrink:0}
+.session-timer{font-size:12px;font-family:'DM Mono',monospace;color:var(--text-muted);padding:3px 8px;background:var(--surface2);border-radius:99px;border:1px solid var(--border);white-space:nowrap;flex-shrink:0}
 
 /* HIIT TIMER */
 .hiit-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px}
 .hiit-presets{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:10px}
-.hiit-preset{padding:7px 9px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text-muted);font-size:11px;font-family:'DM Mono',monospace;display:flex;align-items:center;justify-content:space-between;gap:6px;cursor:pointer}
+.hiit-preset{padding:7px 9px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text-muted);font-size:12px;font-family:'DM Mono',monospace;display:flex;align-items:center;justify-content:space-between;gap:6px;cursor:pointer}
 .hiit-preset.active{border-color:rgba(200,240,74,0.45);background:var(--accent-dim);color:var(--accent)}
-.hiit-fav{font-size:12px;line-height:1;opacity:0.8;cursor:pointer}
+.hiit-fav{font-size:13px;line-height:1;opacity:0.8;cursor:pointer}
 .hiit-fav.active{color:var(--warn);opacity:1}
 .hiit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
 .hiit-grid.two{grid-template-columns:repeat(2,1fr)}
 .hiit-field{display:flex;flex-direction:column;gap:4px}
-.hiit-field label{font-size:10px;font-family:'DM Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.05em}
-.hiit-field input{width:100%;padding:7px 6px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);font-size:12px;font-family:'DM Mono',monospace;text-align:center}
+.hiit-field label{font-size:11px;font-family:'DM Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.05em}
+.hiit-field input{width:100%;padding:7px 6px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);font-size:13px;font-family:'DM Mono',monospace;text-align:center}
 .hiit-field input:focus{outline:none;border-color:var(--accent)}
 .hiit-options{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin:8px 0}
-.hiit-toggle{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);background:var(--surface2);border:1px solid var(--border);padding:6px 8px;border-radius:var(--radius-sm)}
+.hiit-toggle{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted);background:var(--surface2);border:1px solid var(--border);padding:6px 8px;border-radius:var(--radius-sm)}
 .hiit-toggle input{accent-color:var(--accent)}
 .hiit-status{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;margin:8px 0}
-.hiit-meta{font-size:10px;font-family:'DM Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.05em}
-.hiit-phase{font-size:13px;color:var(--text);font-weight:500;margin-top:3px}
-.hiit-round{font-size:11px;color:var(--text-muted);margin-top:2px}
+.hiit-meta{font-size:11px;font-family:'DM Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.05em}
+.hiit-phase{font-size:14px;color:var(--text);font-weight:500;margin-top:3px}
+.hiit-round{font-size:12px;color:var(--text-muted);margin-top:2px}
 .hiit-countdown{font-size:30px;line-height:1;font-family:'DM Mono',monospace;color:var(--accent)}
-.hiit-cue{font-size:11px;color:var(--accent);min-height:16px;margin:6px 0 2px}
+.hiit-cue{font-size:12px;color:var(--accent);min-height:16px;margin:6px 0 2px}
 .hiit-controls{display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px}
-.hiit-btn{padding:9px 8px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:11px;font-family:'DM Mono',monospace;cursor:pointer}
+.hiit-btn{padding:9px 8px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px;font-family:'DM Mono',monospace;cursor:pointer}
 .hiit-btn.primary{background:var(--accent);color:var(--accent-text);border-color:transparent}
 
 /* SYNC BADGE */
-.sync-badge{font-size:10px;font-family:'DM Mono',monospace;padding:3px 8px;border-radius:99px;background:rgba(74,201,138,0.12);color:var(--success);border:1px solid rgba(74,201,138,0.25);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.sync-badge{font-size:11px;font-family:'DM Mono',monospace;padding:3px 8px;border-radius:99px;background:rgba(74,201,138,0.12);color:var(--success);border:1px solid rgba(74,201,138,0.25);cursor:pointer;white-space:nowrap;flex-shrink:0}
 .sync-badge.offline{background:rgba(136,136,136,0.08);color:var(--text-dim);border-color:var(--border)}
 
 /* AUTH OVERLAY */
 .auth-overlay{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-y:auto}
 .auth-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;width:100%;max-width:360px}
 .auth-logo{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--accent);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px}
-.auth-sub{font-size:12px;color:var(--text-muted);margin-bottom:20px;line-height:1.6}
-.auth-input{width:100%;padding:11px 12px;font-size:14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);font-family:'DM Sans',sans-serif;margin-bottom:10px;-webkit-appearance:none;appearance:none}
+.auth-sub{font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.6}
+.auth-input{width:100%;padding:11px 12px;font-size:15px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);font-family:'DM Sans',sans-serif;margin-bottom:10px;-webkit-appearance:none;appearance:none}
 .auth-input:focus{outline:none;border-color:var(--accent)}
-.auth-btn{width:100%;padding:12px;border-radius:var(--radius-sm);border:none;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-bottom:8px;transition:all 0.15s}
+.auth-btn{width:100%;padding:12px;border-radius:var(--radius-sm);border:none;font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;margin-bottom:8px;transition:all 0.15s}
 .auth-btn.primary{background:var(--accent);color:var(--accent-text)}
 .auth-btn.secondary{background:transparent;color:var(--text-muted);border:1px solid var(--border)}
 .auth-btn:active{transform:scale(0.98)}
-.auth-divider{text-align:center;font-size:11px;color:var(--text-dim);margin:4px 0 8px}
-.auth-error{font-size:12px;color:var(--danger);margin-bottom:10px;padding:8px 10px;background:rgba(240,97,74,0.08);border-radius:var(--radius-sm);border:1px solid rgba(240,97,74,0.2);display:none}
+.auth-divider{text-align:center;font-size:12px;color:var(--text-dim);margin:4px 0 8px}
+.auth-error{font-size:13px;color:var(--danger);margin-bottom:10px;padding:8px 10px;background:rgba(240,97,74,0.08);border-radius:var(--radius-sm);border:1px solid rgba(240,97,74,0.2);display:none}
 .auth-error.visible{display:block}
-.auth-msg{font-size:12px;color:var(--success);margin-bottom:10px;padding:8px 10px;background:var(--success-dim);border-radius:var(--radius-sm);border:1px solid rgba(74,201,138,0.3);display:none}
+.auth-msg{font-size:13px;color:var(--success);margin-bottom:10px;padding:8px 10px;background:var(--success-dim);border-radius:var(--radius-sm);border:1px solid rgba(74,201,138,0.3);display:none}
 .auth-msg.visible{display:block}
 </style>
 </head>
@@ -702,13 +704,14 @@ const DAYS = [
 ];
 
 const DATASET_SOURCE_URL = 'https://github.com/hasaneyldrm/exercises-dataset';
+const DATASET_IMG_BASE = 'https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/';
 const DATASET_ALTERNATIVE_GROUPS = {
   chestPress:{
     title:'Chest press swaps',
     focus:'Chest · triceps',
     options:[
-      {name:'Dumbbell bench press', equipment:'Dumbbell', target:'Pectorals', note:'Lie flat on a bench with your feet flat on the ground and your back pressed against the bench.'},
-      {name:'Cable seated chest press', equipment:'Cable', target:'Pectorals', note:'Adjust the seat height and cable handles to a comfortable position.'},
+      {name:'Dumbbell bench press', equipment:'Dumbbell', target:'Pectorals', img:'images/0289-SpYC0Kp.jpg', note:'Lie flat on a bench with your feet flat on the ground and your back pressed against the bench.'},
+      {name:'Cable seated chest press', equipment:'Cable', target:'Pectorals', img:'images/2144-nIR4Rwl.jpg', note:'Adjust the seat height and cable handles to a comfortable position.'},
       {name:'Chest tap push-up', equipment:'Body weight', target:'Pectorals', note:'Start in a high plank position with your hands slightly wider than shoulder-width apart and your body in a straight line.'},
     ]
   },
@@ -716,17 +719,17 @@ const DATASET_ALTERNATIVE_GROUPS = {
     title:'Incline chest swaps',
     focus:'Upper chest · shoulders · triceps',
     options:[
-      {name:'Dumbbell incline bench press', equipment:'Dumbbell', target:'Pectorals', note:'Set up an incline bench at a 45-degree angle.'},
-      {name:'Cable one arm incline press', equipment:'Cable', target:'Pectorals', note:'Adjust the cable machine to a low pulley position.'},
-      {name:'Dumbbell incline fly', equipment:'Dumbbell', target:'Pectorals', note:'Set an incline bench to a 45-degree angle.'},
+      {name:'Dumbbell incline bench press', equipment:'Dumbbell', target:'Pectorals', img:'images/0314-ns0SIbU.jpg', note:'Set up an incline bench at a 45-degree angle.'},
+      {name:'Cable one arm incline press', equipment:'Cable', target:'Pectorals', img:'images/1265-GKEH6jj.jpg', note:'Adjust the cable machine to a low pulley position.'},
+      {name:'Dumbbell incline fly', equipment:'Dumbbell', target:'Pectorals', img:'images/0319-ESOd5Pl.jpg', note:'Set an incline bench to a 45-degree angle.'},
     ]
   },
   horizontalPull:{
     title:'Row / horizontal pull swaps',
     focus:'Upper back · biceps',
     options:[
-      {name:'Cable low seated row', equipment:'Cable', target:'Upper back', note:'Sit on the machine with your feet flat on the footrests and your knees slightly bent.'},
-      {name:'Barbell bent over row', equipment:'Barbell', target:'Upper back', note:'Stand with your feet shoulder-width apart and knees slightly bent.'},
+      {name:'Cable low seated row', equipment:'Cable', target:'Upper back', img:'images/0180-hvV79Si.jpg', note:'Sit on the machine with your feet flat on the footrests and your knees slightly bent.'},
+      {name:'Barbell bent over row', equipment:'Barbell', target:'Upper back', img:'images/0027-eZyBC3j.jpg', note:'Stand with your feet shoulder-width apart and knees slightly bent.'},
       {name:'Standing towel row', equipment:'Body weight', target:'Upper back', note:'Stand with your feet shoulder-width apart and hold a towel in front of you with both hands.'},
     ]
   },
@@ -734,35 +737,35 @@ const DATASET_ALTERNATIVE_GROUPS = {
     title:'Pulldown / vertical pull swaps',
     focus:'Lats · upper back · biceps',
     options:[
-      {name:'Assisted pull-up', equipment:'Leverage machine', target:'Lats', note:'Adjust the machine to your desired weight and height settings.'},
-      {name:'Cable lat pulldown', equipment:'Cable', target:'Lats', note:'Sit on the lat pulldown machine with your knees positioned under the pads.'},
-      {name:'Cable straight arm pulldown', equipment:'Cable', target:'Lats', note:'Attach a straight bar to the high pulley of a cable machine.'},
+      {name:'Assisted pull-up', equipment:'Leverage machine', target:'Lats', img:'images/0017-kiJ4Z2K.jpg', note:'Adjust the machine to your desired weight and height settings.'},
+      {name:'Cable lat pulldown', equipment:'Cable', target:'Lats', img:'images/2330-LEprlgG.jpg', note:'Sit on the lat pulldown machine with your knees positioned under the pads.'},
+      {name:'Cable straight arm pulldown', equipment:'Cable', target:'Lats', img:'images/0238-x69MAlq.jpg', note:'Attach a straight bar to the high pulley of a cable machine.'},
     ]
   },
   shoulderPress:{
     title:'Shoulder press swaps',
     focus:'Delts · triceps',
     options:[
-      {name:'Cable shoulder press', equipment:'Cable', target:'Delts', note:'Adjust the cable machine so that the handles are at shoulder height.'},
-      {name:'Band shoulder press', equipment:'Band', target:'Delts', note:'Stand with your feet shoulder-width apart and place the band under your feet.'},
-      {name:'Barbell seated overhead press', equipment:'Barbell', target:'Delts', note:'Sit on a bench with your back straight and feet flat on the ground.'},
+      {name:'Cable shoulder press', equipment:'Cable', target:'Delts', img:'images/0219-PzQanLE.jpg', note:'Adjust the cable machine so that the handles are at shoulder height.'},
+      {name:'Band shoulder press', equipment:'Band', target:'Delts', img:'images/0997-peAeMR3.jpg', note:'Stand with your feet shoulder-width apart and place the band under your feet.'},
+      {name:'Barbell seated overhead press', equipment:'Barbell', target:'Delts', img:'images/0091-kTbSH9h.jpg', note:'Sit on a bench with your back straight and feet flat on the ground.'},
     ]
   },
   lateralRaise:{
     title:'Lateral raise swaps',
     focus:'Side delts',
     options:[
-      {name:'Dumbbell lateral raise', equipment:'Dumbbell', target:'Delts', note:'Stand with your feet shoulder-width apart and hold a dumbbell in each hand, palms facing your body.'},
-      {name:'Cable lateral raise', equipment:'Cable', target:'Delts', note:'Stand with your feet shoulder-width apart and grasp the cable handles with an overhand grip.'},
-      {name:'Band front lateral raise', equipment:'Band', target:'Delts', note:'Stand with your feet shoulder-width apart and hold the band in front of your thighs with your palms facing down.'},
+      {name:'Dumbbell lateral raise', equipment:'Dumbbell', target:'Delts', img:'images/0334-DsgkuIt.jpg', note:'Stand with your feet shoulder-width apart and hold a dumbbell in each hand, palms facing your body.'},
+      {name:'Cable lateral raise', equipment:'Cable', target:'Delts', img:'images/0178-goJ6ezq.jpg', note:'Stand with your feet shoulder-width apart and grasp the cable handles with an overhand grip.'},
+      {name:'Band front lateral raise', equipment:'Band', target:'Delts', img:'images/0977-sTg7iys.jpg', note:'Stand with your feet shoulder-width apart and hold the band in front of your thighs with your palms facing down.'},
     ]
   },
   chestIsolation:{
     title:'Chest isolation swaps',
     focus:'Chest',
     options:[
-      {name:'Dumbbell fly', equipment:'Dumbbell', target:'Pectorals', note:'Lie flat on a bench with a dumbbell in each hand, palms facing each other.'},
-      {name:'Cable standing fly', equipment:'Cable', target:'Pectorals', note:'Attach the handles to the cables at chest height.'},
+      {name:'Dumbbell fly', equipment:'Dumbbell', target:'Pectorals', img:'images/0308-yz9nUhF.jpg', note:'Lie flat on a bench with a dumbbell in each hand, palms facing each other.'},
+      {name:'Cable standing fly', equipment:'Cable', target:'Pectorals', img:'images/0227-Pr9Rhf4.jpg', note:'Attach the handles to the cables at chest height.'},
       {name:'Assisted chest dip', equipment:'Leverage machine', target:'Pectorals', note:'Adjust the machine to your desired height and secure your knees on the pad.'},
     ]
   },
@@ -771,8 +774,8 @@ const DATASET_ALTERNATIVE_GROUPS = {
     focus:'Rear shoulders · upper back',
     options:[
       {name:'Cable rear delt row', equipment:'Cable', target:'Delts', note:'Attach a rope handle to a low pulley cable machine.'},
-      {name:'Dumbbell rear delt raise', equipment:'Dumbbell', target:'Delts', note:'Stand with your feet shoulder-width apart and hold a dumbbell in each hand, palms facing your body.'},
-      {name:'Band reverse fly', equipment:'Band', target:'Delts', note:'Attach the band to a stationary object at chest height.'},
+      {name:'Dumbbell rear delt raise', equipment:'Dumbbell', target:'Delts', img:'images/2292-mu5Guxt.jpg', note:'Stand with your feet shoulder-width apart and hold a dumbbell in each hand, palms facing your body.'},
+      {name:'Band reverse fly', equipment:'Band', target:'Delts', img:'images/0993-sTfvVsG.jpg', note:'Attach the band to a stationary object at chest height.'},
     ]
   },
   triceps:{
@@ -780,7 +783,7 @@ const DATASET_ALTERNATIVE_GROUPS = {
     focus:'Triceps',
     options:[
       {name:'Cable triceps pushdown', equipment:'Cable', target:'Triceps', note:'Attach a v-bar attachment to the cable machine at the highest setting.'},
-      {name:'Cable alternate triceps extension', equipment:'Cable', target:'Triceps', note:'Stand facing the cable machine with your feet shoulder-width apart.'},
+      {name:'Cable alternate triceps extension', equipment:'Cable', target:'Triceps', img:'images/0149-Gchi5Tr.jpg', note:'Stand facing the cable machine with your feet shoulder-width apart.'},
       {name:'Kneeling triceps extension', equipment:'Body weight', target:'Triceps', note:'Kneel down on the ground with your knees hip-width apart.'},
     ]
   },
@@ -788,35 +791,35 @@ const DATASET_ALTERNATIVE_GROUPS = {
     title:'Biceps swaps',
     focus:'Biceps',
     options:[
-      {name:'Dumbbell biceps curl', equipment:'Dumbbell', target:'Biceps', note:'Stand up straight with a dumbbell in each hand, palms facing forward and arms fully extended.'},
-      {name:'Cable curl', equipment:'Cable', target:'Biceps', note:'Stand facing the cable machine with your feet shoulder-width apart.'},
-      {name:'Dumbbell concentration curl', equipment:'Dumbbell', target:'Biceps', note:'Sit on a bench with your legs spread apart and a dumbbell in one hand, resting your elbow on the inside of your thigh.'},
+      {name:'Dumbbell biceps curl', equipment:'Dumbbell', target:'Biceps', img:'images/0294-NbVPDMW.jpg', note:'Stand up straight with a dumbbell in each hand, palms facing forward and arms fully extended.'},
+      {name:'Cable curl', equipment:'Cable', target:'Biceps', img:'images/0868-G08RZcQ.jpg', note:'Stand facing the cable machine with your feet shoulder-width apart.'},
+      {name:'Dumbbell concentration curl', equipment:'Dumbbell', target:'Biceps', img:'images/0297-gvsWLQw.jpg', note:'Sit on a bench with your legs spread apart and a dumbbell in one hand, resting your elbow on the inside of your thigh.'},
     ]
   },
   quadCompound:{
     title:'Quad-dominant lower-body swaps',
     focus:'Quads · glutes',
     options:[
-      {name:'Dumbbell goblet squat', equipment:'Dumbbell', target:'Quads', note:'Stand with your feet shoulder-width apart, holding a dumbbell vertically against your chest with both hands.'},
-      {name:'Sled hack squat', equipment:'Sled machine', target:'Glutes', note:'Adjust the sled machine to a comfortable position for your height.'},
-      {name:'Split squats', equipment:'Body weight', target:'Quads', note:'Stand with your feet shoulder-width apart.'},
+      {name:'Dumbbell goblet squat', equipment:'Dumbbell', target:'Quads', img:'images/1760-yn8yg1r.jpg', note:'Stand with your feet shoulder-width apart, holding a dumbbell vertically against your chest with both hands.'},
+      {name:'Sled hack squat', equipment:'Sled machine', target:'Glutes', img:'images/0743-Qa55kX1.jpg', note:'Adjust the sled machine to a comfortable position for your height.'},
+      {name:'Split squats', equipment:'Body weight', target:'Quads', img:'images/2368-9E25EOx.jpg', note:'Stand with your feet shoulder-width apart.'},
     ]
   },
   quadIsolation:{
     title:'Quad isolation swaps',
     focus:'Quads',
     options:[
-      {name:'Lever leg extension', equipment:'Leverage machine', target:'Quads', note:'Adjust the seat height and backrest of the machine to fit your body.'},
-      {name:'Resistance band leg extension', equipment:'Resistance band', target:'Quads', note:'Attach the resistance band to a sturdy anchor point and secure it around your ankle.'},
-      {name:'Dumbbell step-up split squat', equipment:'Dumbbell', target:'Quads', note:'Stand in front of a bench or step with a dumbbell in each hand, palms facing your body.'},
+      {name:'Lever leg extension', equipment:'Leverage machine', target:'Quads', img:'images/0585-my33uHU.jpg', note:'Adjust the seat height and backrest of the machine to fit your body.'},
+      {name:'Resistance band leg extension', equipment:'Resistance band', target:'Quads', img:'images/3007-Y1MsI1l.jpg', note:'Attach the resistance band to a sturdy anchor point and secure it around your ankle.'},
+      {name:'Dumbbell step-up split squat', equipment:'Dumbbell', target:'Quads', img:'images/2812-QjE2DcA.jpg', note:'Stand in front of a bench or step with a dumbbell in each hand, palms facing your body.'},
     ]
   },
   hamstringCurl:{
     title:'Hamstring curl swaps',
     focus:'Hamstrings',
     options:[
-      {name:'Lever lying leg curl', equipment:'Leverage machine', target:'Hamstrings', note:'Adjust the machine to fit your body and select the desired weight.'},
-      {name:'Lever seated leg curl', equipment:'Leverage machine', target:'Hamstrings', note:'Adjust the machine to fit your body and sit on it with your back against the backrest.'},
+      {name:'Lever lying leg curl', equipment:'Leverage machine', target:'Hamstrings', img:'images/0586-17lJ1kr.jpg', note:'Adjust the machine to fit your body and select the desired weight.'},
+      {name:'Lever seated leg curl', equipment:'Leverage machine', target:'Hamstrings', img:'images/0599-Zg3XY7P.jpg', note:'Adjust the machine to fit your body and sit on it with your back against the backrest.'},
       {name:'Inverse leg curl', equipment:'Body weight', target:'Hamstrings', note:'Lie face down on a bench with your hips at the edge and your legs extended straight behind you.'},
     ]
   },
@@ -824,16 +827,16 @@ const DATASET_ALTERNATIVE_GROUPS = {
     title:'Hip hinge swaps',
     focus:'Hamstrings · glutes · posterior chain',
     options:[
-      {name:'Dumbbell Romanian deadlift', equipment:'Dumbbell', target:'Glutes', note:'Stand with your feet shoulder-width apart, holding a dumbbell in each hand with an overhand grip.'},
-      {name:'Barbell Romanian deadlift', equipment:'Barbell', target:'Glutes', note:'Stand with your feet shoulder-width apart and your toes pointing forward.'},
-      {name:'Glute-ham raise', equipment:'Body weight', target:'Hamstrings', note:'Adjust the glute-ham raise machine to fit your body.'},
+      {name:'Dumbbell Romanian deadlift', equipment:'Dumbbell', target:'Glutes', img:'images/1459-rR0LJzx.jpg', note:'Stand with your feet shoulder-width apart, holding a dumbbell in each hand with an overhand grip.'},
+      {name:'Barbell Romanian deadlift', equipment:'Barbell', target:'Glutes', img:'images/0085-wQ2c4XD.jpg', note:'Stand with your feet shoulder-width apart and your toes pointing forward.'},
+      {name:'Glute-ham raise', equipment:'Body weight', target:'Hamstrings', img:'images/3193-Vvwjz6N.jpg', note:'Adjust the glute-ham raise machine to fit your body.'},
     ]
   },
   gluteBridge:{
     title:'Glute bridge / thrust swaps',
     focus:'Glutes · hamstrings',
     options:[
-      {name:'Barbell glute bridge', equipment:'Barbell', target:'Glutes', note:'Start by lying flat on your back on the ground with your knees bent and feet flat on the floor.'},
+      {name:'Barbell glute bridge', equipment:'Barbell', target:'Glutes', img:'images/1409-qKBpF7I.jpg', note:'Start by lying flat on your back on the ground with your knees bent and feet flat on the floor.'},
       {name:'Bench glute bridge', equipment:'Body weight', target:'Glutes', note:'Sit on the edge of a bench with your back against it and your feet flat on the ground.'},
       {name:'Band hip thrust on knees', equipment:'Resistance band', target:'Glutes', note:'Start by kneeling on the ground with your knees hip-width apart and your feet flexed.'},
     ]
@@ -842,54 +845,54 @@ const DATASET_ALTERNATIVE_GROUPS = {
     title:'Hip abduction swaps',
     focus:'Outer glutes · hip stabilizers',
     options:[
-      {name:'Straight leg outer hip abductor', equipment:'Body weight', target:'Abductors', note:'Lie on your side with your legs straight and stacked on top of each other.'},
-      {name:'Lever seated hip abduction', equipment:'Leverage machine', target:'Abductors', note:'Adjust the seat height so that your knees are at a 90-degree angle.'},
-      {name:'Resistance band seated hip abduction', equipment:'Resistance band', target:'Abductors', note:'Sit on a chair or bench with your back straight and feet flat on the ground.'},
+      {name:'Straight leg outer hip abductor', equipment:'Body weight', target:'Abductors', img:'images/1427-mQ1tBXn.jpg', note:'Lie on your side with your legs straight and stacked on top of each other.'},
+      {name:'Lever seated hip abduction', equipment:'Leverage machine', target:'Abductors', img:'images/0597-CHpahtl.jpg', note:'Adjust the seat height so that your knees are at a 90-degree angle.'},
+      {name:'Resistance band seated hip abduction', equipment:'Resistance band', target:'Abductors', img:'images/3006-0xDpB4L.jpg', note:'Sit on a chair or bench with your back straight and feet flat on the ground.'},
     ]
   },
   calves:{
     title:'Calf raise swaps',
     focus:'Calves',
     options:[
-      {name:'Lever standing calf raise', equipment:'Leverage machine', target:'Calves', note:'Adjust the machine to your height and stand with your feet shoulder-width apart.'},
-      {name:'Bodyweight standing calf raise', equipment:'Body weight', target:'Calves', note:'Stand with your feet shoulder-width apart, toes pointing forward.'},
-      {name:'Lever seated calf raise', equipment:'Leverage machine', target:'Calves', note:'Adjust the seat height so that your knees are slightly bent and your feet are flat on the footplate.'},
+      {name:'Lever standing calf raise', equipment:'Leverage machine', target:'Calves', img:'images/0605-ykUOVze.jpg', note:'Adjust the machine to your height and stand with your feet shoulder-width apart.'},
+      {name:'Bodyweight standing calf raise', equipment:'Body weight', target:'Calves', img:'images/1373-bJYHBIN.jpg', note:'Stand with your feet shoulder-width apart, toes pointing forward.'},
+      {name:'Lever seated calf raise', equipment:'Leverage machine', target:'Calves', img:'images/0594-bOOdeyc.jpg', note:'Adjust the seat height so that your knees are slightly bent and your feet are flat on the footplate.'},
     ]
   },
   coreBrace:{
     title:'Core bracing swaps',
     focus:'Abs · trunk stability',
     options:[
-      {name:'Weighted front plank', equipment:'Weighted', target:'Abs', note:'Start by lying face down on the floor.'},
+      {name:'Weighted front plank', equipment:'Weighted', target:'Abs', img:'images/2135-VBAWRPG.jpg', note:'Start by lying face down on the floor.'},
       {name:'Kneeling plank tap shoulder', equipment:'Body weight', target:'Abs', note:'Start in a kneeling position with your hands on the ground, shoulder-width apart.'},
-      {name:'Front plank with twist', equipment:'Body weight', target:'Abs', note:'Start in a high plank position with your hands directly under your shoulders and your body in a straight line from head to toe.'},
+      {name:'Front plank with twist', equipment:'Body weight', target:'Abs', img:'images/0464-CosupLu.jpg', note:'Start in a high plank position with your hands directly under your shoulders and your body in a straight line from head to toe.'},
     ]
   },
   coreCrunch:{
     title:'Core crunch swaps',
     focus:'Abs · flexion',
     options:[
-      {name:'Cable kneeling crunch', equipment:'Cable', target:'Abs', note:'Attach a rope handle to a high pulley and kneel down facing away from the machine.'},
-      {name:'Lever seated crunch', equipment:'Leverage machine', target:'Abs', note:'Sit on the leverage machine with your back against the pad and your feet flat on the floor.'},
-      {name:'Reverse crunch', equipment:'Body weight', target:'Abs', note:'Lie flat on your back with your arms extended along your sides.'},
+      {name:'Cable kneeling crunch', equipment:'Cable', target:'Abs', img:'images/0175-WW95auq.jpg', note:'Attach a rope handle to a high pulley and kneel down facing away from the machine.'},
+      {name:'Lever seated crunch', equipment:'Leverage machine', target:'Abs', img:'images/1452-Wgaz7pm.jpg', note:'Sit on the leverage machine with your back against the pad and your feet flat on the floor.'},
+      {name:'Reverse crunch', equipment:'Body weight', target:'Abs', img:'images/0872-nCU1Ekp.jpg', note:'Lie flat on your back with your arms extended along your sides.'},
     ]
   },
   singleLegLower:{
     title:'Single-leg lower-body swaps',
     focus:'Quads · glutes · balance',
     options:[
-      {name:'Dumbbell step-up', equipment:'Dumbbell', target:'Glutes', note:'Stand in front of a bench or step with a dumbbell in each hand, palms facing your body.'},
-      {name:'Split squats', equipment:'Body weight', target:'Quads', note:'Stand with your feet shoulder-width apart.'},
-      {name:'Dumbbell single leg split squat', equipment:'Dumbbell', target:'Quads', note:'Stand with your feet shoulder-width apart, holding a dumbbell in each hand.'},
+      {name:'Dumbbell step-up', equipment:'Dumbbell', target:'Glutes', img:'images/0431-aXtJhlg.jpg', note:'Stand in front of a bench or step with a dumbbell in each hand, palms facing your body.'},
+      {name:'Split squats', equipment:'Body weight', target:'Quads', img:'images/2368-9E25EOx.jpg', note:'Stand with your feet shoulder-width apart.'},
+      {name:'Dumbbell single leg split squat', equipment:'Dumbbell', target:'Quads', img:'images/0410-qx4fgX7.jpg', note:'Stand with your feet shoulder-width apart, holding a dumbbell in each hand.'},
     ]
   },
   carry:{
     title:'Carry / posture swaps',
     focus:'Grip · posture · trunk',
     options:[
-      {name:'Farmers walk', equipment:'Dumbbell', target:'Quads', note:'Stand up straight with a dumbbell in each hand, palms facing your sides.'},
+      {name:'Farmers walk', equipment:'Dumbbell', target:'Quads', img:'images/2133-qPEzJjA.jpg', note:'Stand up straight with a dumbbell in each hand, palms facing your sides.'},
       {name:'Single arm overhead carry', equipment:'Dumbbell', target:'Delts', note:'Stand tall with your feet shoulder-width apart, holding a dumbbell in one hand.'},
-      {name:'Walking lunge', equipment:'Body weight', target:'Glutes', note:'Stand with your feet shoulder-width apart.'},
+      {name:'Walking lunge', equipment:'Body weight', target:'Glutes', img:'images/1460-IZVHb27.jpg', note:'Stand with your feet shoulder-width apart.'},
     ]
   },
 };
@@ -1298,9 +1301,12 @@ function renderTabs(){
 
 function renderAlternativeItems(group){
   return group.options.map(o=>`<div class="alt-item">
-    <div class="alt-item-name">${o.name}</div>
-    <div class="alt-item-meta">${o.equipment} · muscles: ${o.target}</div>
-    <div class="alt-item-note">${o.note}</div>
+    ${o.img ? `<img class="alt-item-img" src="${DATASET_IMG_BASE}${o.img}" alt="${o.name}" loading="lazy">` : ''}
+    <div class="alt-item-content">
+      <div class="alt-item-name">${o.name}</div>
+      <div class="alt-item-meta">${o.equipment} · muscles: ${o.target}</div>
+      <div class="alt-item-note">${o.note}</div>
+    </div>
   </div>`).join('');
 }
 
@@ -1318,7 +1324,7 @@ function renderExerciseAlternatives(exerciseName){
     </div>
     <div class="sub-card-body">
       <div class="alt-list">${renderAlternativeItems(group)}</div>
-      <div class="alt-footnote">Curated from <a href="${DATASET_SOURCE_URL}" target="_blank" rel="noreferrer noopener">hasaneyldrm/exercises-dataset</a>. Exercise data only — no GIFs or images imported.</div>
+      <div class="alt-footnote">Images and data from <a href="${DATASET_SOURCE_URL}" target="_blank" rel="noreferrer noopener">hasaneyldrm/exercises-dataset</a> (MIT licensed).</div>
     </div>
   </div>`;
 }
@@ -1519,7 +1525,7 @@ function renderGuide(){
         <div class="prog-step"><div class="prog-step-num">3</div><p>When you can complete 3 sets of 12 reps cleanly — add weight next session.</p></div>
         <div class="prog-step"><div class="prog-step-num">4</div><p>Increase by the smallest available increment (usually 5 lbs). Repeat.</p></div>
       </div>
-      <p style="font-size:11px;color:var(--text-dim);margin-top:6px">This is called progressive overload — the foundation of all strength and muscle gain.</p>
+      <p style="font-size:12px;color:var(--text-dim);margin-top:6px">This is called progressive overload — the foundation of all strength and muscle gain.</p>
     </div>
   </div>
 
@@ -1574,9 +1580,6 @@ function renderGuide(){
 
   <div class="guide-section">
     <div class="guide-section-title">When a machine is taken</div>
-    <div class="guide-card">
-      <p>Instead of importing all 1,324 exercises right away, this app uses a curated beginner-friendly subset from <a href="${DATASET_SOURCE_URL}" target="_blank" rel="noreferrer noopener" style="color:var(--accent);text-decoration:none">hasaneyldrm/exercises-dataset</a>. Use these swaps to keep training the same muscle group when equipment is busy, and keep the planned sets, reps, and rest the same.</p>
-    </div>
     ${subs}
   </div>
 
@@ -1590,7 +1593,7 @@ function renderGuide(){
         <tr><td>Cool-down stretches</td><td>5 min</td></tr>
         <tr><td>Total target</td><td>50–90 min</td></tr>
       </table>
-      <p style="font-size:12px;color:var(--text-dim);margin-top:8px">If you're regularly going 90+ minutes, you're likely resting too long or doing too much. Keep it focused.</p>
+      <p style="font-size:13px;color:var(--text-dim);margin-top:8px">If you're regularly going 90+ minutes, you're likely resting too long or doing too much. Keep it focused.</p>
     </div>
   </div>
 
@@ -1642,7 +1645,7 @@ function renderGuide(){
         <li>Protein shakes (as a supplement, not a meal)</li>
         <li>Beans, lentils, tofu, tempeh</li>
       </ul>
-      <p style="font-size:11px;color:var(--text-dim);margin-top:8px">Target: ~0.7–1g of protein per pound of bodyweight per day.</p>
+      <p style="font-size:12px;color:var(--text-dim);margin-top:8px">Target: ~0.7–1g of protein per pound of bodyweight per day.</p>
     </div>
   </div>`;
 }
@@ -1687,7 +1690,7 @@ function renderMindset(){
         <li>After: proud and energized — not wrecked</li>
         <li>Next day: maybe sore, but able to move normally</li>
       </ul>
-      <p style="font-size:12px;color:var(--text-dim);margin-top:10px">If you dread going back because you're too sore, the workout was too aggressive. Dial it back.</p>
+      <p style="font-size:13px;color:var(--text-dim);margin-top:10px">If you dread going back because you're too sore, the workout was too aggressive. Dial it back.</p>
     </div>
   </div>
 
@@ -1703,7 +1706,7 @@ function renderMindset(){
         <li>Clothes fitting differently</li>
         <li>You feel capable instead of lost</li>
       </ul>
-      <p style="font-size:12px;color:var(--text-dim);margin-top:10px">The first signs of progress are rarely dramatic visual changes. They're confidence, coordination, and strength.</p>
+      <p style="font-size:13px;color:var(--text-dim);margin-top:10px">The first signs of progress are rarely dramatic visual changes. They're confidence, coordination, and strength.</p>
     </div>
   </div>
 
@@ -1720,7 +1723,7 @@ function renderMindset(){
     <div class="guide-section-title">End-of-session checklist</div>
     <div class="guide-card">
       ${checklist.map(c=>`<div class="checklist-item"><svg viewBox="0 0 12 12"><polyline points="1,6 4.5,10 11,2"/></svg><span>${c}</span></div>`).join('')}
-      <p style="font-size:11px;color:var(--text-dim);margin-top:10px">If you can say yes to all five — that was a successful workout, regardless of how the weight felt.</p>
+      <p style="font-size:12px;color:var(--text-dim);margin-top:10px">If you can say yes to all five — that was a successful workout, regardless of how the weight felt.</p>
     </div>
   </div>
 
