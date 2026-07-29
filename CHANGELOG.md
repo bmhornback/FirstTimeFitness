@@ -5,7 +5,7 @@ All notable changes to FirstTimeFitness are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-> To release a new version: update the `VERSION` file and add an entry here under `[Unreleased]`, then open a PR. When the PR merges to `main`, the auto-release workflow tags the commit and creates a GitHub Release automatically.
+> To release a new version: update the `VERSION` file and document changes under `## [Unreleased]`, then move those entries into a new `## [X.Y.Z] — YYYY-MM-DD` section directly below `[Unreleased]` (where `X.Y.Z` matches the `VERSION` value) and leave `## [Unreleased]` empty for future changes. The auto-release workflow reads the `## [X.Y.Z]` section matching `VERSION` to generate the GitHub Release notes — it will fail if no matching section is found.
 
 ---
 

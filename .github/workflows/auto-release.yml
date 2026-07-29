@@ -41,8 +41,12 @@ jobs:
         if: steps.tag_check.outputs.exists == 'false'
         run: |
           VERSION="${{ steps.version.outputs.value }}"
-          # Extract the section for this version from CHANGELOG.md
-          NOTES=$(awk "/^## \[$VERSION\]/,/^## \[/" CHANGELOG.md | head -n -2 | tail -n +2)
+          # Extract lines between the version header and the next header or separator
+          NOTES=$(awk "/^## \[$VERSION\]/{found=1; next} found && /^## \[/{exit} found && /^---$/{exit} found{print}" CHANGELOG.md | sed '/^[[:space:]]*$/d; /./,$!d' | sed -e :a -e '/^[[:space:]]*$/{$d;N;ba}')
+          if [ -z "$NOTES" ]; then
+            echo "ERROR: No changelog entry found for version $VERSION in CHANGELOG.md" >&2
+            exit 1
+          fi
           # Use a delimiter to safely pass multiline output
           {
             echo "notes<<CHANGELOG_EOF"

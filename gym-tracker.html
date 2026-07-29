@@ -1299,7 +1299,7 @@ function renderTabs(){
 function renderAlternativeItems(group){
   return group.options.map(o=>`<div class="alt-item">
     <div class="alt-item-name">${o.name}</div>
-    <div class="alt-item-meta">${o.equipment} · target: ${o.target}</div>
+    <div class="alt-item-meta">${o.equipment} · muscles: ${o.target}</div>
     <div class="alt-item-note">${o.note}</div>
   </div>`).join('');
 }

@@ -200,7 +200,7 @@ This project is in active early development. If you have ideas, feature requests
    - `MINOR` — new features that are backward-compatible (e.g. `1.2.0`)
    - `MAJOR` — breaking changes or major rewrites (e.g. `2.0.0`)
 2. Update the `VERSION` file with the new version number
-3. Add an entry to `CHANGELOG.md` under `## [Unreleased]` describing what changed, then rename that section to `## [X.Y.Z] — YYYY-MM-DD`
+3. In `CHANGELOG.md`, move the items from `## [Unreleased]` into a new `## [X.Y.Z] — YYYY-MM-DD` section directly below it (where `X.Y.Z` matches the `VERSION` file), then clear `## [Unreleased]` so it stays in place for future changes
 4. Update the version comment at the top of `gym-tracker.html`
 5. Update the version badge in `README.md`
 6. Open a PR — when it merges to `main`, the auto-release workflow tags the commit and creates a GitHub Release automatically
