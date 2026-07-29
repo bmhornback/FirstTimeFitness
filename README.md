@@ -61,6 +61,7 @@ The app runs entirely in your browser. No installation required. No account need
 - Rep speed, breathing, and rest time tables
 - Muscle group explanations (push, pull, lower, core)
 - Curated dataset-based substitution suggestions when a machine is taken
+- Detailed cool-down stretch how-to cards (position, steps, breathing, mistakes, and demo links)
 - Workout duration guidelines
 - Simple nutrition and protein intake reference
 
