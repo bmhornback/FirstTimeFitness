@@ -76,6 +76,8 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .cooldown-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .cooldown-item{font-size:13px;color:var(--text-muted);display:flex;align-items:center;gap:5px}
 .cooldown-item svg{width:10px;height:10px;stroke:var(--success);fill:none;stroke-width:2.5;flex-shrink:0}
+.cooldown-item-btn{width:100%;border:1px solid rgba(74,201,138,0.18);background:rgba(74,201,138,0.05);border-radius:var(--radius-sm);padding:7px 8px;text-align:left;cursor:pointer;font-family:'DM Sans',sans-serif}
+.cooldown-item-btn .cooldown-link{margin-left:auto;font-size:10px;font-family:'DM Mono',monospace;color:var(--success);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap}
 
 /* PROGRESS */
 .progress-wrap{display:flex;align-items:center;gap:10px;margin-bottom:14px}
@@ -105,6 +107,9 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
 /* EXERCISE BODY */
 .ex-body{border-top:1px solid var(--border);padding:12px}
+.ex-body-head{display:flex;gap:10px;align-items:flex-start}
+.ex-tip-wrap{flex:1;min-width:0}
+.ex-exercise-img{width:88px;height:88px;border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);background:var(--surface2)}
 .ex-tip{font-size:13px;color:var(--text-muted);line-height:1.6;background:var(--surface2);border-radius:var(--radius-sm);padding:9px 11px;margin-bottom:10px;border-left:2px solid var(--accent)}
 .ex-cue{font-size:12px;font-family:'DM Mono',monospace;color:var(--accent);margin-bottom:10px;padding:6px 10px;background:var(--accent-dim);border-radius:var(--radius-sm)}
 .ex-cue::before{content:'CUE → '}
@@ -196,6 +201,20 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .alt-item-meta{font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.04em;margin-top:4px}
 .alt-item-note{font-size:12px;color:var(--text-muted);line-height:1.6;margin-top:5px}
 .alt-footnote{font-size:11px;color:var(--text-dim);line-height:1.6;margin-top:8px}
+.stretch-safety{font-size:12px;color:var(--warn);line-height:1.6;background:var(--warn-dim);border:1px solid rgba(240,168,74,0.3);border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:8px}
+.stretch-card{scroll-margin-top:78px;transition:box-shadow 0.2s,border-color 0.2s}
+.stretch-card-focus{border-color:rgba(200,240,74,0.55);box-shadow:0 0 0 1px rgba(200,240,74,0.18)}
+.stretch-card-head{display:flex;gap:10px;align-items:flex-start}
+.stretch-thumb{width:88px;height:88px;border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);background:var(--surface2)}
+.stretch-thumb-fallback{width:88px;height:88px;border-radius:8px;border:1px dashed #4a4a4a;background:var(--surface2);display:flex;align-items:center;justify-content:center;text-align:center;padding:6px;font-size:10px;color:var(--text-dim);line-height:1.4;flex-shrink:0}
+.stretch-thumb-fallback.hidden{display:none}
+.stretch-meta{font-size:11px;color:var(--accent);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.04em;margin-top:2px}
+.stretch-detail{margin-top:10px}
+.stretch-detail-title{font-size:12px;color:var(--text);font-weight:600;margin-bottom:4px}
+.stretch-detail-body{font-size:12px;color:var(--text-muted);line-height:1.65}
+.stretch-steps{padding-left:18px;margin-top:3px}
+.stretch-steps li{margin-bottom:3px;color:var(--text-muted);font-size:12px;line-height:1.6}
+.stretch-demo{display:inline-flex;margin-top:8px;font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-decoration:none}
 
 /* HISTORY PAGE */
 .hist-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px}
@@ -556,26 +575,32 @@ const DAYS = [
     warmup:['5–10 min treadmill walk or bike','Arm circles × 10 each direction','Shoulder rolls × 10','Bodyweight squats × 10','Light warm-up sets on first lift'],
     exercises:[
       {name:'Chest press machine', muscles:'Chest, triceps, front shoulders', sets:3, target:'8–12 reps', rest:'90–120 sec',
+       img:'images/0577-T0yTjgW.jpg',
        tip:'Keep shoulder blades slightly back and down. Don\'t shrug. Don\'t lock elbows hard at the top.',
        cue:'Push through your chest, not your neck or shoulders.',
        mistakes:'Shoulders shrugging up · Locking elbows aggressively · Letting the weight slam back · Seat set too low or too high'},
       {name:'Seated row machine', muscles:'Mid back, biceps, rear shoulders', sets:3, target:'8–12 reps', rest:'90–120 sec',
+       img:'images/1350-7I6LNUG.jpg',
        tip:'Sit tall, pull your elbows back toward your ribs — not your hands. Think: squeeze shoulder blades together.',
        cue:'Pull your elbows back, not your hands.',
        mistakes:'Leaning way back · Shrugging shoulders · Rounding your back · Pulling only with your arms'},
       {name:'Lat pulldown', muscles:'Lats, upper back, biceps', sets:3, target:'8–12 reps', rest:'90–120 sec',
+       img:'images/2330-LEprlgG.jpg',
        tip:'Pull bar toward your upper chest — never behind the neck. Sit tall, thighs secured under pad.',
        cue:'Drive your elbows down toward your pockets.',
        mistakes:'Pulling behind the neck · Swinging backward · Shrugging shoulders up · Too much weight'},
       {name:'Shoulder press machine', muscles:'Shoulders, triceps', sets:3, target:'8–12 reps', rest:'90 sec',
+       img:'images/0603-67n3r98.jpg',
        tip:'Seat height puts handles at shoulder level. Keep back against pad. Press up without shrugging.',
        cue:'Press up, but keep your shoulders away from your ears.',
        mistakes:'Arching lower back · Shrugging hard · Locking elbows aggressively · Going too heavy'},
       {name:'Cable triceps pushdown', muscles:'Triceps', sets:2, target:'10–15 reps', rest:'60 sec',
+       img:'images/0200-dU605di.jpg',
        tip:'Elbows tucked near sides. Chest tall. Only your forearms should move. Push rope or bar down.',
        cue:'Pin your elbows to your sides and push down.',
        mistakes:'Moving shoulders too much · Leaning bodyweight into it · Letting elbows flare · Using momentum'},
       {name:'Dumbbell bicep curls', muscles:'Biceps', sets:2, target:'10–15 reps', rest:'60 sec',
+       img:'images/0294-NbVPDMW.jpg',
        tip:'Keep elbows close to body. Curl up, lower slowly. Do not swing or rock backward.',
        cue:'Lift with your biceps, not your hips.',
        mistakes:'Rocking body backward · Letting elbows drift forward · Going too heavy · Dropping the weight quickly'},
@@ -588,26 +613,32 @@ const DAYS = [
     warmup:['5–10 min easy bike or elliptical','Bodyweight squats × 10','Hip hinges × 10','Hip circles × 8 each side','Light warm-up sets on leg press'],
     exercises:[
       {name:'Leg press', muscles:'Quads, glutes, hamstrings', sets:3, target:'8–12 reps', rest:'90–120 sec',
+       img:'images/0739-10Z2DXU.jpg',
        tip:'Feet shoulder-width apart, midway up the platform. Knees track in same direction as toes. Don\'t let lower back round off the seat.',
        cue:'Push the platform away with your whole foot.',
        mistakes:'Knees caving inward · Lower back rounding off seat · Locking knees hard at top · Going too deep too soon'},
       {name:'Seated leg curl', muscles:'Hamstrings', sets:3, target:'10–12 reps', rest:'75 sec',
+       img:'images/0599-Zg3XY7P.jpg',
        tip:'Pad near lower calf/ankle. Curl smoothly, pause briefly, lower slowly. Slow descent is where the work happens.',
        cue:'Squeeze the back of your legs.',
        mistakes:'Hips lifting off pad · Swinging the weight · Not controlling the return · Too much weight'},
       {name:'Leg extension', muscles:'Quads', sets:3, target:'10–12 reps', rest:'75 sec',
+       img:'images/0585-my33uHU.jpg',
        tip:'Knees aligned with machine pivot point. Pad near lower shin. Extend fully, hold 1 sec at top, lower slowly.',
        cue:'Smooth up, slower down.',
        mistakes:'Going too heavy · Kicking the weight · Locking knees violently · Letting the stack slam'},
       {name:'Glute bridge / hip thrust machine', muscles:'Glutes, hamstrings', sets:3, target:'8–12 reps', rest:'75 sec',
+       img:'images/1409-qKBpF7I.jpg',
        tip:'Upper back supported. Feet planted. Drive hips upward, squeeze glutes at the top. You should feel this in your glutes, not your lower back.',
        cue:'Squeeze your glutes like you\'re trying to crack a walnut.',
        mistakes:'Overarching lower back · Feet too far away · Pushing through toes only · Rushing reps'},
       {name:'Calf raise', muscles:'Calves', sets:3, target:'10–15 reps', rest:'60 sec',
+       img:'images/0605-ykUOVze.jpg',
        tip:'Balls of feet on platform. Lower heels all the way, rise up fully, pause at the top. Full range of motion matters here.',
        cue:'Stretch low, squeeze high.',
        mistakes:'Bouncing · Using tiny partial reps · Going too fast · Not pausing'},
       {name:'Plank', muscles:'Core, lower back, trunk', sets:3, target:'20–45 sec', rest:'60 sec',
+       img:'images/2135-VBAWRPG.jpg',
        tip:'Elbows under shoulders. Body in a straight line. Squeeze glutes lightly. Brace your abs. Don\'t let hips sag or pike up.',
        cue:'Make your body a straight, stiff board.',
        mistakes:'Hips sagging · Hips too high · Holding your breath · Neck craned upward'},
@@ -626,30 +657,37 @@ const DAYS = [
     warmup:['5–10 min treadmill walk or bike','Arm circles × 10 each direction','Shoulder rolls × 10','Scapular retractions × 10','Light warm-up sets on first lift'],
     exercises:[
       {name:'Incline chest press machine', muscles:'Upper chest, shoulders, triceps', sets:3, target:'8–12 reps', rest:'90 sec',
+       img:'images/1299-jHAnWmT.jpg',
        tip:'Bench or machine angled 30–45°. This hits more upper chest than a flat press. Use lighter weight than flat press to start.',
        cue:'Press up and slightly forward — not straight overhead.',
        mistakes:'Going too heavy · Flaring elbows out · Shrugging shoulders · Arching aggressively'},
       {name:'Assisted pull-up or lat pulldown', muscles:'Back, lats, biceps', sets:3, target:'8–12 reps', rest:'90 sec',
+       img:'images/0017-kiJ4Z2K.jpg',
        tip:'If the gym has an assisted pull-up machine, use it. Otherwise, lat pulldown is your fallback. Pull toward upper chest.',
        cue:'Drive your elbows down toward your pockets.',
        mistakes:'Swinging · Behind-the-neck pulls · Too much weight · Letting shoulder blades rise'},
       {name:'Cable row or machine row', muscles:'Mid back, biceps', sets:3, target:'10–12 reps', rest:'75 sec',
+       img:'images/0861-fUBheHs.jpg',
        tip:'Different angle from Monday\'s row — equally important for back development. Pull to lower ribs.',
        cue:'Pull your elbows back, not your hands.',
        mistakes:'Leaning too far back · Rounding forward · Using arm strength only'},
       {name:'Lateral raise (machine or dumbbell)', muscles:'Side shoulders', sets:3, target:'12–15 reps', rest:'60 sec',
+       img:'images/0334-DsgkuIt.jpg',
        tip:'Use light weight. Slight bend in elbows. Raise to shoulder height only. Lower slowly. This is not an ego lift.',
        cue:'Pour the weight outward, not upward.',
        mistakes:'Going too heavy · Swinging · Shrugging traps · Raising above shoulder level'},
       {name:'Pec deck or cable fly', muscles:'Chest', sets:2, target:'10–15 reps', rest:'60 sec',
+       img:'images/0308-yz9nUhF.jpg',
        tip:'Think of hugging a large tree. Slight bend in elbows, bring arms together, return slowly. Great chest isolation.',
        cue:'Hug, squeeze, control the return.',
        mistakes:'Too much weight · Bending/straightening elbows excessively · Shoulders rolling forward · Weight yanking arms back'},
       {name:'Face pulls (cable)', muscles:'Rear shoulders, upper back, posture muscles', sets:2, target:'12–15 reps', rest:'60 sec',
+       img:'images/0203-wqNPGCg.jpg',
        tip:'Rope attachment at upper chest/face height. Pull toward your forehead with elbows high and wide. Great for posture and shoulder health.',
        cue:'Pull the rope apart as it comes toward your face.',
        mistakes:'Going too heavy · Pulling too low · Leaning backward · Shrugging'},
       {name:'Cable crunch or ab machine', muscles:'Abs, core', sets:3, target:'10–15 reps', rest:'60 sec',
+       img:'images/0175-WW95auq.jpg',
        tip:'Curl your ribs toward your hips. Don\'t just yank with your arms. Exhale on the crunch. Feel your abs doing the work.',
        cue:'Ribs to hips — curl, don\'t yank.',
        mistakes:'Using arm strength · Going too heavy · Rushing reps · Not feeling abs work'},
@@ -668,26 +706,32 @@ const DAYS = [
     warmup:['5–10 min bike or elliptical','Hip hinges × 10','Glute bridges × 10 bodyweight','Lateral leg swings × 8 each','Light warm-up sets on first lift'],
     exercises:[
       {name:'Goblet squat or hack squat machine', muscles:'Quads, glutes, core', sets:3, target:'8–12 reps', rest:'90 sec',
+       img:'images/1760-yn8yg1r.jpg',
        tip:'Hold one dumbbell at chest (goblet) or use the hack squat machine. Keep chest tall. Sit between your heels and stand.',
        cue:'Sit between your heels, then stand tall.',
        mistakes:'Knees collapsing inward · Heels lifting · Rounding your back · Dropping too low too soon'},
       {name:'Romanian deadlift (dumbbells)', muscles:'Hamstrings, glutes, lower back', sets:3, target:'8–10 reps', rest:'90 sec',
+       img:'images/1459-rR0LJzx.jpg',
        tip:'This is a hip hinge, not a squat. Hold dumbbells in front of thighs. Push hips back, keep back neutral, feel the stretch in your hamstrings. Stand by squeezing glutes.',
        cue:'Close a car door with your butt.',
        mistakes:'Squatting instead of hinging · Rounding back · Letting weights drift far from body · Going too low'},
       {name:'Step-ups or split squat', muscles:'Quads, glutes, balance', sets:2, target:'8–10 reps each leg', rest:'75 sec',
+       img:'images/0431-aXtJhlg.jpg',
        tip:'Use a low box or bench. Whole foot on platform. Drive through the top foot. Step down slowly. Don\'t use your back foot to launch yourself.',
        cue:'Let the top leg do all the work.',
        mistakes:'Pushing off back foot · Platform too high · Knee caving inward · Rushing'},
       {name:'Hip abductor machine', muscles:'Outer glutes, hip stabilizers', sets:3, target:'12–15 reps', rest:'60 sec',
+       img:'images/0597-CHpahtl.jpg',
        tip:'Sit tall, knees against pads. Open legs under control, pause briefly at the widest point, return slowly.',
        cue:'Open, pause, control back in.',
        mistakes:'Going too heavy · Bouncing · Leaning way forward · Letting weight slam back'},
       {name:'Calf raise', muscles:'Calves', sets:3, target:'12–15 reps', rest:'60 sec',
+       img:'images/0605-ykUOVze.jpg',
        tip:'Full range of motion — lower all the way, pause, rise all the way up. Calves respond well to reps.',
        cue:'Stretch low, squeeze high.',
        mistakes:'Partial reps · Bouncing at bottom · Not pausing at top'},
       {name:'Farmer\'s carry', muscles:'Grip, core, traps, posture', sets:3, target:'Short controlled walks', rest:'75 sec',
+       img:'images/2133-qPEzJjA.jpg',
        tip:'Hold dumbbells at sides. Stand tall, shoulders down and back. Walk under control. This trains grip and core in a way machines don\'t.',
        cue:'Walk like you\'re trying to look taller.',
        mistakes:'Leaning side to side · Shoulders shrugged to ears · Walking too fast · Weights too heavy for posture'},
@@ -928,6 +972,149 @@ const GUIDE_ALTERNATIVE_ORDER = [
   'hamstringCurl','hinge','gluteBridge','hipAbduction','calves','coreBrace','coreCrunch',
   'singleLegLower','carry'
 ];
+
+function makeStretchThumb(title, accent){
+  const safeTitle=String(title).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+  const safeAccent=accent||'#4ac98a';
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="176" height="176" viewBox="0 0 176 176">
+    <rect width="176" height="176" rx="16" fill="#1f1f1f"/>
+    <rect x="10" y="10" width="156" height="156" rx="12" fill="#252525" stroke="#353535"/>
+    <circle cx="88" cy="46" r="10" fill="none" stroke="${safeAccent}" stroke-width="5"/>
+    <path d="M88 58v34m0 0 26 22M88 92l-26 22m26-18 24-22m-24 22-24-22" fill="none" stroke="${safeAccent}" stroke-linecap="round" stroke-width="5"/>
+    <text x="88" y="144" text-anchor="middle" font-family="DM Sans, Arial, sans-serif" font-size="11" fill="#d5d5d5">${safeTitle}</text>
+    <text x="88" y="160" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="${safeAccent}">Stretch reference</text>
+  </svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
+const STRETCH_GUIDE_ORDER = [
+  'Chest doorway stretch','Lat overhead stretch','Rear delt cross-body pull','Triceps overhead stretch','Neck side tilt',
+  'Hip flexor lunge stretch','Standing quad stretch','Seated hamstring stretch','Figure-4 glute stretch','Adductor butterfly stretch','Calf wall stretch'
+];
+
+const STRETCH_GUIDE = {
+  'Chest doorway stretch':{
+    region:'Upper body',
+    hold:'30 sec each side',
+    start:'Stand in a doorway and place one forearm against the frame with your elbow at shoulder height.',
+    steps:['Step one foot forward slowly until you feel a stretch across your chest.','Keep your chest lifted and shoulders away from your ears.','Hold steady, then switch sides.'],
+    feel:'A gentle pull through the chest and front of the shoulder.',
+    mistakes:'Arching your low back, shrugging your shoulder, or forcing the stretch into pain.',
+    breathing:'Inhale through your nose, exhale slowly, and deepen the stretch slightly only on exhale.',
+    img:makeStretchThumb('Doorway chest','#4a9cf0'),
+    demoUrl:'https://www.youtube.com/results?search_query=chest+doorway+stretch+form'
+  },
+  'Lat overhead stretch':{
+    region:'Upper body',
+    hold:'20 sec each side',
+    start:'Stand tall, reach one arm overhead, and keep that bicep close to your ear.',
+    steps:['Gently lean your torso to the opposite side.','Keep hips level and avoid rotating your chest.','Hold, then repeat on the other side.'],
+    feel:'A long stretch from the side of your upper back down toward your ribs.',
+    mistakes:'Twisting your torso, bending forward, or locking your knees hard.',
+    breathing:'Take slow breaths and use each exhale to relax your ribcage into the stretch.',
+    img:makeStretchThumb('Overhead lat','#4a9cf0'),
+    demoUrl:'https://www.youtube.com/results?search_query=lat+overhead+stretch+proper+form'
+  },
+  'Rear delt cross-body pull':{
+    region:'Upper body',
+    hold:'20 sec each side',
+    start:'Bring one arm straight across your chest at shoulder height.',
+    steps:['Use your opposite hand to hold above the elbow, not on the joint.','Pull the arm gently across until tension appears behind the shoulder.','Keep your shoulder down and neck relaxed.'],
+    feel:'A stretch in the back of the shoulder (rear delt).',
+    mistakes:'Cranking on the elbow joint, twisting your torso, or hiking your shoulder upward.',
+    breathing:'Breathe normally and avoid holding your breath while pulling across.',
+    img:makeStretchThumb('Rear delt','#4a9cf0'),
+    demoUrl:'https://www.youtube.com/results?search_query=rear+delt+cross+body+stretch'
+  },
+  'Triceps overhead stretch':{
+    region:'Upper body',
+    hold:'20 sec each side',
+    start:'Raise one arm overhead and bend the elbow so your hand reaches between your shoulder blades.',
+    steps:['Use the other hand to lightly guide the bent elbow backward.','Keep ribs down and avoid flaring your chest.','Hold and switch sides.'],
+    feel:'A stretch along the back of your upper arm and side of your shoulder.',
+    mistakes:'Pulling too hard, leaning your neck forward, or over-arching your lower back.',
+    breathing:'Take calm breaths and keep the stretch smooth without bouncing.',
+    img:makeStretchThumb('Overhead triceps','#4a9cf0'),
+    demoUrl:'https://www.youtube.com/results?search_query=overhead+triceps+stretch+how+to'
+  },
+  'Neck side tilt':{
+    region:'Upper body',
+    hold:'20 sec each side',
+    start:'Stand or sit tall with shoulders relaxed and chin level.',
+    steps:['Slowly tilt one ear toward the same-side shoulder.','For a little more stretch, place your hand lightly on top of your head.','Repeat on the other side with very gentle pressure.'],
+    feel:'A light pull on the side of your neck and upper trap.',
+    mistakes:'Rotating your head, yanking downward, or shrugging the opposite shoulder.',
+    breathing:'Use slow nasal breathing to reduce neck tension.',
+    img:makeStretchThumb('Neck side tilt','#4a9cf0'),
+    demoUrl:'https://www.youtube.com/results?search_query=neck+side+tilt+stretch+form'
+  },
+  'Hip flexor lunge stretch':{
+    region:'Lower body',
+    hold:'30 sec each side',
+    start:'Step into a half-kneeling lunge with one knee down and one foot forward.',
+    steps:['Tuck your pelvis slightly (think “tailbone down”).','Shift your hips forward a little while staying upright.','Keep front knee stacked over front ankle.'],
+    feel:'A stretch at the front of the hip on the kneeling-leg side.',
+    mistakes:'Leaning forward too far, over-arching your low back, or pushing through sharp knee pain.',
+    breathing:'Exhale as you glide hips forward; hold steady and breathe naturally.',
+    img:makeStretchThumb('Hip flexor lunge','#c8f04a'),
+    demoUrl:'https://www.youtube.com/results?search_query=hip+flexor+lunge+stretch+proper+form'
+  },
+  'Standing quad stretch':{
+    region:'Lower body',
+    hold:'20 sec each side',
+    start:'Stand tall and hold a wall or rack for balance if needed.',
+    steps:['Grab one ankle and bring your heel toward your glute.','Keep knees close together and hips level.','Slightly tuck your pelvis to increase the stretch.'],
+    feel:'A stretch through the front of your thigh (quad).',
+    mistakes:'Pulling your knee far out to the side, arching your low back, or losing balance from rushing.',
+    breathing:'Take short, calm breaths and keep your torso tall the entire hold.',
+    img:makeStretchThumb('Standing quad','#c8f04a'),
+    demoUrl:'https://www.youtube.com/results?search_query=standing+quad+stretch+form'
+  },
+  'Seated hamstring stretch':{
+    region:'Lower body',
+    hold:'30 sec each side',
+    start:'Sit tall with one leg extended and the other foot tucked in comfortably.',
+    steps:['Hinge forward from your hips toward the extended leg.','Keep your back long rather than rounding hard.','Stop once you feel tension and hold.'],
+    feel:'A stretch along the back of the extended thigh.',
+    mistakes:'Bouncing toward your toes, forcing range, or collapsing your chest.',
+    breathing:'Exhale and soften deeper only slightly as long as tension stays mild.',
+    img:makeStretchThumb('Seated hamstring','#c8f04a'),
+    demoUrl:'https://www.youtube.com/results?search_query=seated+hamstring+stretch+proper+form'
+  },
+  'Figure-4 glute stretch':{
+    region:'Lower body',
+    hold:'30 sec each side',
+    start:'Sit or lie down and cross one ankle over the opposite thigh, making a “4” shape.',
+    steps:['Keep your crossed-foot ankle flexed to protect the knee.','Gently draw legs closer to your torso until glute tension appears.','Hold and switch sides.'],
+    feel:'A deep but controlled stretch in the glute and outer hip.',
+    mistakes:'Letting the top foot go limp, forcing the knee, or twisting the spine.',
+    breathing:'Take steady breaths and relax your jaw/shoulders as you hold.',
+    img:makeStretchThumb('Figure-4 glute','#c8f04a'),
+    demoUrl:'https://www.youtube.com/results?search_query=figure+4+glute+stretch+form'
+  },
+  'Adductor butterfly stretch':{
+    region:'Lower body',
+    hold:'30 sec',
+    start:'Sit upright with soles of your feet together and knees open to the sides.',
+    steps:['Hold your feet or ankles and sit tall first.','Hinge forward slightly from your hips if comfortable.','Let knees drop naturally; do not force them down.'],
+    feel:'A stretch in the inner thighs/groin.',
+    mistakes:'Rounding your back aggressively, pressing knees down hard, or bouncing.',
+    breathing:'Use slow exhales to ease tension in your inner thighs.',
+    img:makeStretchThumb('Butterfly adductor','#c8f04a'),
+    demoUrl:'https://www.youtube.com/results?search_query=butterfly+adductor+stretch+form'
+  },
+  'Calf wall stretch':{
+    region:'Lower body',
+    hold:'20 sec each side',
+    start:'Face a wall and place both hands on it at shoulder height.',
+    steps:['Step one leg back with heel down and toes forward.','Bend your front knee while keeping the back leg straight.','Lean forward until the back calf stretches, then switch sides.'],
+    feel:'A pull in the calf of the back leg, especially near the Achilles area.',
+    mistakes:'Letting the back heel lift, turning toes outward, or bouncing in and out.',
+    breathing:'Keep breathing slow and keep pressure steady through the back heel.',
+    img:makeStretchThumb('Calf wall','#c8f04a'),
+    demoUrl:'https://www.youtube.com/results?search_query=calf+wall+stretch+proper+form'
+  }
+};
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
 let activeDay = 0;
@@ -1264,6 +1451,12 @@ function parseTargetTop(target){
   if(m2) return parseInt(m2[1]);
   return null;
 }
+function stretchNameFromLabel(label){
+  return String(label||'').split(' · ')[0].trim();
+}
+function stretchGuideId(name){
+  return `stretch-guide-${String(name||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')}`;
+}
 function calcProg(i){
   if(!session[i]) return {done:0,total:0};
   let done=0,total=0;
@@ -1275,6 +1468,26 @@ function calcProg(i){
 }
 function checkSVG(){return`<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.8"><polyline points="2,7 5.5,11 12,3"/></svg>`;}
 function chevSVG(open){return`<svg class="chev${open?' open':''}" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="2,5 7,9 12,5"/></svg>`;}
+function handleStretchImageError(img){
+  if(!img) return;
+  img.style.display='none';
+  const fallback=img.nextElementSibling;
+  if(fallback) fallback.classList.remove('hidden');
+}
+function handleExerciseImageError(img){
+  if(!img) return;
+  img.style.display='none';
+}
+function openStretchGuide(stretchName){
+  switchPage('guide');
+  setTimeout(()=>{
+    const card=document.getElementById(stretchGuideId(stretchName));
+    if(!card) return;
+    card.scrollIntoView({behavior:'smooth',block:'start'});
+    card.classList.add('stretch-card-focus');
+    setTimeout(()=>card.classList.remove('stretch-card-focus'),1600);
+  },30);
+}
 
 // ─── PAGE SWITCH ─────────────────────────────────────────────────────────────
 function switchPage(name){
@@ -1308,6 +1521,44 @@ function renderAlternativeItems(group){
       <div class="alt-item-note">${o.note}</div>
     </div>
   </div>`).join('');
+}
+
+function renderStretchGuideCards(){
+  return STRETCH_GUIDE_ORDER.map(name=>{
+    const s=STRETCH_GUIDE[name];
+    if(!s) return '';
+    return `<div class="guide-card stretch-card" id="${stretchGuideId(name)}">
+      <div class="stretch-card-head">
+        ${s.img ? `<img class="stretch-thumb" src="${s.img}" alt="${name} thumbnail reference" width="88" height="88" loading="lazy" onerror="handleStretchImageError(this)">` : ''}
+        <div class="stretch-thumb-fallback${s.img?' hidden':''}">Image unavailable<br>Use text cues below.</div>
+        <div class="alt-item-content">
+          <div class="guide-card-title"><svg viewBox="0 0 14 14"><path d="M7 1v12M1 7h12M3 3l8 8M11 3L3 11"/></svg>${name}</div>
+          <div class="stretch-meta">${s.region} · Hold ${s.hold}</div>
+          ${s.demoUrl ? `<a class="stretch-demo" href="${s.demoUrl}" target="_blank" rel="noreferrer noopener">Watch demo ↗</a>` : ''}
+        </div>
+      </div>
+      <div class="stretch-detail">
+        <div class="stretch-detail-title">Starting position</div>
+        <div class="stretch-detail-body">${s.start}</div>
+      </div>
+      <div class="stretch-detail">
+        <div class="stretch-detail-title">Movement steps</div>
+        <ol class="stretch-steps">${s.steps.map(step=>`<li>${step}</li>`).join('')}</ol>
+      </div>
+      <div class="stretch-detail">
+        <div class="stretch-detail-title">What you should feel</div>
+        <div class="stretch-detail-body">${s.feel}</div>
+      </div>
+      <div class="stretch-detail">
+        <div class="stretch-detail-title">Common mistakes</div>
+        <div class="stretch-detail-body">${s.mistakes}</div>
+      </div>
+      <div class="stretch-detail">
+        <div class="stretch-detail-title">Breathing & hold guidance</div>
+        <div class="stretch-detail-body">${s.breathing}</div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function renderExerciseAlternatives(exerciseName){
@@ -1427,8 +1678,13 @@ function renderWorkout(){
 
     if(isOpen){
       html+=`<div class="ex-body">
-        <div class="ex-tip">${ex.tip}</div>
-        <div class="ex-cue">${ex.cue}</div>
+        <div class="ex-body-head">
+          ${ex.img ? `<img class="ex-exercise-img" src="${DATASET_IMG_BASE}${ex.img}" alt="${ex.name}" width="88" height="88" loading="lazy" onerror="handleExerciseImageError(this)">` : ''}
+          <div class="ex-tip-wrap">
+            <div class="ex-tip">${ex.tip}</div>
+            <div class="ex-cue">${ex.cue}</div>
+          </div>
+        </div>
         <span class="mistakes-toggle" onclick="toggleMistakes('${mistakeKey}',event)">Common mistakes ↓</span>
         <div class="mistakes-box" id="${mistakeKey}">${ex.mistakes.split(' · ').map(m=>`• ${m}`).join('<br>')}</div>
         <div class="target-label">Target: ${ex.target} · Rest: ${ex.rest}</div>
@@ -1472,7 +1728,15 @@ function renderWorkout(){
 
   // Cooldown stretches
   if(day.cooldown){
-    const cuItems=day.cooldown.map(s=>`<div class="cooldown-item"><svg viewBox="0 0 10 10"><polyline points="1,5 4,8 9,2"/></svg>${s}</div>`).join('');
+    const cuItems=day.cooldown.map(s=>{
+      const stretchName=stretchNameFromLabel(s);
+      if(STRETCH_GUIDE[stretchName]){
+        return `<button type="button" class="cooldown-item cooldown-item-btn" onclick='openStretchGuide(${JSON.stringify(stretchName)})'>
+          <svg viewBox="0 0 10 10"><polyline points="1,5 4,8 9,2"/></svg>${s}<span class="cooldown-link">How-to</span>
+        </button>`;
+      }
+      return `<div class="cooldown-item"><svg viewBox="0 0 10 10"><polyline points="1,5 4,8 9,2"/></svg>${s}</div>`;
+    }).join('');
     html+=`<div class="section-divider">Cool-down</div>
     <div class="cooldown-card">
       <div class="cooldown-title"><svg viewBox="0 0 14 14"><path d="M7 1v12M1 7h12M3 3l8 8M11 3L3 11"/></svg>Cool-down stretches</div>
@@ -1624,6 +1888,18 @@ function renderGuide(){
         <tr><td>Calf wall stretch</td><td>Calves · 20 sec each side</td></tr>
       </table>
     </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">How to perform each stretch</div>
+    <div class="guide-card">
+      <p>Tap any stretch in your workout Cool-down card to jump here quickly. Move slowly and stay in a gentle range: stop immediately if you feel sharp pain, tingling, or joint pain.</p>
+    </div>
+    <div class="guide-card stretch-safety">
+      Safety: stretches should feel like mild-to-moderate muscle tension, not pain. Keep breathing, avoid bouncing, and shorten the range if anything feels unstable.
+    </div>
+    ${renderStretchGuideCards()}
+    <div class="alt-footnote">Stretch thumbnails are original in-app reference illustrations by FirstTimeFitness. Demo links open third-party YouTube search results for visual examples from their respective creators.</div>
   </div>
 
   <div class="guide-section">
