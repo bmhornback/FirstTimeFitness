@@ -15,6 +15,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - New "How to perform each stretch" guide subsection covering all 11 cool-down stretches with beginner-safe instructions: starting position, movement steps, what to feel, common mistakes, and breathing/hold cues
 - Tappable cool-down stretch items in workout sessions that jump directly to the matching stretch instruction card in the Guide tab
 - Per-stretch visual reference thumbnails plus optional "Watch demo" links for motion clarity, including a safety-focused fallback message when an image cannot load
+- Visual reference images on primary workout exercise cards, with silent hide-on-error fallback behavior when an image fails to load so tips/cues remain visible
 
 ### Changed
 - Expanded stretch guidance UX with explicit safety language (avoid pain/bouncing, scale range of motion) and media attribution notes for visual resources
