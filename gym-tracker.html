@@ -348,6 +348,26 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .hw-phase-divider-inner{font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap;padding:3px 10px;border:1px solid rgba(200,240,74,0.3);border-radius:99px;background:var(--accent-dim)}
 .hw-empty{text-align:center;padding:32px 16px;color:var(--text-dim);font-size:14px;line-height:1.7}
 .hw-redflag{font-size:13px;color:var(--danger);background:rgba(240,97,74,0.06);border:1px solid rgba(240,97,74,0.2);border-radius:var(--radius-sm);padding:8px 10px;line-height:1.65}
+/* Weekly calendar nav */
+.hw-week-nav{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:10px}
+.hw-day-btn{display:flex;flex-direction:column;align-items:center;padding:8px 2px 6px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);cursor:pointer;font-size:10px;font-family:'DM Mono',monospace;color:var(--text-dim);gap:2px;transition:all 0.15s;line-height:1.2}
+.hw-day-btn.active{border-color:rgba(200,240,74,0.55);background:var(--accent-dim);color:var(--accent)}
+.hw-day-type-pill{font-size:12px;font-family:'DM Mono',monospace;padding:5px 14px;border-radius:99px;margin-bottom:14px;display:inline-block}
+.hw-day-type-pill.on{background:var(--accent-dim);color:var(--accent);border:1px solid rgba(200,240,74,0.3)}
+.hw-day-type-pill.off{background:rgba(74,201,138,0.12);color:var(--success);border:1px solid rgba(74,201,138,0.25)}
+.hw-section-heading{font-size:12px;font-family:'DM Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin:18px 0 6px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.hw-phase-mini-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--text-dim);padding:2px 8px;border-radius:99px;background:var(--surface2);border:1px solid var(--border);display:inline-block;margin-bottom:7px}
+/* Inline exercise timer */
+.hw-ex-timer{margin:12px 0 8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px}
+.hw-ex-timer-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.hw-ex-timer-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em}
+.hw-ex-timer-hint{font-size:10px;font-family:'DM Mono',monospace;color:var(--text-dim);text-align:right}
+.hw-ex-timer-display{font-size:36px;font-family:'DM Mono',monospace;font-weight:700;color:var(--text);text-align:center;margin:6px 0 10px;letter-spacing:0.05em}
+.hw-ex-timer-display.done{color:var(--success)}
+.hw-ex-timer-controls{display:flex;gap:8px}
+.hw-ex-timer-btn{flex:1;padding:9px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);font-size:12px;font-family:'DM Mono',monospace;cursor:pointer;color:var(--text-muted);transition:all 0.15s}
+.hw-ex-timer-btn.primary{background:var(--accent-dim);border-color:rgba(200,240,74,0.4);color:var(--accent)}
+.hw-ex-timer-btn:active{opacity:0.7}
 .hw-watch{font-size:13px;color:var(--success);background:var(--success-dim);border:1px solid rgba(74,201,138,0.25);border-radius:var(--radius-sm);padding:8px 10px;line-height:1.65}
 
 @media (max-width:360px){
@@ -1054,6 +1074,68 @@ function makeStretchThumb(title, accent){
 
 function makeHomeDemoUrl(name){
   return `https://www.youtube.com/results?search_query=${encodeURIComponent(`${name} proper form`)}`;
+}
+
+// ─── HOME WORKOUT — DAY & TIMER HELPERS ──────────────────────────────────────
+let hwSelectedDay = new Date().getDay(); // 0=Sun,1=Mon,...,6=Sat
+let hwExTimers = {}; // keyed by exercise num
+
+function hwDayIsOn(d){ return [1,3,5].includes(d); } // Mon, Wed, Fri = training
+
+function hwSelectDay(d){ hwSelectedDay = d; renderHome(); }
+
+function hwFmtTime(sec){
+  const m = Math.floor(sec/60), s = sec%60;
+  return `${m}:${String(s).padStart(2,'0')}`;
+}
+
+function hwParseTimerSec(target){
+  // "N–M min" → M (upper/goal end); "N min" → N minutes
+  let m = target.match(/(\d+)[–\-](\d+)\s*min/);
+  if(m) return parseInt(m[2])*60;
+  m = target.match(/(\d+)\s*min/);
+  if(m) return parseInt(m[1])*60;
+  // "N–M sec/second/seconds" → M (higher/goal end), e.g. "20–45 sec"
+  m = target.match(/(\d+)[–\-](\d+)\s*sec(?:ond)?s?/);
+  if(m){ const s=parseInt(m[2]); return s>=10?s:null; }
+  // "N sec/second/seconds" or "N-sec" (e.g. "30-sec hold", "20-second sprints")
+  m = target.match(/(\d+)[–\-]?\s*sec(?:ond)?s?/);
+  if(m){ const s=parseInt(m[1]); return s>=10?s:null; }
+  return null;
+}
+
+function hwExTimerToggle(num, defaultSec){
+  if(!hwExTimers[num]) hwExTimers[num]={remaining:defaultSec,running:false,interval:null};
+  const st=hwExTimers[num];
+  if(st.remaining===0){ hwExTimerReset(num,defaultSec); return; }
+  if(st.running){
+    clearInterval(st.interval); st.interval=null; st.running=false;
+    const b=document.getElementById('hw-tbtn-'+num); if(b) b.textContent='Start';
+  } else {
+    st.running=true;
+    const b=document.getElementById('hw-tbtn-'+num); if(b) b.textContent='Pause';
+    st.interval=setInterval(()=>hwExTimerTick(num),1000);
+  }
+}
+
+function hwExTimerTick(num){
+  const st=hwExTimers[num]; if(!st) return;
+  const el=document.getElementById('hw-timer-'+num);
+  if(!el){ clearInterval(st.interval); st.interval=null; st.running=false; return; }
+  st.remaining=Math.max(0,st.remaining-1);
+  el.textContent=hwFmtTime(st.remaining);
+  if(st.remaining===0){
+    clearInterval(st.interval); st.interval=null; st.running=false;
+    el.classList.add('done');
+    const b=document.getElementById('hw-tbtn-'+num); if(b) b.textContent='Done ✓';
+  }
+}
+
+function hwExTimerReset(num,defaultSec){
+  if(hwExTimers[num]){ clearInterval(hwExTimers[num].interval); hwExTimers[num]={remaining:defaultSec,running:false,interval:null}; }
+  const el=document.getElementById('hw-timer-'+num);
+  if(el){ el.textContent=hwFmtTime(defaultSec); el.classList.remove('done'); }
+  const b=document.getElementById('hw-tbtn-'+num); if(b) b.textContent='Start';
 }
 
 function parseHomeHowSteps(how){
@@ -2784,8 +2866,78 @@ function hwTags(ex){
   return tags;
 }
 
+function renderHwCard(ex){
+  const key=`hw-${ex.num}`;
+  const isOpen=!!hwOpenCards[key];
+  const tags=hwTags(ex);
+  const needsEquip=ex.required.length>0?ex.required.map(r=>{
+    const eq=HW_EQUIPMENT.find(e=>e.id===r);
+    return eq?`<span class="hw-card-equip">${eq.icon} ${eq.label}</span>`:'';
+  }).join(' '):'<span class="hw-card-equip">🏠 Bodyweight</span>';
+  const mistakeKey=`hwm-${ex.num}`;
+  const timerSec=hwParseTimerSec(ex.target);
+
+  let html=`<div class="hw-card">
+    <div class="hw-card-header" role="button" tabindex="0" aria-expanded="${isOpen?'true':'false'}" onclick="hwToggleCard('${key}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();hwToggleCard('${key}');}">
+      <div class="hw-card-num">${ex.num}</div>
+      <div class="hw-card-info">
+        <div class="hw-card-name">${ex.name}</div>
+        <div class="hw-card-meta">${ex.target}</div>
+        ${tags.length?`<div class="hw-card-tags">${tags.map(tag=>`<span class="hw-card-tag ${tag.key}">${tag.label}</span>`).join('')}</div>`:''}
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+        ${needsEquip}
+        ${chevSVG(isOpen)}
+      </div>
+    </div>`;
+
+  if(isOpen){
+    const steps=parseHomeHowSteps(ex.how);
+    const st=hwExTimers[ex.num];
+    const remaining=st?st.remaining:(timerSec||0);
+    const running=st?st.running:false;
+    const timerHtml=timerSec?`
+      <div class="hw-ex-timer">
+        <div class="hw-ex-timer-top">
+          <span class="hw-ex-timer-label">⏱ Exercise Timer</span>
+          <span class="hw-ex-timer-hint">${ex.target}</span>
+        </div>
+        <div class="hw-ex-timer-display${remaining===0?' done':''}" id="hw-timer-${ex.num}">${hwFmtTime(remaining)}</div>
+        <div class="hw-ex-timer-controls">
+          <button id="hw-tbtn-${ex.num}" class="hw-ex-timer-btn primary" onclick="hwExTimerToggle(${ex.num},${timerSec})">${running?'Pause':(remaining===0?'Done ✓':'Start')}</button>
+          <button class="hw-ex-timer-btn" onclick="hwExTimerReset(${ex.num},${timerSec})">Reset</button>
+        </div>
+      </div>`:'';
+
+    html+=`<div class="hw-card-body">
+      <div class="hw-target-chip">Target: ${ex.target}</div>
+      <a class="hw-demo-link" href="${makeHomeDemoUrl(ex.name)}" target="_blank" rel="noreferrer noopener">Watch movement on YouTube ↗</a>
+      ${timerHtml}
+      <div class="hw-detail-section">
+        <div class="hw-detail-label">How to</div>
+        <div class="hw-section-label">Step-by-step</div>
+        <ol class="hw-steps">${steps.map(step=>`<li>${step}</li>`).join('')}</ol>
+      </div>
+      <span class="hw-mistake-toggle" onclick="hwToggleMistake('${mistakeKey}',event)">Common mistakes ↓</span>
+      <div class="hw-mistake-box" id="${mistakeKey}">${ex.mistakes.split(' · ').map(m=>`• ${m}`).join('<br>')}</div>
+      <div class="hw-detail-section">
+        <div class="hw-detail-label">Watch for</div>
+        <div class="hw-watch">${ex.watch}</div>
+      </div>
+      <div class="hw-detail-section">
+        <div class="hw-detail-label">🚩 Red flag</div>
+        <div class="hw-redflag">${ex.redflag}</div>
+      </div>
+    </div>`;
+  }
+  html+=`</div>`;
+  return html;
+}
+
 function renderHome() {
   const main = document.getElementById('page-home');
+  const today = new Date().getDay();
+  const isOnDay = hwDayIsOn(hwSelectedDay);
 
   // Equipment checklist
   const equipHtml = HW_EQUIPMENT.map(eq => `
@@ -2795,111 +2947,90 @@ function renderHome() {
     </button>
   `).join('');
 
-  // Group exercises by phase, filtering by availability
-  const phaseSections = [];
-  HW_PHASES.forEach(phase => {
-    const available = phase.exercises.filter(ex => exAvailable(ex));
-    if (available.length === 0) return;
-    phaseSections.push({phase, available});
-  });
+  // Weekly calendar nav
+  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const weekNavHtml = dayNames.map((name,i) => {
+    const isSel = hwSelectedDay===i;
+    const isToday = i===today;
+    const dayOn = hwDayIsOn(i);
+    return `<button type="button" class="hw-day-btn${isSel?' active':''}" onclick="hwSelectDay(${i})">
+      <span style="font-size:11px;font-weight:${isSel?'700':'400'}">${name}</span>
+      <span>${dayOn?'🏋️':'🧘'}</span>
+      ${isToday?'<span style="color:var(--accent)">·</span>':''}
+    </button>`;
+  }).join('');
 
+  // Build exercises for selected day
   let exercisesHtml = '';
-  let seenPhase = {};
-  phaseSections.forEach(({phase, available}) => {
-    // Phase divider (only show once per phase label group)
-    if (!seenPhase[phase.label]) {
-      seenPhase[phase.label] = true;
-      exercisesHtml += `<div class="hw-phase-divider"><div class="hw-phase-divider-inner">${phase.label} &nbsp;·&nbsp; ${phase.weeks}</div></div>`;
-    }
-    if (available.length > 0) {
-      exercisesHtml += `<div class="hw-phase-header">
-        <div class="hw-phase-title">${phase.section}</div>
-        <div class="hw-phase-badge">${available.length} exercise${available.length !== 1 ? 's' : ''}</div>
-      </div>`;
-    }
-    available.forEach(ex => {
-      const key = `hw-${ex.num}`;
-      const isOpen = !!hwOpenCards[key];
-      const tags = hwTags(ex);
-      const needsEquip = ex.required.length > 0 ? ex.required.map(r => {
-        const eq = HW_EQUIPMENT.find(e => e.id === r);
-        return eq ? `<span class="hw-card-equip">${eq.icon} ${eq.label}</span>` : '';
-      }).join(' ') : '<span class="hw-card-equip">🏠 Bodyweight</span>';
-      const mistakeKey = `hwm-${ex.num}`;
 
-      exercisesHtml += `<div class="hw-card">
-        <div class="hw-card-header" role="button" tabindex="0" aria-expanded="${isOpen ? 'true' : 'false'}" onclick="hwToggleCard('${key}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();hwToggleCard('${key}');}">
-          <div class="hw-card-num">${ex.num}</div>
-          <div class="hw-card-info">
-            <div class="hw-card-name">${ex.name}</div>
-            <div class="hw-card-meta">${ex.target}</div>
-            ${tags.length ? `<div class="hw-card-tags">${tags.map(tag=>`<span class="hw-card-tag ${tag.key}">${tag.label}</span>`).join('')}</div>` : ''}
-          </div>
-          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
-            ${needsEquip}
-            ${chevSVG(isOpen)}
-          </div>
-        </div>`;
-
-      if (isOpen) {
-        const steps = parseHomeHowSteps(ex.how);
-        exercisesHtml += `<div class="hw-card-body">
-          <div class="hw-target-chip">Target: ${ex.target}</div>
-          <a class="hw-demo-link" href="${makeHomeDemoUrl(ex.name)}" target="_blank" rel="noreferrer noopener">Watch movement on YouTube ↗</a>
-          <div class="hw-detail-section">
-            <div class="hw-detail-label">How to</div>
-            <div class="hw-section-label">Step-by-step</div>
-            <ol class="hw-steps">${steps.map(step => `<li>${step}</li>`).join('')}</ol>
-          </div>
-          <span class="hw-mistake-toggle" onclick="hwToggleMistake('${mistakeKey}', event)">Common mistakes ↓</span>
-          <div class="hw-mistake-box" id="${mistakeKey}">${ex.mistakes.split(' · ').map(m => `• ${m}`).join('<br>')}</div>
-          <div class="hw-detail-section">
-            <div class="hw-detail-label">Watch for</div>
-            <div class="hw-watch">${ex.watch}</div>
-          </div>
-          <div class="hw-detail-section">
-            <div class="hw-detail-label">🚩 Red flag</div>
-            <div class="hw-redflag">${ex.redflag}</div>
-          </div>
-        </div>`;
-      }
-      exercisesHtml += `</div>`;
+  if(isOnDay){
+    // Training day: group all non-off-day phases by section
+    const SECTION_ORDER = ['Warm-up','Power','Strength','Conditioning'];
+    const sectionMap = {};
+    HW_PHASES.forEach(phase => {
+      if(phase.id==='p1e') return;
+      phase.exercises.forEach(ex => {
+        if(!exAvailable(ex)) return;
+        if(!sectionMap[ex.section]) sectionMap[ex.section]=[];
+        sectionMap[ex.section].push({phase,ex});
+      });
     });
-  });
 
-  const totalAvailable = HW_ALL_EXERCISES.filter(ex => exAvailable(ex)).length;
+    SECTION_ORDER.forEach(sec => {
+      const items = sectionMap[sec];
+      if(!items||items.length===0) return;
+      exercisesHtml+=`<div class="hw-section-heading">${sec}</div>`;
+      let curLabel=null;
+      items.forEach(({phase,ex})=>{
+        if(phase.label!==curLabel){
+          curLabel=phase.label;
+          exercisesHtml+=`<div style="margin-bottom:7px"><span class="hw-phase-mini-label">${phase.label} · ${phase.weeks}</span></div>`;
+        }
+        exercisesHtml+=renderHwCard(ex);
+      });
+    });
+  } else {
+    // Recovery day: mobility only
+    const mobilityPhase = HW_PHASES.find(p=>p.id==='p1e');
+    const avail = mobilityPhase?mobilityPhase.exercises.filter(ex=>exAvailable(ex)):[];
+    exercisesHtml+=`<div class="hw-section-heading">Mobility Routine</div>`;
+    if(avail.length===0){
+      exercisesHtml+=`<div class="hw-empty">No mobility exercises available.</div>`;
+    } else {
+      avail.forEach(ex=>{ exercisesHtml+=renderHwCard(ex); });
+    }
+  }
+
+  const totalAvailable = HW_ALL_EXERCISES.filter(ex=>exAvailable(ex)).length;
   const totalLocked = HW_ALL_EXERCISES.length - totalAvailable;
-  const upperCount = HW_ALL_EXERCISES.filter(ex => exAvailable(ex) && hwTags(ex).some(t => t.key==='upper')).length;
-  const yogaCount = HW_ALL_EXERCISES.filter(ex => exAvailable(ex) && hwTags(ex).some(t => t.key==='yoga')).length;
 
   main.innerHTML = `
     <div class="hw-topline">
       <div class="hist-page-title">At Home Training</div>
       <div class="hw-ref-badge">Reference only</div>
     </div>
-    <div class="hw-intro">A progressive 4-phase plan built for agility, speed, and power — no gym required. Select the equipment you have at home to unlock more exercises.</div>
+    <div class="hw-intro">A progressive 4-phase plan built for agility, speed, and power — no gym required. Select your equipment below to unlock more exercises.</div>
     <div class="hw-note-card">
       <div class="hw-note-title">How to use this tab</div>
-      <div class="hw-note-body">This page is coaching-only, so nothing gets logged here. Tap any exercise for setup cues, common mistakes, and a YouTube movement search before you train.</div>
+      <div class="hw-note-body">Tap a day to see that day's plan. <strong>🏋️ Mon / Wed / Fri</strong> are training days with your full workout. <strong>🧘 All other days</strong> are recovery days — just mobility. Tap any exercise card for step-by-step cues and a built-in timer.</div>
     </div>
-    <div class="hw-focus-grid">
-      <div class="hw-focus-chip upper"><span class="lbl">Upper body available</span><span class="val">${upperCount} exercise${upperCount===1?'':'s'}</span></div>
-      <div class="hw-focus-chip yoga"><span class="lbl">Yoga mobility available</span><span class="val">${yogaCount} sequence${yogaCount===1?'':'s'}</span></div>
-    </div>
-
-    ${renderHiitCard({prefix:'home-hiit', context:'home', sectionLabel:'Bodyweight Interval Timer', startLabel:'Start timer'})}
 
     <div class="hw-equip-title">What do you have at home?</div>
     <div class="hw-equip-grid">${equipHtml}</div>
 
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-      <div class="hw-equip-title" style="margin-bottom:0">Your exercises</div>
-      <div style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-dim)">${totalAvailable} available${totalLocked > 0 ? ` · ${totalLocked} locked` : ''}</div>
+    <div class="hw-equip-title" style="margin-top:18px">Your week</div>
+    <div class="hw-week-nav">${weekNavHtml}</div>
+    <div style="margin-bottom:14px">
+      <span class="hw-day-type-pill ${isOnDay?'on':'off'}">${isOnDay?'🏋️ Training Day — Full Workout':'🧘 Recovery Day — Mobility &amp; Rest'}</span>
     </div>
 
-    ${totalAvailable === 0 ? `<div class="hw-empty">No exercises available yet.<br>All ${HW_ALL_EXERCISES.filter(ex=>ex.required.length===0).length} bodyweight exercises should always appear — tap any card above to check your equipment.</div>` : exercisesHtml}
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <div class="hw-equip-title" style="margin-bottom:0">${dayNames[hwSelectedDay]}'s plan</div>
+      <div style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-dim)">${totalAvailable} available${totalLocked>0?` · ${totalLocked} locked`:''}</div>
+    </div>
+
+    ${exercisesHtml}
   `;
-  hiitRefreshAll();
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
