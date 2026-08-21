@@ -65,6 +65,12 @@ The app runs entirely in your browser. No installation required. No account need
 - Workout duration guidelines
 - Simple nutrition and protein intake reference
 
+### 🏠 At-Home Training Tab
+- Progressive 4-phase home program filtered by the equipment you have available
+- Coaching-only exercise reference cards with step-by-step instructions, common mistakes, and red-flag cues
+- In-app reference diagrams plus demo-search links for beginners who want a visual before trying a movement
+- Clear "reference only" messaging so users know this tab is for learning, not workout logging
+
 ### 🧠 Mindset Page
 - 8-week phase-by-phase expectations (Weeks 1–2 through 8+)
 - Signs the plan is working

@@ -33,6 +33,7 @@ Core outcomes:
 
 ### Guidance
 - Guide tab with weight selection, rep speed, rest, substitutions, and nutrition basics
+- At-Home tab with equipment-filtered exercise references, diagrams, step-by-step cues, and demo-search links
 - Mindset tab with beginner expectations and progress framing
 
 ### History
