@@ -1215,40 +1215,70 @@ const HIIT_PRESETS = [
   {id:'sixty',label:'60:30',work:60,rest:30,rounds:6},
 ];
 
-let hiitState = load('gymHiit_v1',{
-  selectedPreset:'tabata',
-  work:20,
-  rest:10,
-  rounds:8,
-  warmup:30,
-  cooldown:30,
-  autoStart:true,
-  soundCue:true,
-  vibrateCue:true,
-  voiceCue:false,
-  textCue:true,
-  favorites:{tabata:true}
-});
-
-let hiitTimer = {
-  phases:[],
-  phaseIndex:0,
-  remainingSec:0,
-  running:false,
-  awaiting:false,
-  interval:null,
-  phaseEndMs:0,
-  lastCue:'Ready to start'
-};
+function createDefaultHiitState(presetId){
+  const preset = HIIT_PRESETS.find(p=>p.id===presetId) || HIIT_PRESETS[0];
+  return {
+    selectedPreset:preset.id,
+    work:preset.work,
+    rest:preset.rest,
+    rounds:preset.rounds,
+    warmup:typeof preset.warmup==='number'?preset.warmup:30,
+    cooldown:typeof preset.cooldown==='number'?preset.cooldown:30,
+    autoStart:true,
+    soundCue:true,
+    vibrateCue:true,
+    voiceCue:false,
+    textCue:true,
+    favorites:{[preset.id]:true}
+  };
+}
+function mergeHiitState(defaults,incoming){
+  return {
+    ...defaults,
+    ...(incoming||{}),
+    favorites:{...(defaults.favorites||{}),...((incoming&&incoming.favorites)||{})}
+  };
+}
+const workoutHiitDefaults = createDefaultHiitState('tabata');
+const homeHiitDefaults = createDefaultHiitState('bodyweight');
+const hiitV2 = load('gymHiit_v2',null);
+const hiitLegacy = load('gymHiit_v1',null);
+let hiitStates = hiitV2
+  ? {
+      workout:mergeHiitState(workoutHiitDefaults,hiitV2.workout),
+      home:mergeHiitState(homeHiitDefaults,hiitV2.home)
+    }
+  : {
+      workout:mergeHiitState(workoutHiitDefaults,hiitLegacy),
+      home:homeHiitDefaults
+    };
+function createHiitTimer(){
+  return {
+    phases:[],
+    phaseIndex:0,
+    remainingSec:0,
+    running:false,
+    awaiting:false,
+    interval:null,
+    phaseEndMs:0,
+    lastCue:'Ready to start'
+  };
+}
+let hiitTimers = {workout:createHiitTimer(),home:createHiitTimer()};
 let hiitAudioCtx = null;
+
+function hiitKey(context){return context==='home'?'home':'workout';}
+function getHiitState(context){return hiitStates[hiitKey(context)];}
+function getHiitTimer(context){return hiitTimers[hiitKey(context)];}
 
 function clampInt(v,min,max,def){
   const n = parseInt(v,10);
   if(Number.isNaN(n)) return def;
   return Math.min(max,Math.max(min,n));
 }
-function saveHiitState(){save('gymHiit_v1',hiitState);}
-function hiitConfig(){
+function saveHiitStates(){save('gymHiit_v2',hiitStates);}
+function hiitConfig(context='workout'){
+  const hiitState=getHiitState(context);
   return {
     work:clampInt(hiitState.work,5,600,20),
     rest:clampInt(hiitState.rest,0,600,10),
@@ -1264,7 +1294,10 @@ function formatSecs(total){
   const rs = s%60;
   return m+':'+(rs<10?'0':'')+rs;
 }
-function currentHiitPhase(){return hiitTimer.phases[hiitTimer.phaseIndex]||null;}
+function currentHiitPhase(context='workout'){
+  const hiitTimer=getHiitTimer(context);
+  return hiitTimer.phases[hiitTimer.phaseIndex]||null;
+}
 function hiitPhaseLabel(type){
   if(type==='warmup') return 'Warm-up';
   if(type==='work') return 'Work';
@@ -1301,7 +1334,9 @@ function playHiitBeep(){
     osc.stop(now+0.2);
   }catch{}
 }
-function fireHiitCue(msg){
+function fireHiitCue(context,msg){
+  const hiitState=getHiitState(context);
+  const hiitTimer=getHiitTimer(context);
   if(hiitState.soundCue) playHiitBeep();
   if(hiitState.vibrateCue&&navigator.vibrate) navigator.vibrate([100,50,100]);
   if(hiitState.voiceCue&&window.speechSynthesis){
@@ -1314,77 +1349,86 @@ function fireHiitCue(msg){
   }
   hiitTimer.lastCue = hiitState.textCue ? msg : '';
 }
-function clearHiitInterval(){
+function clearHiitInterval(context='workout'){
+  const hiitTimer=getHiitTimer(context);
   if(hiitTimer.interval){clearInterval(hiitTimer.interval);hiitTimer.interval=null;}
 }
-function startCurrentHiitPhase(withCue){
-  const phase=currentHiitPhase();
+function startCurrentHiitPhase(context='workout',withCue){
+  const hiitTimer=getHiitTimer(context);
+  const phase=currentHiitPhase(context);
   if(!phase) return;
-  if(withCue) fireHiitCue(hiitPhaseLabel(phase.type));
+  if(withCue) fireHiitCue(context,hiitPhaseLabel(phase.type));
   hiitTimer.running=true;
   hiitTimer.awaiting=false;
   hiitTimer.phaseEndMs=Date.now()+Math.max(1,hiitTimer.remainingSec)*1000;
-  clearHiitInterval();
-  hiitTimer.interval=setInterval(tickHiit,250);
-  tickHiit();
+  clearHiitInterval(context);
+  hiitTimer.interval=setInterval(()=>tickHiit(context),250);
+  tickHiit(context);
 }
-function advanceHiitPhase(){
-  clearHiitInterval();
+function advanceHiitPhase(context='workout'){
+  const hiitTimer=getHiitTimer(context);
+  clearHiitInterval(context);
   hiitTimer.running=false;
   hiitTimer.awaiting=false;
   const next = hiitTimer.phaseIndex+1;
   if(next>=hiitTimer.phases.length){
     hiitTimer.remainingSec=0;
-    fireHiitCue('Complete');
+    fireHiitCue(context,'Complete');
     hiitRefreshAll();
     return;
   }
   hiitTimer.phaseIndex=next;
-  hiitTimer.remainingSec=currentHiitPhase().seconds;
-  if(hiitConfig().autoStart){
-    startCurrentHiitPhase(true);
+  hiitTimer.remainingSec=currentHiitPhase(context).seconds;
+  if(hiitConfig(context).autoStart){
+    startCurrentHiitPhase(context,true);
   }else{
     hiitTimer.awaiting=true;
-    fireHiitCue('Next: '+hiitPhaseLabel(currentHiitPhase().type));
+    fireHiitCue(context,'Next: '+hiitPhaseLabel(currentHiitPhase(context).type));
     hiitRefreshAll();
   }
 }
-function tickHiit(){
+function tickHiit(context='workout'){
+  const hiitTimer=getHiitTimer(context);
   if(!hiitTimer.running) return;
   const leftMs=hiitTimer.phaseEndMs-Date.now();
   hiitTimer.remainingSec=Math.max(0,Math.ceil(leftMs/1000));
-  if(leftMs<=0){advanceHiitPhase();return;}
+  if(leftMs<=0){advanceHiitPhase(context);return;}
   hiitRefreshAll();
 }
-function startHiit(){
+function startHiit(context='workout'){
+  const hiitTimer=getHiitTimer(context);
   if(hiitTimer.running) return;
-  if(hiitTimer.awaiting){startCurrentHiitPhase(false);return;}
+  if(hiitTimer.awaiting){startCurrentHiitPhase(context,false);return;}
   const done = hiitTimer.phases.length>0&&!hiitTimer.running&&!hiitTimer.awaiting&&hiitTimer.remainingSec===0;
   if(hiitTimer.phases.length===0||done){
-    hiitTimer.phases=buildHiitPhases(hiitConfig());
+    hiitTimer.phases=buildHiitPhases(hiitConfig(context));
     hiitTimer.phaseIndex=0;
     if(!hiitTimer.phases.length){hiitRefreshAll();return;}
     hiitTimer.remainingSec=hiitTimer.phases[0].seconds;
   }
-  startCurrentHiitPhase(true);
+  startCurrentHiitPhase(context,true);
 }
-function pauseHiit(){
+function pauseHiit(context='workout'){
+  const hiitTimer=getHiitTimer(context);
   if(!hiitTimer.running) return;
   hiitTimer.remainingSec=Math.max(0,Math.ceil((hiitTimer.phaseEndMs-Date.now())/1000));
   hiitTimer.running=false;
-  clearHiitInterval();
+  clearHiitInterval(context);
   hiitRefreshAll();
 }
-function skipHiitPhase(){
+function skipHiitPhase(context='workout'){
+  const hiitTimer=getHiitTimer(context);
   if(!hiitTimer.phases.length) return;
-  advanceHiitPhase();
+  advanceHiitPhase(context);
 }
-function resetHiit(){
-  clearHiitInterval();
-  hiitTimer={phases:[],phaseIndex:0,remainingSec:0,running:false,awaiting:false,interval:null,phaseEndMs:0,lastCue:'Ready to start'};
+function resetHiit(context='workout'){
+  const key=hiitKey(context);
+  clearHiitInterval(context);
+  hiitTimers[key]=createHiitTimer();
   hiitRefreshAll();
 }
-function hiitStatusText(){
+function hiitStatusText(context='workout'){
+  const hiitTimer=getHiitTimer(context);
   const done = hiitTimer.phases.length>0&&!hiitTimer.running&&!hiitTimer.awaiting&&hiitTimer.remainingSec===0;
   if(hiitTimer.running) return 'Running';
   if(hiitTimer.awaiting) return 'Ready for next';
@@ -1399,8 +1443,9 @@ function hiitRoundText(phase){
   if(phase.type==='cooldown') return 'Cooldown';
   return 'Round —';
 }
-function hiitRefreshUI(prefix,startLabel){
-  const phase=currentHiitPhase();
+function hiitRefreshUI(prefix,startLabel,context='workout'){
+  const hiitTimer=getHiitTimer(context);
+  const phase=currentHiitPhase(context);
   const elCountdown=document.getElementById(`${prefix}-countdown`);
   const elPhase=document.getElementById(`${prefix}-phase`);
   const elRound=document.getElementById(`${prefix}-round`);
@@ -1408,13 +1453,13 @@ function hiitRefreshUI(prefix,startLabel){
   const elCue=document.getElementById(`${prefix}-cue`);
   const primary=document.getElementById(`${prefix}-primary-btn`);
   if(elCountdown){
-    const fallback=hiitConfig().work;
+    const fallback=hiitConfig(context).work;
     const show=hiitTimer.phases.length?hiitTimer.remainingSec:fallback;
     elCountdown.textContent=formatSecs(show);
   }
   if(elPhase) elPhase.textContent=phase?hiitPhaseLabel(phase.type):'Ready';
   if(elRound) elRound.textContent=hiitRoundText(phase);
-  if(elStatus) elStatus.textContent=hiitStatusText();
+  if(elStatus) elStatus.textContent=hiitStatusText(context);
   if(elCue) elCue.textContent=hiitTimer.lastCue||'';
   if(primary){
     let txt=startLabel;
@@ -1425,14 +1470,16 @@ function hiitRefreshUI(prefix,startLabel){
   }
 }
 function hiitRefreshAll(){
-  hiitRefreshUI('hiit','Start HIIT');
-  hiitRefreshUI('home-hiit','Start timer');
+  hiitRefreshUI('hiit','Start HIIT','workout');
+  hiitRefreshUI('home-hiit','Start timer','home');
 }
-function hiitPrimaryAction(){
-  if(hiitTimer.running) pauseHiit();
-  else startHiit();
+function hiitPrimaryAction(context='workout'){
+  const hiitTimer=getHiitTimer(context);
+  if(hiitTimer.running) pauseHiit(context);
+  else startHiit(context);
 }
-function setHiitPreset(id){
+function setHiitPreset(context,id){
+  const hiitState=getHiitState(context);
   const p = HIIT_PRESETS.find(x=>x.id===id);
   if(!p) return;
   hiitState.selectedPreset=id;
@@ -1441,61 +1488,67 @@ function setHiitPreset(id){
   hiitState.rounds=p.rounds;
   if(typeof p.warmup==='number') hiitState.warmup=p.warmup;
   if(typeof p.cooldown==='number') hiitState.cooldown=p.cooldown;
-  saveHiitState();
-  resetHiit();
+  saveHiitStates();
+  resetHiit(context);
   renderWorkout();
   if(activePage==='home') renderHome();
 }
-function toggleHiitFavorite(id,e){
+function toggleHiitFavorite(context,id,e){
+  const hiitState=getHiitState(context);
   if(e) e.stopPropagation();
   hiitState.favorites=hiitState.favorites||{};
   hiitState.favorites[id]=!hiitState.favorites[id];
-  saveHiitState();
-  renderWorkout();
-}
-function updateHiitField(field,val){
-  hiitState[field]=clampInt(val,field==='rounds'?1:0,field==='rounds'?50:600,hiitState[field]);
-  hiitState.selectedPreset='custom';
-  saveHiitState();
-  resetHiit();
+  saveHiitStates();
   renderWorkout();
   if(activePage==='home') renderHome();
 }
-function toggleHiitOption(field){
+function updateHiitField(context,field,val){
+  const hiitState=getHiitState(context);
+  hiitState[field]=clampInt(val,field==='rounds'?1:0,field==='rounds'?50:600,hiitState[field]);
+  hiitState.selectedPreset='custom';
+  saveHiitStates();
+  resetHiit(context);
+  renderWorkout();
+  if(activePage==='home') renderHome();
+}
+function toggleHiitOption(context,field){
+  const hiitState=getHiitState(context);
   hiitState[field]=!hiitState[field];
-  saveHiitState();
+  saveHiitStates();
   renderWorkout();
   if(activePage==='home') renderHome();
 }
 function renderHiitCard(opts){
   const conf=opts||{};
   const prefix=conf.prefix||'hiit';
+  const context=conf.context||'workout';
   const sectionLabel=conf.sectionLabel||'Interval / HIIT Timer';
   const startLabel=conf.startLabel||'Start HIIT';
-  const cfg=hiitConfig();
+  const hiitState=getHiitState(context);
+  const cfg=hiitConfig(context);
   const presets=HIIT_PRESETS.map(p=>{
     const active=hiitState.selectedPreset===p.id?' active':'';
     const fav=hiitState.favorites&&hiitState.favorites[p.id];
-    return `<button class="hiit-preset${active}" onclick="setHiitPreset('${p.id}')">${p.label}<span class="hiit-fav${fav?' active':''}" onclick="toggleHiitFavorite('${p.id}',event)">${fav?'★':'☆'}</span></button>`;
+    return `<button class="hiit-preset${active}" onclick="setHiitPreset('${context}','${p.id}')">${p.label}<span class="hiit-fav${fav?' active':''}" onclick="toggleHiitFavorite('${context}','${p.id}',event)">${fav?'★':'☆'}</span></button>`;
   }).join('');
   return `<div class="section-divider">${sectionLabel}</div>
   <div class="hiit-card">
     <div class="hiit-presets">${presets}</div>
     <div class="hiit-grid">
-      <div class="hiit-field"><label>Work sec</label><input type="number" min="5" max="600" value="${cfg.work}" onchange="updateHiitField('work',this.value)"/></div>
-      <div class="hiit-field"><label>Rest sec</label><input type="number" min="0" max="600" value="${cfg.rest}" onchange="updateHiitField('rest',this.value)"/></div>
-      <div class="hiit-field"><label>Rounds</label><input type="number" min="1" max="50" value="${cfg.rounds}" onchange="updateHiitField('rounds',this.value)"/></div>
+      <div class="hiit-field"><label>Work sec</label><input type="number" min="5" max="600" value="${cfg.work}" onchange="updateHiitField('${context}','work',this.value)"/></div>
+      <div class="hiit-field"><label>Rest sec</label><input type="number" min="0" max="600" value="${cfg.rest}" onchange="updateHiitField('${context}','rest',this.value)"/></div>
+      <div class="hiit-field"><label>Rounds</label><input type="number" min="1" max="50" value="${cfg.rounds}" onchange="updateHiitField('${context}','rounds',this.value)"/></div>
     </div>
     <div class="hiit-grid two">
-      <div class="hiit-field"><label>Warm-up sec</label><input type="number" min="0" max="600" value="${cfg.warmup}" onchange="updateHiitField('warmup',this.value)"/></div>
-      <div class="hiit-field"><label>Cooldown sec</label><input type="number" min="0" max="600" value="${cfg.cooldown}" onchange="updateHiitField('cooldown',this.value)"/></div>
+      <div class="hiit-field"><label>Warm-up sec</label><input type="number" min="0" max="600" value="${cfg.warmup}" onchange="updateHiitField('${context}','warmup',this.value)"/></div>
+      <div class="hiit-field"><label>Cooldown sec</label><input type="number" min="0" max="600" value="${cfg.cooldown}" onchange="updateHiitField('${context}','cooldown',this.value)"/></div>
     </div>
     <div class="hiit-options">
-      <label class="hiit-toggle"><input type="checkbox" ${cfg.autoStart?'checked':''} onchange="toggleHiitOption('autoStart')"/>Auto-start</label>
-      <label class="hiit-toggle"><input type="checkbox" ${hiitState.soundCue?'checked':''} onchange="toggleHiitOption('soundCue')"/>Sound cue</label>
-      <label class="hiit-toggle"><input type="checkbox" ${hiitState.vibrateCue?'checked':''} onchange="toggleHiitOption('vibrateCue')"/>Vibrate cue</label>
-      <label class="hiit-toggle"><input type="checkbox" ${hiitState.voiceCue?'checked':''} onchange="toggleHiitOption('voiceCue')"/>Voice cue</label>
-      <label class="hiit-toggle"><input type="checkbox" ${hiitState.textCue?'checked':''} onchange="toggleHiitOption('textCue')"/>Text cue</label>
+      <label class="hiit-toggle"><input type="checkbox" ${cfg.autoStart?'checked':''} onchange="toggleHiitOption('${context}','autoStart')"/>Auto-start</label>
+      <label class="hiit-toggle"><input type="checkbox" ${hiitState.soundCue?'checked':''} onchange="toggleHiitOption('${context}','soundCue')"/>Sound cue</label>
+      <label class="hiit-toggle"><input type="checkbox" ${hiitState.vibrateCue?'checked':''} onchange="toggleHiitOption('${context}','vibrateCue')"/>Vibrate cue</label>
+      <label class="hiit-toggle"><input type="checkbox" ${hiitState.voiceCue?'checked':''} onchange="toggleHiitOption('${context}','voiceCue')"/>Voice cue</label>
+      <label class="hiit-toggle"><input type="checkbox" ${hiitState.textCue?'checked':''} onchange="toggleHiitOption('${context}','textCue')"/>Text cue</label>
     </div>
     <div class="hiit-status">
       <div>
@@ -1507,9 +1560,9 @@ function renderHiitCard(opts){
     </div>
     <div class="hiit-cue" id="${prefix}-cue"></div>
     <div class="hiit-controls">
-      <button class="hiit-btn primary" id="${prefix}-primary-btn" onclick="hiitPrimaryAction()">${startLabel}</button>
-      <button class="hiit-btn" onclick="skipHiitPhase()">Skip</button>
-      <button class="hiit-btn" onclick="resetHiit()">Reset</button>
+      <button class="hiit-btn primary" id="${prefix}-primary-btn" onclick="hiitPrimaryAction('${context}')">${startLabel}</button>
+      <button class="hiit-btn" onclick="skipHiitPhase('${context}')">Skip</button>
+      <button class="hiit-btn" onclick="resetHiit('${context}')">Reset</button>
     </div>
   </div>`;
 }
@@ -2827,7 +2880,7 @@ function renderHome() {
       <div class="hw-focus-chip yoga"><span class="lbl">Yoga mobility available</span><span class="val">${yogaCount} sequence${yogaCount===1?'':'s'}</span></div>
     </div>
 
-    ${renderHiitCard({prefix:'home-hiit', sectionLabel:'Bodyweight Interval Timer', startLabel:'Start timer'})}
+    ${renderHiitCard({prefix:'home-hiit', context:'home', sectionLabel:'Bodyweight Interval Timer', startLabel:'Start timer'})}
 
     <div class="hw-equip-title">What do you have at home?</div>
     <div class="hw-equip-grid">${equipHtml}</div>
