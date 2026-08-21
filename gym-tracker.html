@@ -2294,13 +2294,58 @@ const HW_PHASES = [
         watch:'Hips level with shoulders, steady breathing, gaze at floor 6 inches in front of hands',
         redflag:'Lower back pain — hips are sagging; stop and reset'
       },
+      {
+        num:12, name:'Sit-Up', section:'Strength',
+        required:[],
+        target:'3 × 10–20 reps',
+        how:'Lie on back, knees bent, feet flat on floor, hands behind head (fingers not interlaced), curl torso up until elbows touch knees, lower with control',
+        mistakes:'Pulling on neck with hands · using momentum to swing up · feet lifting off ground · partial range of motion',
+        watch:'Chin slightly tucked, abs do the lifting (not neck), controlled descent',
+        redflag:'Neck pain — hands are pulling your head; keep them loose and let your abs do the work'
+      },
+      {
+        num:13, name:'Bicycle Crunch', section:'Strength',
+        required:[],
+        target:'3 × 12 reps each side',
+        how:'Lie on back, hands behind head, lift shoulder blades off floor, bring right elbow to left knee while extending right leg, rotate side to side in a pedaling motion',
+        mistakes:'Pulling on neck · rushing through reps · crunching straight instead of rotating · letting shoulders touch floor between reps',
+        watch:'Full rotation so elbow approaches opposite knee, slow and controlled, lower back stays down',
+        redflag:'Neck strain — reduce range of motion and keep hands loose; hip flexor pain — rest longer between sets'
+      },
+      {
+        num:14, name:'Pike Pushup', section:'Strength',
+        required:[],
+        target:'3 × 6–12 reps',
+        how:'Start in downward dog position (hips high, body in inverted V), bend elbows to lower top of head toward floor, push back up to starting position',
+        mistakes:'Hips dropping as you lower · elbows flaring wide · not going through full range · rushing',
+        watch:'Hips stay high throughout, crown of head aims for floor, elbows track back slightly',
+        redflag:'Shoulder pain — elbows are too wide; narrow your hand position slightly'
+      },
+      {
+        num:15, name:'Tricep Dip (Chair or Stair)', section:'Strength',
+        required:[],
+        target:'3 × 8–12 reps',
+        how:'Sit on edge of chair or bottom stair, hands gripping edge beside hips, walk feet forward, lower body by bending elbows to 90°, push back up',
+        mistakes:'Shoulders shrugging up to ears · leaning torso forward · elbows flaring outward · feet too close',
+        watch:'Elbows point straight back, shoulders down and back, controlled dip',
+        redflag:'Wrist or elbow pain — reduce depth; shoulder pain — keep elbows closer together'
+      },
+      {
+        num:16, name:'Superman Hold', section:'Strength',
+        required:[],
+        target:'3 × 10 reps, 2-sec hold each',
+        how:'Lie face down, arms extended overhead, lift arms, chest, and legs off ground simultaneously, hold 2 seconds at top, lower',
+        mistakes:'Only lifting legs (or only arms) · holding breath · straining neck by looking forward',
+        watch:'Arms, chest, and legs all rise together, neutral neck (look at floor), squeeze glutes',
+        redflag:'Lower back pinching — reduce height of lift; this should feel like a gentle squeeze, not a crunch'
+      },
     ]
   },
   {
     id:'p1d', label:'Phase 1 — Foundation', weeks:'Weeks 1–2', section:'Conditioning',
     exercises:[
       {
-        num:12, name:'Jump Rope Intervals', section:'Conditioning',
+        num:17, name:'Jump Rope Intervals', section:'Conditioning',
         required:['jumprope'],
         target:'5 rounds × 30 sec on / 30 sec off',
         how:'30 seconds fast (quickest rhythm you can maintain), 30 seconds rest, repeat 5 times',
@@ -2308,13 +2353,22 @@ const HW_PHASES = [
         watch:'Consistent speed for full 30 seconds, controlled breathing, relaxed grip',
         redflag:'Can\'t complete 5 rounds — reduce to 20 sec work / 40 sec rest'
       },
+      {
+        num:18, name:'Sprint Intervals (Flat Ground)', section:'Conditioning',
+        required:[],
+        target:'6 × 20-second sprints / 60-second walk',
+        how:'Sprint at 80–90% effort for 20 seconds, walk slowly for 60 seconds to recover, repeat 6 times',
+        mistakes:'Going 100% on first rep and dying early · shuffling instead of sprinting · not recovering fully during walk',
+        watch:'Tall posture, heel to glute on stride, arms driving front to back (not across body)',
+        redflag:'Hamstring pull or sharp calf pain — stop immediately; if it\'s just out of breath, you\'re fine'
+      },
     ]
   },
   {
     id:'p1e', label:'Phase 1 — Daily (off days)', weeks:'Weeks 1–2', section:'Mobility',
     exercises:[
       {
-        num:13, name:'Knee-to-Wall Ankle Mobility', section:'Mobility',
+        num:19, name:'Knee-to-Wall Ankle Mobility', section:'Mobility',
         required:[],
         target:'2 × 10 each side, 2-sec hold',
         how:'Same as ankle rocks in warm-up, 2 sets of 10 each side, hold the forward position for 2 seconds',
@@ -2322,13 +2376,49 @@ const HW_PHASES = [
         watch:'Controlled movement, full range without compensation',
         redflag:'Pinching in front of ankle — you\'ve hit your limit, don\'t force past it'
       },
+      {
+        num:20, name:'Cat-Cow Stretch', section:'Mobility',
+        required:[],
+        target:'2 × 10 slow reps',
+        how:'On hands and knees, wrists under shoulders, knees under hips. Inhale: drop belly toward floor, lift chest and tailbone (Cow). Exhale: round spine toward ceiling, tuck chin and pelvis (Cat). Flow slowly between the two.',
+        mistakes:'Moving too fast · holding breath · only moving neck or only moving hips instead of full spine',
+        watch:'Each vertebra moving in sequence, breath leading the movement, shoulders away from ears',
+        redflag:'Sharp back pain — reduce the range of motion; gentle movement only'
+      },
+      {
+        num:21, name:'Child\'s Pose', section:'Mobility',
+        required:[],
+        target:'2 × 30-sec hold',
+        how:'Kneel on floor, big toes touching, knees wide, sit hips back toward heels, extend arms forward on floor, let forehead rest on ground, breathe deeply',
+        mistakes:'Sitting up instead of sinking back · tensing shoulders · not breathing into the stretch',
+        watch:'Hips heavy toward heels, arms relaxed (not pushing floor), each exhale sinking deeper',
+        redflag:'Knee pain — place a folded towel behind your knees; hip pain — widen your knees more'
+      },
+      {
+        num:22, name:'Downward-Facing Dog', section:'Mobility',
+        required:[],
+        target:'3 × 20-sec hold',
+        how:'Start on hands and knees, tuck toes, push floor away as you lift hips toward ceiling, straighten legs as much as possible, press heels toward floor, head hangs between arms',
+        mistakes:'Rounding upper back · bending knees excessively without reason · dropping head below shoulders · wrists too close to feet',
+        watch:'Long spine, hands pressing floor, heels reaching down (even slightly bent knees is fine)',
+        redflag:'Wrist pain — shift more weight to fingers; sharp hamstring pain — bend knees generously'
+      },
+      {
+        num:23, name:'Warrior I Pose', section:'Mobility',
+        required:[],
+        target:'2 × 20-sec hold each side',
+        how:'Step one foot forward into a lunge, front knee directly over ankle, back foot flat on floor turned out 45°, raise arms overhead and look forward, sink front hip down',
+        mistakes:'Front knee caving inward · back heel lifting · arching lower back excessively · tense shoulders by ears',
+        watch:'Front knee tracks over second toe, back leg presses into the floor, arms reach tall but shoulders stay down',
+        redflag:'Knee pain in front leg — shorten your stance; lower back pain — engage your core and reduce the back arch'
+      },
     ]
   },
   {
     id:'p2', label:'Phase 2 — Plyometrics', weeks:'Weeks 3–4', section:'New exercises',
     exercises:[
       {
-        num:14, name:'Stair Sprints', section:'Power',
+        num:24, name:'Stair Sprints', section:'Power',
         required:['stairs'],
         target:'6–8 × 1 flight sprint / walk down',
         how:'Sprint up one flight (10–15 steps) as fast as possible, pump arms, drive knees, walk down slowly for recovery',
@@ -2337,7 +2427,7 @@ const HW_PHASES = [
         redflag:'Hamstring grab or pop — stop immediately, done for the day; sharp knee pain — reduce to fast walk-ups'
       },
       {
-        num:15, name:'Box Step-Up to Knee Drive', section:'Strength',
+        num:25, name:'Box Step-Up to Knee Drive', section:'Strength',
         required:['plyobox'],
         target:'3 × 10 reps each leg',
         how:'Place one foot on plyobox (knee height or lower), push through heel to stand on box, drive opposite knee up to hip height, lower with control, step down',
@@ -2346,7 +2436,7 @@ const HW_PHASES = [
         redflag:'Knee pain on box — box is too high; reduce height'
       },
       {
-        num:16, name:'Broad Jump', section:'Power',
+        num:26, name:'Broad Jump', section:'Power',
         required:[],
         target:'3 × 5 jumps',
         how:'Feet shoulder-width, swing arms back, hinge hips slightly, explode forward and up, land softly in athletic position (knees bent, chest up)',
@@ -2355,7 +2445,7 @@ const HW_PHASES = [
         redflag:'Knee pain on landing — you\'re landing with straight legs; focus on "sit into the landing"'
       },
       {
-        num:17, name:'Single-Leg Glute Bridge', section:'Strength',
+        num:27, name:'Single-Leg Glute Bridge', section:'Strength',
         required:[],
         target:'3 × 12 reps each side',
         how:'Lie on back, one foot flat on floor, other leg straight up in air, push through heel to lift hips, squeeze glute at top, lower with control',
@@ -2364,7 +2454,7 @@ const HW_PHASES = [
         redflag:'Cramping in hamstring — you\'re using hamstring instead of glute; reduce range and squeeze glute'
       },
       {
-        num:18, name:'Side Plank', section:'Strength',
+        num:28, name:'Side Plank', section:'Strength',
         required:[],
         target:'3 × 20–35 sec each side',
         how:'Lie on side, elbow under shoulder, legs straight, lift hips off ground, body straight line from head to heels, hold',
@@ -2373,7 +2463,16 @@ const HW_PHASES = [
         redflag:'Shoulder pain — elbow is not under shoulder; adjust position'
       },
       {
-        num:19, name:'Single-Leg Pogo Hops', section:'Power',
+        num:29, name:'Diamond Pushup', section:'Strength',
+        required:[],
+        target:'3 × 5–10 reps',
+        how:'Hands on floor with thumbs and index fingers touching to form a diamond shape, elbows tucked close to body, lower chest to hands, press back up',
+        mistakes:'Elbows flaring out (defeats purpose) · piking hips up · half reps · wrists turned outward',
+        watch:'Elbows track straight back, chest touches diamond at bottom, full lockout at top',
+        redflag:'Wrist pain — turn hands slightly outward; elbow pain — go back to standard pushup first'
+      },
+      {
+        num:30, name:'Single-Leg Pogo Hops', section:'Power',
         required:[],
         target:'3 × 10 reps each leg',
         how:'Same as pogo jumps but on one leg, minimal knee bend, spring off ankle, quick ground contact',
@@ -2387,7 +2486,7 @@ const HW_PHASES = [
     id:'p3', label:'Phase 3 — Build Power', weeks:'Weeks 5–8', section:'New exercises',
     exercises:[
       {
-        num:20, name:'Box Jump', section:'Power',
+        num:31, name:'Box Jump', section:'Power',
         required:['plyobox'],
         target:'4 × 5 reps',
         how:'Stand facing plyobox (12–20 inches to start), feet shoulder-width, swing arms back, explode up and forward, land softly on box with full foot, stand tall at top, step down one foot at a time (don\'t jump down)',
@@ -2396,7 +2495,7 @@ const HW_PHASES = [
         redflag:'Can\'t land quietly — box is too high; start 2 inches lower'
       },
       {
-        num:21, name:'Depth Drop', section:'Power',
+        num:32, name:'Depth Drop', section:'Power',
         required:['plyobox'],
         target:'3 × 6 reps',
         how:'Stand on box (12 inches to start), step off (don\'t jump), drop to ground, land softly in athletic position (knees bent, chest up), hold 2 seconds',
@@ -2405,7 +2504,7 @@ const HW_PHASES = [
         redflag:'Knee pain or loud landing — reduce box height; you should land like a cat, not a bag of cement'
       },
       {
-        num:22, name:'Dead Bug', section:'Strength',
+        num:33, name:'Dead Bug', section:'Strength',
         required:[],
         target:'3 × 8 reps each side',
         how:'Lie on back, arms straight up toward ceiling, knees bent 90° over hips, lower opposite arm and leg toward floor while keeping lower back pressed to floor, return, switch sides',
@@ -2414,7 +2513,25 @@ const HW_PHASES = [
         redflag:'Back pain — you\'re arching; reduce range of motion'
       },
       {
-        num:23, name:'A-Skips', section:'Conditioning',
+        num:34, name:'Russian Twist', section:'Strength',
+        required:[],
+        target:'3 × 12 reps each side',
+        how:'Sit on floor, knees bent, lean torso back to 45°, lift feet slightly, rotate torso side to side tapping hands to floor beside each hip',
+        mistakes:'Only moving arms without rotating torso · losing balance and dropping feet · rounding spine forward · holding breath',
+        watch:'Torso rotates as a unit, core stays tight, controlled touch at each side',
+        redflag:'Lower back pain — sit more upright and keep feet on floor; reduce range of motion'
+      },
+      {
+        num:35, name:'Hollow Body Hold', section:'Strength',
+        required:[],
+        target:'3 × 20–30 sec',
+        how:'Lie on back, press lower back firmly into floor, extend arms overhead and legs out low (a few inches off ground), hold like a banana shape',
+        mistakes:'Lower back arching off floor · bending knees to compensate · holding breath · chin jutting up',
+        watch:'Lower back stays pressed down the whole time, arms by ears, legs low but controlled',
+        redflag:'Lower back lifts — raise legs higher until you can hold without arching; that\'s your starting point'
+      },
+      {
+        num:36, name:'A-Skips', section:'Conditioning',
         required:[],
         target:'4 × 20 m',
         how:'Skip forward with high knees, dorsiflex ankle (toes up) when knee is high, strike ground under your hips with ball of foot, quick ground contact, opposite arm drives with leg',
@@ -2423,7 +2540,16 @@ const HW_PHASES = [
         redflag:'Calf or hamstring tightness — reduce skip height, focus on rhythm over height'
       },
       {
-        num:24, name:'EMOM Jump Rope', section:'Conditioning',
+        num:37, name:'Tempo Run', section:'Conditioning',
+        required:[],
+        target:'15–20 min at conversational pace',
+        how:'Run at a pace where you can speak in short sentences but wouldn\'t hold a full conversation — about 60–70% effort. Keep posture tall, arms relaxed, foot strike under your hips.',
+        mistakes:'Starting too fast and slowing drastically midway · hunching forward · landing heel-first far in front of body · tensing arms',
+        watch:'Consistent pace throughout, relaxed shoulders, breathing controlled but slightly labored',
+        redflag:'Sharp side stitch — slow to a walk, breathe out forcefully; any joint pain — stop and walk'
+      },
+      {
+        num:38, name:'EMOM Jump Rope', section:'Conditioning',
         required:['jumprope'],
         target:'10 rounds — 40 sec on / 20 sec off',
         how:'Every minute on the minute: 40 seconds work, 20 seconds rest, repeat 10 minutes. Start each minute fresh.',
@@ -2432,7 +2558,7 @@ const HW_PHASES = [
         redflag:'Can\'t maintain pace by round 6 — started too fast or need longer rest'
       },
       {
-        num:25, name:'Stair Bounds', section:'Power',
+        num:39, name:'Stair Bounds', section:'Power',
         required:['stairs'],
         target:'5 × 1 flight bounds / walk down',
         how:'Sprint up stairs taking 2 steps at a time, aggressive arm drive, powerful push-off each step, walk down recovery',
@@ -2446,7 +2572,7 @@ const HW_PHASES = [
     id:'p4', label:'Phase 4 — Integrate', weeks:'Weeks 9+', section:'New exercises',
     exercises:[
       {
-        num:26, name:'Depth Jump', section:'Power',
+        num:40, name:'Depth Jump', section:'Power',
         required:['plyobox'],
         target:'3 × 5 reps',
         how:'Stand on box (start 12 inches), step off, immediately upon landing explode up into vertical jump, land softly again',
@@ -2455,7 +2581,7 @@ const HW_PHASES = [
         redflag:'Loud landing or knee pain — reduce box height or go back to depth drops'
       },
       {
-        num:27, name:'Single-Leg Box Jump', section:'Power',
+        num:41, name:'Single-Leg Box Jump', section:'Power',
         required:['plyobox'],
         target:'3 × 4 reps each leg',
         how:'Stand on one leg in front of box, explode up to land on box with same leg, land softly, step down',
@@ -2464,7 +2590,7 @@ const HW_PHASES = [
         redflag:'Knee wobble on landing — stop, reduce box height, strengthen with split squats first'
       },
       {
-        num:28, name:'Dumbbell Romanian Deadlift', section:'Strength',
+        num:42, name:'Dumbbell Romanian Deadlift', section:'Strength',
         required:['dumbbells'],
         target:'3 × 8 reps',
         how:'Hold dumbbells in front of thighs, push hips back, keep back neutral, feel the stretch in your hamstrings, stand by squeezing glutes',
@@ -2473,7 +2599,7 @@ const HW_PHASES = [
         redflag:'Lower back pain — you\'re rounding; reduce weight and practice hip hinge'
       },
       {
-        num:29, name:'Dumbbell Goblet Squat', section:'Strength',
+        num:43, name:'Dumbbell Goblet Squat', section:'Strength',
         required:['dumbbells'],
         target:'3 × 10 reps',
         how:'Hold one dumbbell at chest, stand shoulder-width, sit between your heels to full depth, stand tall squeezing glutes',
@@ -2482,7 +2608,7 @@ const HW_PHASES = [
         redflag:'Knee pain — reduce weight or depth; lower back pain — your core is fatiguing'
       },
       {
-        num:30, name:'Loaded Jump Squat', section:'Power',
+        num:44, name:'Loaded Jump Squat', section:'Power',
         required:['dumbbells'],
         target:'3 × 5 reps (light dumbbells)',
         how:'Hold light dumbbells at sides, lower to quarter squat, explode up, leave ground, land softly, immediate next rep',
