@@ -303,6 +303,12 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .hw-note-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 12px;margin-bottom:16px}
 .hw-note-title{font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px}
 .hw-note-body{font-size:13px;color:var(--text-muted);line-height:1.65}
+.hw-focus-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.hw-focus-chip{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 10px}
+.hw-focus-chip .lbl{display:block;font-size:10px;font-family:'DM Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em}
+.hw-focus-chip .val{display:block;font-size:13px;color:var(--text);margin-top:2px}
+.hw-focus-chip.upper{border-color:rgba(74,156,240,0.35);background:rgba(74,156,240,0.1)}
+.hw-focus-chip.yoga{border-color:rgba(74,201,138,0.35);background:rgba(74,201,138,0.1)}
 .hw-equip-title{font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px}
 .hw-equip-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}
 .hw-equip-btn{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);cursor:pointer;transition:all 0.15s;text-align:left}
@@ -319,14 +325,14 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .hw-card-info{flex:1;min-width:0}
 .hw-card-name{font-size:14px;font-weight:500;color:var(--text);line-height:1.2}
 .hw-card-meta{font-size:12px;color:var(--text-dim);margin-top:2px}
+.hw-card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.hw-card-tag{font-size:10px;font-family:'DM Mono',monospace;padding:2px 6px;border-radius:99px;border:1px solid var(--border);color:var(--text-dim);background:var(--surface2)}
+.hw-card-tag.upper{border-color:rgba(74,156,240,0.3);color:var(--upper);background:rgba(74,156,240,0.12)}
+.hw-card-tag.yoga{border-color:rgba(74,201,138,0.28);color:var(--success);background:rgba(74,201,138,0.14)}
 .hw-card-equip{font-size:10px;font-family:'DM Mono',monospace;padding:2px 6px;border-radius:99px;background:rgba(200,240,74,0.08);color:var(--accent);border:1px solid rgba(200,240,74,0.2);white-space:nowrap}
 .hw-card-body{border-top:1px solid var(--border);padding:14px}
-.hw-visual-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
-.hw-thumb{width:92px;height:92px;border-radius:10px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);background:var(--surface2)}
-.hw-thumb-meta{flex:1;min-width:0}
 .hw-target-chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(200,240,74,0.22);border-radius:99px;padding:4px 8px;margin-bottom:8px}
-.hw-quick-note{font-size:12px;color:var(--text-dim);line-height:1.6}
-.hw-demo-link{display:inline-flex;margin-top:8px;font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-decoration:none}
+.hw-demo-link{display:inline-flex;margin:4px 0 12px;font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-decoration:none}
 .hw-detail-section{margin-bottom:10px}
 .hw-detail-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px}
 .hw-detail-body{font-size:13px;color:var(--text-muted);line-height:1.65}
@@ -347,8 +353,6 @@ body{display:flex;flex-direction:column;min-height:100vh}
 @media (max-width:360px){
   .bnav-btn{font-size:10px;padding:8px 2px 7px}
   .bnav-btn svg{width:18px;height:18px}
-  .hw-visual-row{flex-direction:column}
-  .hw-thumb{width:100%;height:auto;max-height:140px}
 }
 
 /* AUTH OVERLAY */
@@ -1048,71 +1052,6 @@ function makeStretchThumb(title, accent){
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
-function safeSvgText(value){
-  return String(value).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
-}
-
-function splitThumbLabel(text){
-  const words=String(text).split(' ');
-  if(words.length===1) return [words[0], ''];
-  let first='', second='';
-  words.forEach(word=>{
-    if((first+' '+word).trim().length<=14 || !first) first=(first+' '+word).trim();
-    else second=(second+' '+word).trim();
-  });
-  return [first, second.length>16 ? second.slice(0,15)+'…' : second];
-}
-
-function homePoseType(ex){
-  const text=`${ex.name} ${ex.how}`.toLowerCase();
-  if(text.includes('side plank')) return 'sideplank';
-  if(text.includes('plank')) return 'plank';
-  if(text.includes('hands and knees') || text.includes('cat-cow') || text.includes('downward dog')) return 'handsknees';
-  if(text.includes('child\'s pose')) return 'childpose';
-  if(text.includes('sit-up') || text.includes('crunch') || text.includes('dead bug') || text.includes('hollow')) return 'supine';
-  if(text.includes('bridge')) return 'bridge';
-  if(text.includes('pushup') || text.includes('dip')) return 'pushup';
-  if(text.includes('lunge') || text.includes('warrior')) return 'lunge';
-  if(text.includes('single-leg') || text.includes('one leg')) return 'singleleg';
-  if(text.includes('jump') || text.includes('hop') || text.includes('skip')) return 'jump';
-  if(text.includes('sprint') || text.includes('run')) return 'run';
-  if(text.includes('stairs') || text.includes('step-up') || text.includes('box')) return 'stairs';
-  return 'stand';
-}
-
-function homePoseSvg(type, accent){
-  if(type==='sideplank') return `<circle cx="44" cy="84" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M52 88l32 10 26 0m-48-7-10 18m34-11 10 18m6-18 16-10" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
-  if(type==='plank') return `<circle cx="44" cy="74" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M52 78l38 8 28 0m-36-2-10 18m28-16 12 18" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
-  if(type==='handsknees') return `<circle cx="68" cy="54" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M74 60l18 18m-18-6-20 20m36-10 24 0m-14-12 12 22" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
-  if(type==='childpose') return `<circle cx="54" cy="82" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M61 86l24 8m-16-2 34 0m-8 0 18-16m-50 8-18-16" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
-  if(type==='supine') return `<circle cx="48" cy="88" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M56 92h44m-24 0-12-18m20 18 16-20m0 20 16 12" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
-  if(type==='bridge') return `<circle cx="48" cy="92" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M55 92l22-14 20 10m-20-10 0 22m20-12 18 12" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
-  if(type==='pushup') return `<circle cx="46" cy="72" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M54 76l28 10 32 2m-34-6-10 18m26-12 14 16" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
-  if(type==='lunge') return `<circle cx="88" cy="36" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M88 44v24m0 0-18 22m18-22 20 14m-20 8-18 20m18-20 20 0" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
-  if(type==='singleleg') return `<circle cx="88" cy="36" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M88 44v28m0 0-18 18m18-18 22 8m-22 6-4 28m4-28 22 24" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
-  if(type==='jump') return `<circle cx="88" cy="34" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M88 42v26m0 0-16 12m16-12 18 10m-18 0-16 22m16-22 18 20" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/><path d="M46 118h84" stroke="#3b3b3b" stroke-width="3" stroke-dasharray="5 5"/><path d="M70 112l-7 7m0-7 7 7m36-7-7 7m0-7 7 7" stroke="${accent}" stroke-width="3" stroke-linecap="round"/>`;
-  if(type==='run') return `<circle cx="88" cy="34" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M88 42v24m0 0-16 16m16-16 22 10m-22 4-10 26m10-26 24 22" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/><path d="M46 118h84" stroke="#3b3b3b" stroke-width="3"/><path d="M52 111l10-5m10 5 10-5m10 5 10-5" stroke="${accent}" stroke-width="3" stroke-linecap="round"/>`;
-  if(type==='stairs') return `<path d="M48 112h20V96h18V80h18V64h24" fill="none" stroke="#3b3b3b" stroke-width="6" stroke-linejoin="round"/><circle cx="88" cy="40" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M88 48v24m0 0-12 16m12-16 18 8m-18 4 0 22m0-22 18 16" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
-  return `<circle cx="88" cy="36" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M88 44v28m0 0-18 18m18-18 20 0m-20 0 16-18m-16 36-10 24m10-24 14 24" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
-}
-
-function makeHomeThumb(ex){
-  const accentBySection={warmup:'#f0a84a',power:'#c8f04a',strength:'#4a9cf0',conditioning:'#f0614a',mobility:'#4ac98a'};
-  const accent=accentBySection[(ex.section||'').toLowerCase()]||'#c8f04a';
-  const [line1,line2]=splitThumbLabel(ex.name);
-  const pose=homePoseType(ex);
-  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="184" height="184" viewBox="0 0 184 184">
-    <rect width="184" height="184" rx="18" fill="#1f1f1f"/>
-    <rect x="10" y="10" width="164" height="164" rx="14" fill="#252525" stroke="#353535"/>
-    <text x="92" y="24" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="${accent}" letter-spacing="0.9">${safeSvgText((ex.section||'Reference').toUpperCase())}</text>
-    ${homePoseSvg(pose, accent)}
-    <text x="92" y="145" text-anchor="middle" font-family="DM Sans, Arial, sans-serif" font-size="11" fill="#e7e7e7">${safeSvgText(line1)}</text>
-    ${line2 ? `<text x="92" y="159" text-anchor="middle" font-family="DM Sans, Arial, sans-serif" font-size="11" fill="#e7e7e7">${safeSvgText(line2)}</text>` : ''}
-    <text x="92" y="174" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="#8f8f8f">Reference diagram</text>
-  </svg>`;
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
-}
-
 function makeHomeDemoUrl(name){
   return `https://www.youtube.com/results?search_query=${encodeURIComponent(`${name} proper form`)}`;
 }
@@ -1269,6 +1208,7 @@ let history = load('gymHistory_v3',[]);
 let progData = load('gymProg_v1',{});
 
 const HIIT_PRESETS = [
+  {id:'bodyweight',label:'45:15 Bodyweight',work:45,rest:15,rounds:8,warmup:60,cooldown:60},
   {id:'tabata',label:'20:10 Tabata',work:20,rest:10,rounds:8},
   {id:'thirty',label:'30:30',work:30,rest:30,rounds:10},
   {id:'forty',label:'40:20',work:40,rest:20,rounds:8},
@@ -1396,7 +1336,7 @@ function advanceHiitPhase(){
   if(next>=hiitTimer.phases.length){
     hiitTimer.remainingSec=0;
     fireHiitCue('Complete');
-    hiitRefreshUI();
+    hiitRefreshAll();
     return;
   }
   hiitTimer.phaseIndex=next;
@@ -1406,7 +1346,7 @@ function advanceHiitPhase(){
   }else{
     hiitTimer.awaiting=true;
     fireHiitCue('Next: '+hiitPhaseLabel(currentHiitPhase().type));
-    hiitRefreshUI();
+    hiitRefreshAll();
   }
 }
 function tickHiit(){
@@ -1414,7 +1354,7 @@ function tickHiit(){
   const leftMs=hiitTimer.phaseEndMs-Date.now();
   hiitTimer.remainingSec=Math.max(0,Math.ceil(leftMs/1000));
   if(leftMs<=0){advanceHiitPhase();return;}
-  hiitRefreshUI();
+  hiitRefreshAll();
 }
 function startHiit(){
   if(hiitTimer.running) return;
@@ -1423,7 +1363,7 @@ function startHiit(){
   if(hiitTimer.phases.length===0||done){
     hiitTimer.phases=buildHiitPhases(hiitConfig());
     hiitTimer.phaseIndex=0;
-    if(!hiitTimer.phases.length){hiitRefreshUI();return;}
+    if(!hiitTimer.phases.length){hiitRefreshAll();return;}
     hiitTimer.remainingSec=hiitTimer.phases[0].seconds;
   }
   startCurrentHiitPhase(true);
@@ -1433,7 +1373,7 @@ function pauseHiit(){
   hiitTimer.remainingSec=Math.max(0,Math.ceil((hiitTimer.phaseEndMs-Date.now())/1000));
   hiitTimer.running=false;
   clearHiitInterval();
-  hiitRefreshUI();
+  hiitRefreshAll();
 }
 function skipHiitPhase(){
   if(!hiitTimer.phases.length) return;
@@ -1442,7 +1382,7 @@ function skipHiitPhase(){
 function resetHiit(){
   clearHiitInterval();
   hiitTimer={phases:[],phaseIndex:0,remainingSec:0,running:false,awaiting:false,interval:null,phaseEndMs:0,lastCue:'Ready to start'};
-  hiitRefreshUI();
+  hiitRefreshAll();
 }
 function hiitStatusText(){
   const done = hiitTimer.phases.length>0&&!hiitTimer.running&&!hiitTimer.awaiting&&hiitTimer.remainingSec===0;
@@ -1459,14 +1399,14 @@ function hiitRoundText(phase){
   if(phase.type==='cooldown') return 'Cooldown';
   return 'Round —';
 }
-function hiitRefreshUI(){
+function hiitRefreshUI(prefix,startLabel){
   const phase=currentHiitPhase();
-  const elCountdown=document.getElementById('hiit-countdown');
-  const elPhase=document.getElementById('hiit-phase');
-  const elRound=document.getElementById('hiit-round');
-  const elStatus=document.getElementById('hiit-status');
-  const elCue=document.getElementById('hiit-cue');
-  const primary=document.getElementById('hiit-primary-btn');
+  const elCountdown=document.getElementById(`${prefix}-countdown`);
+  const elPhase=document.getElementById(`${prefix}-phase`);
+  const elRound=document.getElementById(`${prefix}-round`);
+  const elStatus=document.getElementById(`${prefix}-status`);
+  const elCue=document.getElementById(`${prefix}-cue`);
+  const primary=document.getElementById(`${prefix}-primary-btn`);
   if(elCountdown){
     const fallback=hiitConfig().work;
     const show=hiitTimer.phases.length?hiitTimer.remainingSec:fallback;
@@ -1477,12 +1417,16 @@ function hiitRefreshUI(){
   if(elStatus) elStatus.textContent=hiitStatusText();
   if(elCue) elCue.textContent=hiitTimer.lastCue||'';
   if(primary){
-    let txt='Start HIIT';
+    let txt=startLabel;
     if(hiitTimer.running) txt='Pause';
     else if(hiitTimer.awaiting) txt='Start next';
     else if(hiitTimer.phases.length&&hiitTimer.remainingSec>0) txt='Resume';
     primary.textContent=txt;
   }
+}
+function hiitRefreshAll(){
+  hiitRefreshUI('hiit','Start HIIT');
+  hiitRefreshUI('home-hiit','Start timer');
 }
 function hiitPrimaryAction(){
   if(hiitTimer.running) pauseHiit();
@@ -1495,9 +1439,12 @@ function setHiitPreset(id){
   hiitState.work=p.work;
   hiitState.rest=p.rest;
   hiitState.rounds=p.rounds;
+  if(typeof p.warmup==='number') hiitState.warmup=p.warmup;
+  if(typeof p.cooldown==='number') hiitState.cooldown=p.cooldown;
   saveHiitState();
   resetHiit();
   renderWorkout();
+  if(activePage==='home') renderHome();
 }
 function toggleHiitFavorite(id,e){
   if(e) e.stopPropagation();
@@ -1512,20 +1459,26 @@ function updateHiitField(field,val){
   saveHiitState();
   resetHiit();
   renderWorkout();
+  if(activePage==='home') renderHome();
 }
 function toggleHiitOption(field){
   hiitState[field]=!hiitState[field];
   saveHiitState();
   renderWorkout();
+  if(activePage==='home') renderHome();
 }
-function renderHiitCard(){
+function renderHiitCard(opts){
+  const conf=opts||{};
+  const prefix=conf.prefix||'hiit';
+  const sectionLabel=conf.sectionLabel||'Interval / HIIT Timer';
+  const startLabel=conf.startLabel||'Start HIIT';
   const cfg=hiitConfig();
   const presets=HIIT_PRESETS.map(p=>{
     const active=hiitState.selectedPreset===p.id?' active':'';
     const fav=hiitState.favorites&&hiitState.favorites[p.id];
     return `<button class="hiit-preset${active}" onclick="setHiitPreset('${p.id}')">${p.label}<span class="hiit-fav${fav?' active':''}" onclick="toggleHiitFavorite('${p.id}',event)">${fav?'★':'☆'}</span></button>`;
   }).join('');
-  return `<div class="section-divider">Interval / HIIT Timer</div>
+  return `<div class="section-divider">${sectionLabel}</div>
   <div class="hiit-card">
     <div class="hiit-presets">${presets}</div>
     <div class="hiit-grid">
@@ -1546,15 +1499,15 @@ function renderHiitCard(){
     </div>
     <div class="hiit-status">
       <div>
-        <div class="hiit-meta" id="hiit-status">Ready</div>
-        <div class="hiit-phase" id="hiit-phase">Ready</div>
-        <div class="hiit-round" id="hiit-round">Round —</div>
+        <div class="hiit-meta" id="${prefix}-status">Ready</div>
+        <div class="hiit-phase" id="${prefix}-phase">Ready</div>
+        <div class="hiit-round" id="${prefix}-round">Round —</div>
       </div>
-      <div class="hiit-countdown" id="hiit-countdown">0:00</div>
+      <div class="hiit-countdown" id="${prefix}-countdown">0:00</div>
     </div>
-    <div class="hiit-cue" id="hiit-cue"></div>
+    <div class="hiit-cue" id="${prefix}-cue"></div>
     <div class="hiit-controls">
-      <button class="hiit-btn primary" id="hiit-primary-btn" onclick="hiitPrimaryAction()">Start HIIT</button>
+      <button class="hiit-btn primary" id="${prefix}-primary-btn" onclick="hiitPrimaryAction()">${startLabel}</button>
       <button class="hiit-btn" onclick="skipHiitPhase()">Skip</button>
       <button class="hiit-btn" onclick="resetHiit()">Reset</button>
     </div>
@@ -1751,7 +1704,7 @@ function renderWorkout(){
       <div class="rest-body">${day.restBody}</div>
       <div class="rest-opts"><div class="rest-opts-title">Good options today</div>${opts}</div>
     </div>${renderHiitCard()}`;
-    hiitRefreshUI();
+    hiitRefreshAll();
     return;
   }
 
@@ -1906,7 +1859,7 @@ function renderWorkout(){
   </button>`;
 
   main.innerHTML=html;
-  hiitRefreshUI();
+  hiitRefreshAll();
 }
 
 // ─── GUIDE PAGE ───────────────────────────────────────────────────────────────
@@ -2763,6 +2716,14 @@ function exAvailable(ex) {
   return ex.required.every(r => hwEquip[r]);
 }
 
+function hwTags(ex){
+  const text=`${ex.name} ${ex.how} ${ex.section}`.toLowerCase();
+  const tags=[];
+  if(/pushup|dip|pike|diamond|tricep|superman/.test(text)) tags.push({key:'upper',label:'Upper body'});
+  if(/cat-cow|child's pose|downward-facing dog|warrior|yoga|pose/.test(text)) tags.push({key:'yoga',label:'Yoga'});
+  return tags;
+}
+
 function renderHome() {
   const main = document.getElementById('page-home');
 
@@ -2799,6 +2760,7 @@ function renderHome() {
     available.forEach(ex => {
       const key = `hw-${ex.num}`;
       const isOpen = !!hwOpenCards[key];
+      const tags = hwTags(ex);
       const needsEquip = ex.required.length > 0 ? ex.required.map(r => {
         const eq = HW_EQUIPMENT.find(e => e.id === r);
         return eq ? `<span class="hw-card-equip">${eq.icon} ${eq.label}</span>` : '';
@@ -2811,6 +2773,7 @@ function renderHome() {
           <div class="hw-card-info">
             <div class="hw-card-name">${ex.name}</div>
             <div class="hw-card-meta">${ex.target}</div>
+            ${tags.length ? `<div class="hw-card-tags">${tags.map(tag=>`<span class="hw-card-tag ${tag.key}">${tag.label}</span>`).join('')}</div>` : ''}
           </div>
           <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
             ${needsEquip}
@@ -2821,14 +2784,8 @@ function renderHome() {
       if (isOpen) {
         const steps = parseHomeHowSteps(ex.how);
         exercisesHtml += `<div class="hw-card-body">
-          <div class="hw-visual-row">
-            <img class="hw-thumb" src="${makeHomeThumb(ex)}" alt="${ex.name} reference diagram" width="92" height="92" loading="lazy">
-            <div class="hw-thumb-meta">
-              <div class="hw-target-chip">Target: ${ex.target}</div>
-              <div class="hw-quick-note">Use this as a form reference before your first rep. Move slowly enough that each checkpoint below stays true.</div>
-              <a class="hw-demo-link" href="${makeHomeDemoUrl(ex.name)}" target="_blank" rel="noreferrer noopener">Watch demo search ↗</a>
-            </div>
-          </div>
+          <div class="hw-target-chip">Target: ${ex.target}</div>
+          <a class="hw-demo-link" href="${makeHomeDemoUrl(ex.name)}" target="_blank" rel="noreferrer noopener">Watch movement on YouTube ↗</a>
           <div class="hw-detail-section">
             <div class="hw-detail-label">How to</div>
             <div class="hw-section-label">Step-by-step</div>
@@ -2852,6 +2809,8 @@ function renderHome() {
 
   const totalAvailable = HW_ALL_EXERCISES.filter(ex => exAvailable(ex)).length;
   const totalLocked = HW_ALL_EXERCISES.length - totalAvailable;
+  const upperCount = HW_ALL_EXERCISES.filter(ex => exAvailable(ex) && hwTags(ex).some(t => t.key==='upper')).length;
+  const yogaCount = HW_ALL_EXERCISES.filter(ex => exAvailable(ex) && hwTags(ex).some(t => t.key==='yoga')).length;
 
   main.innerHTML = `
     <div class="hw-topline">
@@ -2861,8 +2820,14 @@ function renderHome() {
     <div class="hw-intro">A progressive 4-phase plan built for agility, speed, and power — no gym required. Select the equipment you have at home to unlock more exercises.</div>
     <div class="hw-note-card">
       <div class="hw-note-title">How to use this tab</div>
-      <div class="hw-note-body">This page is coaching-only, so nothing gets logged here. Tap any exercise to see a quick reference diagram, step-by-step setup cues, common mistakes, and a demo search if you want a moving example before you train.</div>
+      <div class="hw-note-body">This page is coaching-only, so nothing gets logged here. Tap any exercise for setup cues, common mistakes, and a YouTube movement search before you train.</div>
     </div>
+    <div class="hw-focus-grid">
+      <div class="hw-focus-chip upper"><span class="lbl">Upper body available</span><span class="val">${upperCount} exercise${upperCount===1?'':'s'}</span></div>
+      <div class="hw-focus-chip yoga"><span class="lbl">Yoga mobility available</span><span class="val">${yogaCount} sequence${yogaCount===1?'':'s'}</span></div>
+    </div>
+
+    ${renderHiitCard({prefix:'home-hiit', sectionLabel:'Bodyweight Interval Timer', startLabel:'Start timer'})}
 
     <div class="hw-equip-title">What do you have at home?</div>
     <div class="hw-equip-grid">${equipHtml}</div>
@@ -2874,6 +2839,7 @@ function renderHome() {
 
     ${totalAvailable === 0 ? `<div class="hw-empty">No exercises available yet.<br>All ${HW_ALL_EXERCISES.filter(ex=>ex.required.length===0).length} bodyweight exercises should always appear — tap any card above to check your equipment.</div>` : exercisesHtml}
   `;
+  hiitRefreshAll();
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
