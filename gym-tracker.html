@@ -1634,7 +1634,7 @@ const PAGE_META = {
   guide:{title:'Guide', showTabs:false},
   history:{title:'History', showTabs:false},
   mindset:{title:'Mindset', showTabs:false},
-  home:{title:'At-Home', showTabs:false}
+  home:{title:'At Home', showTabs:false}
 };
 
 function updatePageChrome(name){
@@ -2768,7 +2768,7 @@ function renderHome() {
 
   // Equipment checklist
   const equipHtml = HW_EQUIPMENT.map(eq => `
-    <button class="hw-equip-btn${hwEquip[eq.id] ? ' selected' : ''}" onclick="hwToggleEquip('${eq.id}')">
+    <button type="button" class="hw-equip-btn${hwEquip[eq.id] ? ' selected' : ''}" aria-pressed="${hwEquip[eq.id] ? 'true' : 'false'}" onclick="hwToggleEquip('${eq.id}')">
       <span class="hw-equip-icon">${eq.icon}</span>
       <span class="hw-equip-label">${eq.label}</span>
     </button>
@@ -2776,7 +2776,6 @@ function renderHome() {
 
   // Group exercises by phase, filtering by availability
   const phaseSections = [];
-  let lastPhaseLabel = null;
   HW_PHASES.forEach(phase => {
     const available = phase.exercises.filter(ex => exAvailable(ex));
     if (available.length === 0) return;
@@ -2800,7 +2799,6 @@ function renderHome() {
     available.forEach(ex => {
       const key = `hw-${ex.num}`;
       const isOpen = !!hwOpenCards[key];
-      const steps = parseHomeHowSteps(ex.how);
       const needsEquip = ex.required.length > 0 ? ex.required.map(r => {
         const eq = HW_EQUIPMENT.find(e => e.id === r);
         return eq ? `<span class="hw-card-equip">${eq.icon} ${eq.label}</span>` : '';
@@ -2808,7 +2806,7 @@ function renderHome() {
       const mistakeKey = `hwm-${ex.num}`;
 
       exercisesHtml += `<div class="hw-card">
-        <div class="hw-card-header" onclick="hwToggleCard('${key}')">
+        <div class="hw-card-header" role="button" tabindex="0" aria-expanded="${isOpen ? 'true' : 'false'}" onclick="hwToggleCard('${key}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();hwToggleCard('${key}');}">
           <div class="hw-card-num">${ex.num}</div>
           <div class="hw-card-info">
             <div class="hw-card-name">${ex.name}</div>
@@ -2821,6 +2819,7 @@ function renderHome() {
         </div>`;
 
       if (isOpen) {
+        const steps = parseHomeHowSteps(ex.how);
         exercisesHtml += `<div class="hw-card-body">
           <div class="hw-visual-row">
             <img class="hw-thumb" src="${makeHomeThumb(ex)}" alt="${ex.name} reference diagram" width="92" height="92" loading="lazy">
@@ -2856,7 +2855,7 @@ function renderHome() {
 
   main.innerHTML = `
     <div class="hw-topline">
-      <div class="hist-page-title">At-Home Training</div>
+      <div class="hist-page-title">At Home Training</div>
       <div class="hw-ref-badge">Reference only</div>
     </div>
     <div class="hw-intro">A progressive 4-phase plan built for agility, speed, and power — no gym required. Select the equipment you have at home to unlock more exercises.</div>
