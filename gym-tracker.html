@@ -27,7 +27,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
 body{display:flex;flex-direction:column;min-height:100vh}
 
 /* NAV */
-.bottom-nav{position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);z-index:200;padding-bottom:env(safe-area-inset-bottom,0)}
+.bottom-nav{position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);z-index:200;padding-bottom:env(safe-area-inset-bottom,0)}
 .bnav-btn{display:flex;flex-direction:column;align-items:center;padding:10px 4px 8px;cursor:pointer;border:none;background:transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:11px;gap:3px;transition:color 0.15s}
 .bnav-btn svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.8;fill:none}
 .bnav-btn.active{color:var(--accent)}
@@ -295,6 +295,43 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .sync-badge{font-size:11px;font-family:'DM Mono',monospace;padding:3px 8px;border-radius:99px;background:rgba(74,201,138,0.12);color:var(--success);border:1px solid rgba(74,201,138,0.25);cursor:pointer;white-space:nowrap;flex-shrink:0}
 .sync-badge.offline{background:rgba(136,136,136,0.08);color:var(--text-dim);border-color:var(--border)}
 
+/* HOME WORKOUT PAGE */
+.hw-intro{font-size:14px;color:var(--text-muted);line-height:1.65;margin-bottom:16px}
+.hw-equip-title{font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px}
+.hw-equip-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}
+.hw-equip-btn{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);cursor:pointer;transition:all 0.15s;text-align:left}
+.hw-equip-btn.selected{border-color:rgba(200,240,74,0.55);background:var(--accent-dim)}
+.hw-equip-icon{font-size:20px;line-height:1;flex-shrink:0}
+.hw-equip-label{font-size:13px;font-weight:500;color:var(--text-muted);line-height:1.3}
+.hw-equip-btn.selected .hw-equip-label{color:var(--accent)}
+.hw-phase-header{display:flex;align-items:center;justify-content:space-between;margin:20px 0 8px}
+.hw-phase-title{font-size:12px;font-family:'DM Mono',monospace;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em}
+.hw-phase-badge{font-size:11px;font-family:'DM Mono',monospace;padding:2px 8px;border-radius:99px;background:var(--surface2);color:var(--text-dim);border:1px solid var(--border)}
+.hw-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden}
+.hw-card-header{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer}
+.hw-card-num{width:24px;height:24px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-family:'DM Mono',monospace;color:var(--text-dim);flex-shrink:0}
+.hw-card-info{flex:1;min-width:0}
+.hw-card-name{font-size:14px;font-weight:500;color:var(--text);line-height:1.2}
+.hw-card-meta{font-size:12px;color:var(--text-dim);margin-top:2px}
+.hw-card-equip{font-size:10px;font-family:'DM Mono',monospace;padding:2px 6px;border-radius:99px;background:rgba(200,240,74,0.08);color:var(--accent);border:1px solid rgba(200,240,74,0.2);white-space:nowrap}
+.hw-card-body{border-top:1px solid var(--border);padding:14px}
+.hw-detail-section{margin-bottom:10px}
+.hw-detail-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px}
+.hw-detail-body{font-size:13px;color:var(--text-muted);line-height:1.65}
+.hw-detail-body.warn{color:var(--danger);background:rgba(240,97,74,0.06);border:1px solid rgba(240,97,74,0.2);border-radius:var(--radius-sm);padding:8px 10px}
+.hw-mistake-toggle{font-size:12px;color:var(--text-dim);cursor:pointer;text-decoration:underline;text-underline-offset:2px;display:inline-block;margin-bottom:8px}
+.hw-mistake-box{font-size:12px;color:var(--text-muted);background:rgba(240,97,74,0.06);border:1px solid rgba(240,97,74,0.2);border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:10px;line-height:1.7;display:none}
+.hw-mistake-box.open{display:block}
+.hw-section-label{font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px}
+.hw-steps{padding-left:16px;margin:0}
+.hw-steps li{font-size:13px;color:var(--text-muted);line-height:1.65;margin-bottom:3px}
+.hw-phase-divider{display:flex;align-items:center;gap:8px;margin:20px 0 12px}
+.hw-phase-divider::before,.hw-phase-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.hw-phase-divider-inner{font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap;padding:3px 10px;border:1px solid rgba(200,240,74,0.3);border-radius:99px;background:var(--accent-dim)}
+.hw-empty{text-align:center;padding:32px 16px;color:var(--text-dim);font-size:14px;line-height:1.7}
+.hw-redflag{font-size:13px;color:var(--danger);background:rgba(240,97,74,0.06);border:1px solid rgba(240,97,74,0.2);border-radius:var(--radius-sm);padding:8px 10px;line-height:1.65}
+.hw-watch{font-size:13px;color:var(--success);background:var(--success-dim);border:1px solid rgba(74,201,138,0.25);border-radius:var(--radius-sm);padding:8px 10px;line-height:1.65}
+
 /* AUTH OVERLAY */
 .auth-overlay{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-y:auto}
 .auth-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;width:100%;max-width:360px}
@@ -329,6 +366,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
 <div id="page-workout" class="page active"></div>
 <div id="page-guide" class="page"></div>
 <div id="page-history" class="page"></div>
+<div id="page-home" class="page"></div>
 
 <nav class="bottom-nav">
   <button class="bnav-btn active" id="btn-workout" onclick="switchPage('workout')">
@@ -346,6 +384,10 @@ body{display:flex;flex-direction:column;min-height:100vh}
   <button class="bnav-btn" id="btn-mindset" onclick="switchPage('mindset')">
     <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.5-1.3 4.7-3.3 6L14 21H10l-1.7-6C6.3 13.7 5 11.5 5 9a7 7 0 0 1 7-7z"/></svg>
     Mindset
+  </button>
+  <button class="bnav-btn" id="btn-home" onclick="switchPage('home')">
+    <svg viewBox="0 0 24 24"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-5h4v5h4a1 1 0 0 0 1-1v-9"/></svg>
+    Home
   </button>
 </nav>
 
@@ -1499,6 +1541,7 @@ function switchPage(name){
   if(name==='history') renderHistory();
   if(name==='guide') renderGuide();
   if(name==='mindset') renderMindset();
+  if(name==='home') renderHome();
 }
 
 // ─── TABS ────────────────────────────────────────────────────────────────────
@@ -2127,6 +2170,454 @@ function clearHistory(){
     progData={};save('gymProg_v1',{});
     clearHistoryFromCloud();renderHistory();
   }
+}
+
+// ─── HOME WORKOUT ─────────────────────────────────────────────────────────────
+const HW_EQUIPMENT = [
+  {id:'stairs', icon:'🪜', label:'Stairs'},
+  {id:'jumprope', icon:'🪢', label:'Jump rope'},
+  {id:'plyobox', icon:'📦', label:'Plyo box'},
+  {id:'dumbbells', icon:'🏋️', label:'Dumbbells'},
+];
+
+// required: [] = bodyweight only, ['stairs'] = needs stairs, etc.
+const HW_PHASES = [
+  {
+    id:'p1', label:'Phase 1 — Foundation', weeks:'Weeks 1–2', section:'Warm-up',
+    exercises:[
+      {
+        num:1, name:'Jump Rope — Easy Rhythm', section:'Warm-up',
+        required:['jumprope'],
+        target:'3 min steady rhythm',
+        how:'Both feet together, slight bend in knees, wrists do the work, jump just high enough to clear the rope (1–2 inches)',
+        mistakes:'Jumping too high (wastes energy) · tensing shoulders · slapping feet hard on ground',
+        watch:'Quiet landings, relaxed shoulders, steady rhythm you can maintain',
+        redflag:'Stop if calves cramp or you can\'t control breathing'
+      },
+      {
+        num:2, name:'Walking Lunge', section:'Warm-up',
+        required:[],
+        target:'10 reps each leg',
+        how:'Step forward, drop back knee toward ground, both knees bend to 90°, push through front heel to stand, bring back foot forward, repeat',
+        mistakes:'Front knee collapsing inward · torso leaning too far forward · short steps (knee goes past toe)',
+        watch:'Front knee tracking over middle of foot, torso upright, controlled descent',
+        redflag:'Knee pain in front or back leg — stop and shorten your step'
+      },
+      {
+        num:3, name:'Leg Swings — Front/Back', section:'Warm-up',
+        required:[],
+        target:'10 swings each direction',
+        how:'Stand next to wall for balance, swing outside leg forward and back like a pendulum, let momentum carry it, 10 swings each direction',
+        mistakes:'Leaning torso to compensate · swinging too aggressively · holding breath',
+        watch:'Upright posture, foot staying low to ground (under 12 inches), relaxed hip',
+        redflag:'Sharp pain in hip or groin — reduce range of motion'
+      },
+      {
+        num:4, name:'Leg Swings — Side to Side', section:'Warm-up',
+        required:[],
+        target:'10 reps each direction',
+        how:'Face wall, swing outside leg across your body then out to side, keep torso facing forward',
+        mistakes:'Rotating torso with the leg · leaning away from the swing',
+        watch:'Hips stay square to wall, movement comes from hip joint only',
+        redflag:'Pinching feeling in front of hip — reduce range'
+      },
+      {
+        num:5, name:'Ankle Rocks (Knee-to-Wall Test)', section:'Warm-up',
+        required:[],
+        target:'10 reps each side',
+        how:'Face wall, place toes 4 inches from wall, keep heel down, drive knee forward to touch wall without lifting heel or letting knee cave inward',
+        mistakes:'Heel lifting off ground · knee collapsing inward · leaning forward with torso',
+        watch:'Knee tracks straight over middle of foot, heel stays glued to floor, upright posture',
+        redflag:'Can\'t touch wall without heel lifting — move toes closer and work there'
+      },
+    ]
+  },
+  {
+    id:'p1b', label:'Phase 1 — Foundation', weeks:'Weeks 1–2', section:'Power',
+    exercises:[
+      {
+        num:6, name:'Pogo Jumps', section:'Power',
+        required:[],
+        target:'3 × 20 reps',
+        how:'Jump in place using only ankles and calves, minimal knee bend (keep legs almost straight), quick ground contact, aim for height not speed',
+        mistakes:'Deep squat before jumping · landing flat-footed · pausing between reps',
+        watch:'Springy ankles, landing on balls of feet, immediate rebound, quiet landings',
+        redflag:'Knee pain — you\'re bending knees too much; shin splints — land softer or stop'
+      },
+      {
+        num:7, name:'Single-Leg Stair Hops', section:'Power',
+        required:['stairs'],
+        target:'3 × 5 hops each leg',
+        how:'Stand at bottom of stairs on one leg, hop up to 5th step (or as high as you can control), land softly with same leg, hold 2 seconds, step down and repeat',
+        mistakes:'Launching with bent knee then straightening mid-air · landing loudly · losing balance',
+        watch:'Knee tracks over toes throughout, stick the landing without extra hops, torso upright',
+        redflag:'Knee wobbles inward on landing — stop, this risks ACL injury; stick to lower steps'
+      },
+    ]
+  },
+  {
+    id:'p1c', label:'Phase 1 — Foundation', weeks:'Weeks 1–2', section:'Strength',
+    exercises:[
+      {
+        num:8, name:'Bulgarian Split Squat', section:'Strength',
+        required:['stairs'],
+        target:'3 × 8 reps each leg',
+        how:'Stand 2 feet in front of bottom step, place top of back foot on step behind you, lower back knee toward ground, front knee bends to 90°, push through front heel to stand',
+        mistakes:'Standing too close to step · standing too far (overstraining hip flexor) · front heel lifting · torso falling forward',
+        watch:'Front knee over ankle (not past toes), heel stays down, torso with slight forward lean',
+        redflag:'Front knee pain — move further from step; back knee pain — pad the step or move closer'
+      },
+      {
+        num:9, name:'Single-Leg Romanian Deadlift (Bodyweight)', section:'Strength',
+        required:[],
+        target:'3 × 8 reps each leg',
+        how:'Stand on one leg, slight bend in standing knee, hinge at hips (push butt back), lower torso toward ground while free leg extends behind you, return to standing by squeezing glute',
+        mistakes:'Rounding lower back · bending standing knee too much · opening hips to side · losing balance repeatedly',
+        watch:'Flat back (neutral spine), hips stay square to ground, controlled descent',
+        redflag:'Lower back rounds even when you try — you\'re going too low; stop just before rounding starts'
+      },
+      {
+        num:10, name:'Pushup', section:'Strength',
+        required:[],
+        target:'3 × 8–15 reps',
+        how:'Hands under shoulders, body straight line from head to heels, lower chest to floor, elbows flare 45° from body, push back up',
+        mistakes:'Sagging hips · piking hips up · flaring elbows to 90° · half-repping',
+        watch:'Straight body line, chest touches floor or gets within fist-width, elbows track backward',
+        redflag:'Wrist pain — try fists or pushup handles; shoulder pain — elbows are flaring too wide'
+      },
+      {
+        num:11, name:'Plank', section:'Strength',
+        required:[],
+        target:'3 × 20–45 sec',
+        how:'Forearms on ground, elbows under shoulders, body straight line, squeeze glutes and quads, hold position',
+        mistakes:'Sagging hips · piking hips up · holding breath · looking up or tucking chin',
+        watch:'Hips level with shoulders, steady breathing, gaze at floor 6 inches in front of hands',
+        redflag:'Lower back pain — hips are sagging; stop and reset'
+      },
+    ]
+  },
+  {
+    id:'p1d', label:'Phase 1 — Foundation', weeks:'Weeks 1–2', section:'Conditioning',
+    exercises:[
+      {
+        num:12, name:'Jump Rope Intervals', section:'Conditioning',
+        required:['jumprope'],
+        target:'5 rounds × 30 sec on / 30 sec off',
+        how:'30 seconds fast (quickest rhythm you can maintain), 30 seconds rest, repeat 5 times',
+        mistakes:'Starting too fast and burning out in 10 seconds · stopping rope completely during rest · tensing up',
+        watch:'Consistent speed for full 30 seconds, controlled breathing, relaxed grip',
+        redflag:'Can\'t complete 5 rounds — reduce to 20 sec work / 40 sec rest'
+      },
+    ]
+  },
+  {
+    id:'p1e', label:'Phase 1 — Daily (off days)', weeks:'Weeks 1–2', section:'Mobility',
+    exercises:[
+      {
+        num:13, name:'Knee-to-Wall Ankle Mobility', section:'Mobility',
+        required:[],
+        target:'2 × 10 each side, 2-sec hold',
+        how:'Same as ankle rocks in warm-up, 2 sets of 10 each side, hold the forward position for 2 seconds',
+        mistakes:'Rushing through reps · letting heel lift · knee collapsing inward',
+        watch:'Controlled movement, full range without compensation',
+        redflag:'Pinching in front of ankle — you\'ve hit your limit, don\'t force past it'
+      },
+    ]
+  },
+  {
+    id:'p2', label:'Phase 2 — Plyometrics', weeks:'Weeks 3–4', section:'New exercises',
+    exercises:[
+      {
+        num:14, name:'Stair Sprints', section:'Power',
+        required:['stairs'],
+        target:'6–8 × 1 flight sprint / walk down',
+        how:'Sprint up one flight (10–15 steps) as fast as possible, pump arms, drive knees, walk down slowly for recovery',
+        mistakes:'Starting at 100% from step one · leaning too far forward · short choppy steps · walking down too fast',
+        watch:'Tall posture by step 3, arm drive matching leg drive, 60–90 sec rest before next set',
+        redflag:'Hamstring grab or pop — stop immediately, done for the day; sharp knee pain — reduce to fast walk-ups'
+      },
+      {
+        num:15, name:'Box Step-Up to Knee Drive', section:'Strength',
+        required:['plyobox'],
+        target:'3 × 10 reps each leg',
+        how:'Place one foot on plyobox (knee height or lower), push through heel to stand on box, drive opposite knee up to hip height, lower with control, step down',
+        mistakes:'Pushing off back foot (cheating) · collapsing onto box · losing balance at top · dropping off box',
+        watch:'90% of work from front leg, controlled lowering, stable finish position',
+        redflag:'Knee pain on box — box is too high; reduce height'
+      },
+      {
+        num:16, name:'Broad Jump', section:'Power',
+        required:[],
+        target:'3 × 5 jumps',
+        how:'Feet shoulder-width, swing arms back, hinge hips slightly, explode forward and up, land softly in athletic position (knees bent, chest up)',
+        mistakes:'Jumping straight up instead of forward · landing stiff-legged · falling on landing · not swinging arms',
+        watch:'Distance forward, soft landing with chest up, stick the landing without extra steps',
+        redflag:'Knee pain on landing — you\'re landing with straight legs; focus on "sit into the landing"'
+      },
+      {
+        num:17, name:'Single-Leg Glute Bridge', section:'Strength',
+        required:[],
+        target:'3 × 12 reps each side',
+        how:'Lie on back, one foot flat on floor, other leg straight up in air, push through heel to lift hips, squeeze glute at top, lower with control',
+        mistakes:'Arching lower back at top · pushing through toes instead of heel · hips rotating',
+        watch:'Straight line from shoulder to knee at top, pressure in heel, hips level',
+        redflag:'Cramping in hamstring — you\'re using hamstring instead of glute; reduce range and squeeze glute'
+      },
+      {
+        num:18, name:'Side Plank', section:'Strength',
+        required:[],
+        target:'3 × 20–35 sec each side',
+        how:'Lie on side, elbow under shoulder, legs straight, lift hips off ground, body straight line from head to heels, hold',
+        mistakes:'Sagging hips · rotating torso forward or back · holding breath',
+        watch:'Hips stacked vertically, straight line, steady breathing',
+        redflag:'Shoulder pain — elbow is not under shoulder; adjust position'
+      },
+      {
+        num:19, name:'Single-Leg Pogo Hops', section:'Power',
+        required:[],
+        target:'3 × 10 reps each leg',
+        how:'Same as pogo jumps but on one leg, minimal knee bend, spring off ankle, quick ground contact',
+        mistakes:'Deep knee bend · landing on flat foot · losing balance and touching down with other foot',
+        watch:'Springy ankle, landing on ball of foot, controlled stick at end of set',
+        redflag:'Ankle or knee pain — stop, go back to double-leg pogo jumps'
+      },
+    ]
+  },
+  {
+    id:'p3', label:'Phase 3 — Build Power', weeks:'Weeks 5–8', section:'New exercises',
+    exercises:[
+      {
+        num:20, name:'Box Jump', section:'Power',
+        required:['plyobox'],
+        target:'4 × 5 reps',
+        how:'Stand facing plyobox (12–20 inches to start), feet shoulder-width, swing arms back, explode up and forward, land softly on box with full foot, stand tall at top, step down one foot at a time (don\'t jump down)',
+        mistakes:'Jumping down from box (kills your Achilles) · landing with butt close to heels · starting with box too high',
+        watch:'Soft landing with minimal knee bend, full hip extension at top (stand tall), step down controlled',
+        redflag:'Can\'t land quietly — box is too high; start 2 inches lower'
+      },
+      {
+        num:21, name:'Depth Drop', section:'Power',
+        required:['plyobox'],
+        target:'3 × 6 reps',
+        how:'Stand on box (12 inches to start), step off (don\'t jump), drop to ground, land softly in athletic position (knees bent, chest up), hold 2 seconds',
+        mistakes:'Jumping off box · landing stiff-legged · taking steps after landing · shallow position',
+        watch:'Quiet landing, knees track over toes, chest up, stable hold',
+        redflag:'Knee pain or loud landing — reduce box height; you should land like a cat, not a bag of cement'
+      },
+      {
+        num:22, name:'Dead Bug', section:'Strength',
+        required:[],
+        target:'3 × 8 reps each side',
+        how:'Lie on back, arms straight up toward ceiling, knees bent 90° over hips, lower opposite arm and leg toward floor while keeping lower back pressed to floor, return, switch sides',
+        mistakes:'Lower back arching off floor · moving too fast · letting knee bend open',
+        watch:'Lower back stays flat, slow controlled movement, exhale as you extend',
+        redflag:'Back pain — you\'re arching; reduce range of motion'
+      },
+      {
+        num:23, name:'A-Skips', section:'Conditioning',
+        required:[],
+        target:'4 × 20 m',
+        how:'Skip forward with high knees, dorsiflex ankle (toes up) when knee is high, strike ground under your hips with ball of foot, quick ground contact, opposite arm drives with leg',
+        mistakes:'Reaching foot out in front (overstriding) · landing on flat foot or heel · low knees · no arm action',
+        watch:'Foot landing under hip, not in front of body; quick springy steps; upright posture',
+        redflag:'Calf or hamstring tightness — reduce skip height, focus on rhythm over height'
+      },
+      {
+        num:24, name:'EMOM Jump Rope', section:'Conditioning',
+        required:['jumprope'],
+        target:'10 rounds — 40 sec on / 20 sec off',
+        how:'Every minute on the minute: 40 seconds work, 20 seconds rest, repeat 10 minutes. Start each minute fresh.',
+        mistakes:'Starting too fast in early rounds · inconsistent timing · stopping rope during rest',
+        watch:'Consistent pace across all 10 rounds, finishing each work period strong',
+        redflag:'Can\'t maintain pace by round 6 — started too fast or need longer rest'
+      },
+      {
+        num:25, name:'Stair Bounds', section:'Power',
+        required:['stairs'],
+        target:'5 × 1 flight bounds / walk down',
+        how:'Sprint up stairs taking 2 steps at a time, aggressive arm drive, powerful push-off each step, walk down recovery',
+        mistakes:'Bounding so high you lose rhythm · not using arms · trying on too many steps at once',
+        watch:'Rhythm and flow, using arm drive, covering ground efficiently',
+        redflag:'Tripping or losing rhythm — you\'re going too fast for your coordination; slow down'
+      },
+    ]
+  },
+  {
+    id:'p4', label:'Phase 4 — Integrate', weeks:'Weeks 9+', section:'New exercises',
+    exercises:[
+      {
+        num:26, name:'Depth Jump', section:'Power',
+        required:['plyobox'],
+        target:'3 × 5 reps',
+        how:'Stand on box (start 12 inches), step off, immediately upon landing explode up into vertical jump, land softly again',
+        mistakes:'Pausing on ground between drop and jump · jumping off box instead of stepping · landing in deep squat',
+        watch:'Immediate rebound (under 0.3 seconds on ground), minimal knee bend on takeoff, soft final landing',
+        redflag:'Loud landing or knee pain — reduce box height or go back to depth drops'
+      },
+      {
+        num:27, name:'Single-Leg Box Jump', section:'Power',
+        required:['plyobox'],
+        target:'3 × 4 reps each leg',
+        how:'Stand on one leg in front of box, explode up to land on box with same leg, land softly, step down',
+        mistakes:'Jumping off standing leg then landing on two legs · rotating in air to land · uncontrolled landing',
+        watch:'Straight up and down, stick the landing, controlled step down',
+        redflag:'Knee wobble on landing — stop, reduce box height, strengthen with split squats first'
+      },
+      {
+        num:28, name:'Dumbbell Romanian Deadlift', section:'Strength',
+        required:['dumbbells'],
+        target:'3 × 8 reps',
+        how:'Hold dumbbells in front of thighs, push hips back, keep back neutral, feel the stretch in your hamstrings, stand by squeezing glutes',
+        mistakes:'Squatting instead of hinging · rounding back · letting weights drift far from body · going too low',
+        watch:'Neutral spine throughout, hips and shoulders rise together, controlled lowering',
+        redflag:'Lower back pain — you\'re rounding; reduce weight and practice hip hinge'
+      },
+      {
+        num:29, name:'Dumbbell Goblet Squat', section:'Strength',
+        required:['dumbbells'],
+        target:'3 × 10 reps',
+        how:'Hold one dumbbell at chest, stand shoulder-width, sit between your heels to full depth, stand tall squeezing glutes',
+        mistakes:'Knees collapsing inward · heels lifting · rounding your back · too heavy weight',
+        watch:'Chest tall throughout, knees track over toes, heel stays down, controlled descent',
+        redflag:'Knee pain — reduce weight or depth; lower back pain — your core is fatiguing'
+      },
+      {
+        num:30, name:'Loaded Jump Squat', section:'Power',
+        required:['dumbbells'],
+        target:'3 × 5 reps (light dumbbells)',
+        how:'Hold light dumbbells at sides, lower to quarter squat, explode up, leave ground, land softly, immediate next rep',
+        mistakes:'Using too much weight · full depth squat (too slow) · pausing at bottom · hard landings',
+        watch:'Weight moves fast, quick transition, quiet landings, weight feels light',
+        redflag:'Can\'t jump high or land quietly — weight is too heavy; reduce by half'
+      },
+    ]
+  },
+];
+
+// Flatten all exercises for lookup
+const HW_ALL_EXERCISES = HW_PHASES.flatMap(p => p.exercises);
+
+// State: which equipment is selected
+let hwEquip = load('hwEquip_v1', {stairs:false, jumprope:false, plyobox:false, dumbbells:false});
+let hwOpenCards = {};
+
+function hwToggleEquip(id) {
+  hwEquip[id] = !hwEquip[id];
+  save('hwEquip_v1', hwEquip);
+  renderHome();
+}
+
+function hwToggleCard(key) {
+  hwOpenCards[key] = !hwOpenCards[key];
+  renderHome();
+}
+
+function hwToggleMistake(id, e) {
+  e.stopPropagation();
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+
+function exAvailable(ex) {
+  if (!ex.required || ex.required.length === 0) return true;
+  return ex.required.every(r => hwEquip[r]);
+}
+
+function renderHome() {
+  const main = document.getElementById('page-home');
+
+  // Equipment checklist
+  const equipHtml = HW_EQUIPMENT.map(eq => `
+    <button class="hw-equip-btn${hwEquip[eq.id] ? ' selected' : ''}" onclick="hwToggleEquip('${eq.id}')">
+      <span class="hw-equip-icon">${eq.icon}</span>
+      <span class="hw-equip-label">${eq.label}</span>
+    </button>
+  `).join('');
+
+  // Group exercises by phase, filtering by availability
+  const phaseSections = [];
+  let lastPhaseLabel = null;
+  HW_PHASES.forEach(phase => {
+    const available = phase.exercises.filter(ex => exAvailable(ex));
+    if (available.length === 0) return;
+    phaseSections.push({phase, available});
+  });
+
+  let exercisesHtml = '';
+  let seenPhase = {};
+  phaseSections.forEach(({phase, available}) => {
+    // Phase divider (only show once per phase label group)
+    if (!seenPhase[phase.label]) {
+      seenPhase[phase.label] = true;
+      exercisesHtml += `<div class="hw-phase-divider"><div class="hw-phase-divider-inner">${phase.label} &nbsp;·&nbsp; ${phase.weeks}</div></div>`;
+    }
+    if (available.length > 0) {
+      exercisesHtml += `<div class="hw-phase-header">
+        <div class="hw-phase-title">${phase.section}</div>
+        <div class="hw-phase-badge">${available.length} exercise${available.length !== 1 ? 's' : ''}</div>
+      </div>`;
+    }
+    available.forEach(ex => {
+      const key = `hw-${ex.num}`;
+      const isOpen = !!hwOpenCards[key];
+      const needsEquip = ex.required.length > 0 ? ex.required.map(r => {
+        const eq = HW_EQUIPMENT.find(e => e.id === r);
+        return eq ? `<span class="hw-card-equip">${eq.icon} ${eq.label}</span>` : '';
+      }).join(' ') : '<span class="hw-card-equip">🏠 Bodyweight</span>';
+      const mistakeKey = `hwm-${ex.num}`;
+
+      exercisesHtml += `<div class="hw-card">
+        <div class="hw-card-header" onclick="hwToggleCard('${key}')">
+          <div class="hw-card-num">${ex.num}</div>
+          <div class="hw-card-info">
+            <div class="hw-card-name">${ex.name}</div>
+            <div class="hw-card-meta">${ex.target}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+            ${needsEquip}
+            ${chevSVG(isOpen)}
+          </div>
+        </div>`;
+
+      if (isOpen) {
+        exercisesHtml += `<div class="hw-card-body">
+          <div class="hw-detail-section">
+            <div class="hw-detail-label">How to</div>
+            <div class="hw-detail-body">${ex.how}</div>
+          </div>
+          <span class="hw-mistake-toggle" onclick="hwToggleMistake('${mistakeKey}', event)">Common mistakes ↓</span>
+          <div class="hw-mistake-box" id="${mistakeKey}">${ex.mistakes.split(' · ').map(m => `• ${m}`).join('<br>')}</div>
+          <div class="hw-detail-section">
+            <div class="hw-detail-label">Watch for</div>
+            <div class="hw-watch">${ex.watch}</div>
+          </div>
+          <div class="hw-detail-section">
+            <div class="hw-detail-label">🚩 Red flag</div>
+            <div class="hw-redflag">${ex.redflag}</div>
+          </div>
+        </div>`;
+      }
+      exercisesHtml += `</div>`;
+    });
+  });
+
+  const totalAvailable = HW_ALL_EXERCISES.filter(ex => exAvailable(ex)).length;
+  const totalLocked = HW_ALL_EXERCISES.length - totalAvailable;
+
+  main.innerHTML = `
+    <div class="hist-page-title">Home Workout</div>
+    <div class="hw-intro">A progressive 4-phase plan built for agility, speed, and power — no gym required. Select the equipment you have at home to unlock more exercises.</div>
+
+    <div class="hw-equip-title">What do you have at home?</div>
+    <div class="hw-equip-grid">${equipHtml}</div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <div class="hw-equip-title" style="margin-bottom:0">Your exercises</div>
+      <div style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-dim)">${totalAvailable} available${totalLocked > 0 ? ` · ${totalLocked} locked` : ''}</div>
+    </div>
+
+    ${totalAvailable === 0 ? `<div class="hw-empty">No exercises available yet.<br>All ${HW_ALL_EXERCISES.filter(ex=>ex.required.length===0).length} bodyweight exercises should always appear — tap any card above to check your equipment.</div>` : exercisesHtml}
+  `;
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
