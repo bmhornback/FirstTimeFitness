@@ -1090,14 +1090,16 @@ function hwFmtTime(sec){
 }
 
 function hwParseTimerSec(target){
-  // "N min" or "N–M min" → N minutes
-  let m = target.match(/(\d+)(?:[–\-]\d+)?\s*min/);
+  // "N–M min" → M (upper/goal end); "N min" → N minutes
+  let m = target.match(/(\d+)[–\-](\d+)\s*min/);
+  if(m) return parseInt(m[2])*60;
+  m = target.match(/(\d+)\s*min/);
   if(m) return parseInt(m[1])*60;
-  // "N–M sec" → M (higher/goal end), e.g. "20–45 sec"
-  m = target.match(/(\d+)[–\-](\d+)\s*sec/);
+  // "N–M sec/second/seconds" → M (higher/goal end), e.g. "20–45 sec"
+  m = target.match(/(\d+)[–\-](\d+)\s*sec(?:ond)?s?/);
   if(m){ const s=parseInt(m[2]); return s>=10?s:null; }
-  // "N sec" or "N-sec" (e.g. "30-sec hold", "40 sec on")
-  m = target.match(/(\d+)[–\-]?\s*sec/);
+  // "N sec/second/seconds" or "N-sec" (e.g. "30-sec hold", "20-second sprints")
+  m = target.match(/(\d+)[–\-]?\s*sec(?:ond)?s?/);
   if(m){ const s=parseInt(m[1]); return s>=10?s:null; }
   return null;
 }
