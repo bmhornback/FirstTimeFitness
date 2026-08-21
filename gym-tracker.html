@@ -28,9 +28,10 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
 /* NAV */
 .bottom-nav{position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);z-index:200;padding-bottom:env(safe-area-inset-bottom,0)}
-.bnav-btn{display:flex;flex-direction:column;align-items:center;padding:10px 4px 8px;cursor:pointer;border:none;background:transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:11px;gap:3px;transition:color 0.15s}
+.bnav-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:9px 3px 8px;cursor:pointer;border:none;background:transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:11px;gap:3px;transition:color 0.15s;min-width:0}
 .bnav-btn svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.8;fill:none}
 .bnav-btn.active{color:var(--accent)}
+.bnav-label{display:block;max-width:100%;line-height:1.1;text-align:center;white-space:normal;overflow-wrap:anywhere}
 
 /* HEADER */
 .app-header{background:var(--bg);padding:env(safe-area-inset-top,16px) 16px 0;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
@@ -297,6 +298,11 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
 /* HOME WORKOUT PAGE */
 .hw-intro{font-size:14px;color:var(--text-muted);line-height:1.65;margin-bottom:16px}
+.hw-topline{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.hw-ref-badge{font-size:11px;font-family:'DM Mono',monospace;padding:4px 8px;border-radius:99px;background:rgba(74,156,240,0.12);color:var(--upper);border:1px solid rgba(74,156,240,0.28);white-space:nowrap}
+.hw-note-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 12px;margin-bottom:16px}
+.hw-note-title{font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px}
+.hw-note-body{font-size:13px;color:var(--text-muted);line-height:1.65}
 .hw-equip-title{font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px}
 .hw-equip-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}
 .hw-equip-btn{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);cursor:pointer;transition:all 0.15s;text-align:left}
@@ -315,6 +321,12 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .hw-card-meta{font-size:12px;color:var(--text-dim);margin-top:2px}
 .hw-card-equip{font-size:10px;font-family:'DM Mono',monospace;padding:2px 6px;border-radius:99px;background:rgba(200,240,74,0.08);color:var(--accent);border:1px solid rgba(200,240,74,0.2);white-space:nowrap}
 .hw-card-body{border-top:1px solid var(--border);padding:14px}
+.hw-visual-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+.hw-thumb{width:92px;height:92px;border-radius:10px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);background:var(--surface2)}
+.hw-thumb-meta{flex:1;min-width:0}
+.hw-target-chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(200,240,74,0.22);border-radius:99px;padding:4px 8px;margin-bottom:8px}
+.hw-quick-note{font-size:12px;color:var(--text-dim);line-height:1.6}
+.hw-demo-link{display:inline-flex;margin-top:8px;font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-decoration:none}
 .hw-detail-section{margin-bottom:10px}
 .hw-detail-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px}
 .hw-detail-body{font-size:13px;color:var(--text-muted);line-height:1.65}
@@ -331,6 +343,13 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .hw-empty{text-align:center;padding:32px 16px;color:var(--text-dim);font-size:14px;line-height:1.7}
 .hw-redflag{font-size:13px;color:var(--danger);background:rgba(240,97,74,0.06);border:1px solid rgba(240,97,74,0.2);border-radius:var(--radius-sm);padding:8px 10px;line-height:1.65}
 .hw-watch{font-size:13px;color:var(--success);background:var(--success-dim);border:1px solid rgba(74,201,138,0.25);border-radius:var(--radius-sm);padding:8px 10px;line-height:1.65}
+
+@media (max-width:360px){
+  .bnav-btn{font-size:10px;padding:8px 2px 7px}
+  .bnav-btn svg{width:18px;height:18px}
+  .hw-visual-row{flex-direction:column}
+  .hw-thumb{width:100%;height:auto;max-height:140px}
+}
 
 /* AUTH OVERLAY */
 .auth-overlay{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-y:auto}
@@ -371,23 +390,23 @@ body{display:flex;flex-direction:column;min-height:100vh}
 <nav class="bottom-nav">
   <button class="bnav-btn active" id="btn-workout" onclick="switchPage('workout')">
     <svg viewBox="0 0 24 24"><rect x="2" y="9" width="4" height="6" rx="1"/><rect x="18" y="9" width="4" height="6" rx="1"/><rect x="6" y="7" width="12" height="10" rx="1"/><line x1="6" y1="12" x2="18" y2="12"/></svg>
-    Workout
+    <span class="bnav-label">Workout</span>
   </button>
   <button class="bnav-btn" id="btn-guide" onclick="switchPage('guide')">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="0.5" fill="currentColor"/></svg>
-    Guide
+    <span class="bnav-label">Guide</span>
   </button>
   <button class="bnav-btn" id="btn-history" onclick="switchPage('history')">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,15"/></svg>
-    History
+    <span class="bnav-label">History</span>
   </button>
   <button class="bnav-btn" id="btn-mindset" onclick="switchPage('mindset')">
     <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.5-1.3 4.7-3.3 6L14 21H10l-1.7-6C6.3 13.7 5 11.5 5 9a7 7 0 0 1 7-7z"/></svg>
-    Mindset
+    <span class="bnav-label">Mindset</span>
   </button>
   <button class="bnav-btn" id="btn-home" onclick="switchPage('home')">
     <svg viewBox="0 0 24 24"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-5h4v5h4a1 1 0 0 0 1-1v-9"/></svg>
-    Home
+    <span class="bnav-label">At Home</span>
   </button>
 </nav>
 
@@ -1029,6 +1048,84 @@ function makeStretchThumb(title, accent){
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
+function safeSvgText(value){
+  return String(value).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+}
+
+function splitThumbLabel(text){
+  const words=String(text).split(' ');
+  if(words.length===1) return [words[0], ''];
+  let first='', second='';
+  words.forEach(word=>{
+    if((first+' '+word).trim().length<=14 || !first) first=(first+' '+word).trim();
+    else second=(second+' '+word).trim();
+  });
+  return [first, second.length>16 ? second.slice(0,15)+'…' : second];
+}
+
+function homePoseType(ex){
+  const text=`${ex.name} ${ex.how}`.toLowerCase();
+  if(text.includes('side plank')) return 'sideplank';
+  if(text.includes('plank')) return 'plank';
+  if(text.includes('hands and knees') || text.includes('cat-cow') || text.includes('downward dog')) return 'handsknees';
+  if(text.includes('child\'s pose')) return 'childpose';
+  if(text.includes('sit-up') || text.includes('crunch') || text.includes('dead bug') || text.includes('hollow')) return 'supine';
+  if(text.includes('bridge')) return 'bridge';
+  if(text.includes('pushup') || text.includes('dip')) return 'pushup';
+  if(text.includes('lunge') || text.includes('warrior')) return 'lunge';
+  if(text.includes('single-leg') || text.includes('one leg')) return 'singleleg';
+  if(text.includes('jump') || text.includes('hop') || text.includes('skip')) return 'jump';
+  if(text.includes('sprint') || text.includes('run')) return 'run';
+  if(text.includes('stairs') || text.includes('step-up') || text.includes('box')) return 'stairs';
+  return 'stand';
+}
+
+function homePoseSvg(type, accent){
+  if(type==='sideplank') return `<circle cx="44" cy="84" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M52 88l32 10 26 0m-48-7-10 18m34-11 10 18m6-18 16-10" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
+  if(type==='plank') return `<circle cx="44" cy="74" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M52 78l38 8 28 0m-36-2-10 18m28-16 12 18" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
+  if(type==='handsknees') return `<circle cx="68" cy="54" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M74 60l18 18m-18-6-20 20m36-10 24 0m-14-12 12 22" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
+  if(type==='childpose') return `<circle cx="54" cy="82" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M61 86l24 8m-16-2 34 0m-8 0 18-16m-50 8-18-16" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
+  if(type==='supine') return `<circle cx="48" cy="88" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M56 92h44m-24 0-12-18m20 18 16-20m0 20 16 12" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
+  if(type==='bridge') return `<circle cx="48" cy="92" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M55 92l22-14 20 10m-20-10 0 22m20-12 18 12" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
+  if(type==='pushup') return `<circle cx="46" cy="72" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M54 76l28 10 32 2m-34-6-10 18m26-12 14 16" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
+  if(type==='lunge') return `<circle cx="88" cy="36" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M88 44v24m0 0-18 22m18-22 20 14m-20 8-18 20m18-20 20 0" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
+  if(type==='singleleg') return `<circle cx="88" cy="36" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M88 44v28m0 0-18 18m18-18 22 8m-22 6-4 28m4-28 22 24" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
+  if(type==='jump') return `<circle cx="88" cy="34" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M88 42v26m0 0-16 12m16-12 18 10m-18 0-16 22m16-22 18 20" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/><path d="M46 118h84" stroke="#3b3b3b" stroke-width="3" stroke-dasharray="5 5"/><path d="M70 112l-7 7m0-7 7 7m36-7-7 7m0-7 7 7" stroke="${accent}" stroke-width="3" stroke-linecap="round"/>`;
+  if(type==='run') return `<circle cx="88" cy="34" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M88 42v24m0 0-16 16m16-16 22 10m-22 4-10 26m10-26 24 22" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/><path d="M46 118h84" stroke="#3b3b3b" stroke-width="3"/><path d="M52 111l10-5m10 5 10-5m10 5 10-5" stroke="${accent}" stroke-width="3" stroke-linecap="round"/>`;
+  if(type==='stairs') return `<path d="M48 112h20V96h18V80h18V64h24" fill="none" stroke="#3b3b3b" stroke-width="6" stroke-linejoin="round"/><circle cx="88" cy="40" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M88 48v24m0 0-12 16m12-16 18 8m-18 4 0 22m0-22 18 16" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
+  return `<circle cx="88" cy="36" r="7" fill="none" stroke="${accent}" stroke-width="4"/><path d="M88 44v28m0 0-18 18m18-18 20 0m-20 0 16-18m-16 36-10 24m10-24 14 24" fill="none" stroke="${accent}" stroke-linecap="round" stroke-width="4"/>`;
+}
+
+function makeHomeThumb(ex){
+  const accentBySection={warmup:'#f0a84a',power:'#c8f04a',strength:'#4a9cf0',conditioning:'#f0614a',mobility:'#4ac98a'};
+  const accent=accentBySection[(ex.section||'').toLowerCase()]||'#c8f04a';
+  const [line1,line2]=splitThumbLabel(ex.name);
+  const pose=homePoseType(ex);
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="184" height="184" viewBox="0 0 184 184">
+    <rect width="184" height="184" rx="18" fill="#1f1f1f"/>
+    <rect x="10" y="10" width="164" height="164" rx="14" fill="#252525" stroke="#353535"/>
+    <text x="92" y="24" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="${accent}" letter-spacing="0.9">${safeSvgText((ex.section||'Reference').toUpperCase())}</text>
+    ${homePoseSvg(pose, accent)}
+    <text x="92" y="145" text-anchor="middle" font-family="DM Sans, Arial, sans-serif" font-size="11" fill="#e7e7e7">${safeSvgText(line1)}</text>
+    ${line2 ? `<text x="92" y="159" text-anchor="middle" font-family="DM Sans, Arial, sans-serif" font-size="11" fill="#e7e7e7">${safeSvgText(line2)}</text>` : ''}
+    <text x="92" y="174" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="#8f8f8f">Reference diagram</text>
+  </svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
+function makeHomeDemoUrl(name){
+  return `https://www.youtube.com/results?search_query=${encodeURIComponent(`${name} proper form`)}`;
+}
+
+function parseHomeHowSteps(how){
+  if(Array.isArray(how)) return how;
+  const parts=String(how)
+    .split(/\.\s+|,\s+(?=(?:[A-Z]|[0-9]|push|pull|repeat|hold|step|drive|lower|lift|keep|walk|run|swing|start|face|place|bend|hinge|sit|stand|lie|kneel|sprint|skip|exhale|inhale|return|lean|curl|rotate|explode|land|use|grab|tuck|shift|straighten|press|drop))/i)
+    .map(step=>step.trim().replace(/\.$/,''))
+    .filter(Boolean);
+  return parts.length ? parts : [String(how)];
+}
+
 const STRETCH_GUIDE_ORDER = [
   'Chest doorway stretch','Lat overhead stretch','Rear delt cross-body pull','Triceps overhead stretch','Neck side tilt',
   'Hip flexor lunge stretch','Standing quad stretch','Seated hamstring stretch','Figure-4 glute stretch','Adductor butterfly stretch','Calf wall stretch'
@@ -1532,12 +1629,29 @@ function openStretchGuide(stretchName){
 }
 
 // ─── PAGE SWITCH ─────────────────────────────────────────────────────────────
+const PAGE_META = {
+  workout:{title:'Workout', showTabs:true},
+  guide:{title:'Guide', showTabs:false},
+  history:{title:'History', showTabs:false},
+  mindset:{title:'Mindset', showTabs:false},
+  home:{title:'At-Home', showTabs:false}
+};
+
+function updatePageChrome(name){
+  const meta=PAGE_META[name]||PAGE_META.workout;
+  document.querySelector('.app-title').textContent=meta.title;
+  document.getElementById('day-tabs').style.display=meta.showTabs?'grid':'none';
+  document.title=meta.title==='Workout' ? 'Gym Tracker' : `Gym Tracker — ${meta.title}`;
+}
+
 function switchPage(name){
   activePage=name;
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   document.getElementById('btn-'+name).classList.add('active');
+  updatePageChrome(name);
+  if(name==='workout') renderWorkout();
   if(name==='history') renderHistory();
   if(name==='guide') renderGuide();
   if(name==='mindset') renderMindset();
@@ -2686,6 +2800,7 @@ function renderHome() {
     available.forEach(ex => {
       const key = `hw-${ex.num}`;
       const isOpen = !!hwOpenCards[key];
+      const steps = parseHomeHowSteps(ex.how);
       const needsEquip = ex.required.length > 0 ? ex.required.map(r => {
         const eq = HW_EQUIPMENT.find(e => e.id === r);
         return eq ? `<span class="hw-card-equip">${eq.icon} ${eq.label}</span>` : '';
@@ -2707,9 +2822,18 @@ function renderHome() {
 
       if (isOpen) {
         exercisesHtml += `<div class="hw-card-body">
+          <div class="hw-visual-row">
+            <img class="hw-thumb" src="${makeHomeThumb(ex)}" alt="${ex.name} reference diagram" width="92" height="92" loading="lazy">
+            <div class="hw-thumb-meta">
+              <div class="hw-target-chip">Target: ${ex.target}</div>
+              <div class="hw-quick-note">Use this as a form reference before your first rep. Move slowly enough that each checkpoint below stays true.</div>
+              <a class="hw-demo-link" href="${makeHomeDemoUrl(ex.name)}" target="_blank" rel="noreferrer noopener">Watch demo search ↗</a>
+            </div>
+          </div>
           <div class="hw-detail-section">
             <div class="hw-detail-label">How to</div>
-            <div class="hw-detail-body">${ex.how}</div>
+            <div class="hw-section-label">Step-by-step</div>
+            <ol class="hw-steps">${steps.map(step => `<li>${step}</li>`).join('')}</ol>
           </div>
           <span class="hw-mistake-toggle" onclick="hwToggleMistake('${mistakeKey}', event)">Common mistakes ↓</span>
           <div class="hw-mistake-box" id="${mistakeKey}">${ex.mistakes.split(' · ').map(m => `• ${m}`).join('<br>')}</div>
@@ -2731,8 +2855,15 @@ function renderHome() {
   const totalLocked = HW_ALL_EXERCISES.length - totalAvailable;
 
   main.innerHTML = `
-    <div class="hist-page-title">Home Workout</div>
+    <div class="hw-topline">
+      <div class="hist-page-title">At-Home Training</div>
+      <div class="hw-ref-badge">Reference only</div>
+    </div>
     <div class="hw-intro">A progressive 4-phase plan built for agility, speed, and power — no gym required. Select the equipment you have at home to unlock more exercises.</div>
+    <div class="hw-note-card">
+      <div class="hw-note-title">How to use this tab</div>
+      <div class="hw-note-body">This page is coaching-only, so nothing gets logged here. Tap any exercise to see a quick reference diagram, step-by-step setup cues, common mistakes, and a demo search if you want a moving example before you train.</div>
+    </div>
 
     <div class="hw-equip-title">What do you have at home?</div>
     <div class="hw-equip-grid">${equipHtml}</div>
@@ -2752,6 +2883,7 @@ if(DAYS[activeDay].type==='rest') activeDay=DAYS.findIndex(d=>d.type!=='rest');
 initSession(activeDay);
 renderTabs();
 renderWorkout();
+updatePageChrome(activePage);
 updateSyncBadge();
 
 // Restore Supabase session or show sign-in prompt
