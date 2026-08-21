@@ -300,10 +300,9 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .hw-intro{font-size:14px;color:var(--text-muted);line-height:1.65;margin-bottom:16px}
 .hw-topline{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
 .hw-ref-badge{font-size:11px;font-family:'DM Mono',monospace;padding:4px 8px;border-radius:99px;background:rgba(74,156,240,0.12);color:var(--upper);border:1px solid rgba(74,156,240,0.28);white-space:nowrap}
-.hw-note-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 12px;margin-bottom:16px}
+.hw-note-card,.hw-plan-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 12px;margin-bottom:16px}
 .hw-note-title{font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px}
 .hw-note-body{font-size:13px;color:var(--text-muted);line-height:1.65}
-.hw-plan-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 12px;margin-bottom:16px}
 .hw-plan-grid{display:grid;grid-template-columns:1fr;gap:10px}
 .hw-plan-field{display:flex;flex-direction:column;gap:4px}
 .hw-plan-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em}
@@ -1100,9 +1099,12 @@ function hwTodayInputDate(){
 }
 
 function hwParseInputDate(value){
-  if(!/^\d{4}-\d{2}-\d{2}$/.test(String(value||''))) return null;
-  const [y,m,d]=value.split('-').map(Number);
-  return new Date(y,m-1,d);
+  const text = String(value||'');
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(text)) return null;
+  const [y,m,d]=text.split('-').map(Number);
+  const out = new Date(y,m-1,d);
+  if(out.getFullYear()!==y || out.getMonth()!==(m-1) || out.getDate()!==d) return null;
+  return out;
 }
 
 function hwFmtDateLabel(date){
@@ -2876,9 +2878,9 @@ function hwCurrentWeek(){
   const start = hwParseInputDate(hwPlanStartDate);
   if(!start) return 1;
   const now = new Date();
-  now.setHours(0,0,0,0);
-  start.setHours(0,0,0,0);
-  const diffDays = Math.floor((now-start)/86400000);
+  const nowUtcMidnight = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  const startUtcMidnight = Date.UTC(start.getFullYear(), start.getMonth(), start.getDate());
+  const diffDays = Math.floor((nowUtcMidnight-startUtcMidnight)/86400000);
   return diffDays<0?1:Math.floor(diffDays/7)+1;
 }
 
