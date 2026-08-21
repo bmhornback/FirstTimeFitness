@@ -1470,8 +1470,11 @@ function hiitRefreshUI(prefix,startLabel,context='workout'){
   }
 }
 function hiitRefreshAll(){
-  hiitRefreshUI('hiit','Start HIIT','workout');
-  hiitRefreshUI('home-hiit','Start timer','home');
+  if(activePage==='home'){
+    hiitRefreshUI('home-hiit','Start timer','home');
+  }else{
+    hiitRefreshUI('hiit','Start HIIT','workout');
+  }
 }
 function hiitPrimaryAction(context='workout'){
   const hiitTimer=getHiitTimer(context);
@@ -1504,7 +1507,11 @@ function toggleHiitFavorite(context,id,e){
 }
 function updateHiitField(context,field,val){
   const hiitState=getHiitState(context);
-  hiitState[field]=clampInt(val,field==='rounds'?1:0,field==='rounds'?50:600,hiitState[field]);
+  const mins={work:5,rest:0,warmup:0,cooldown:0,rounds:1};
+  const maxs={work:600,rest:600,warmup:600,cooldown:600,rounds:50};
+  const min=field in mins?mins[field]:0;
+  const max=field in maxs?maxs[field]:600;
+  hiitState[field]=clampInt(val,min,max,hiitState[field]);
   hiitState.selectedPreset='custom';
   saveHiitStates();
   resetHiit(context);
